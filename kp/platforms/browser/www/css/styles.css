@@ -25,3 +25,6 @@
   max-height: 100%;
   min-width: 100%;
 }
+html{
+  touch-action: manipulation; 
+}

@@ -137,23 +137,25 @@
                                     <div class="item-title label">Password</div>
                                     <div class="item-input">
                                       <input type="password" name="password" id="password" placeholder="Password">
-                                  </div>
+                                    </div>
                                   </div>
                               </li>
-                              <li class="item-content">
-                                  <div class="item-title label">Login Sebagai:</div>
-                                  <div class="item-input">
-                                     <select id="jabatan">
-                                        <option value="mahasiswa">Mahasiswa</option>
-                                        <option value="fasilitator">Fasilitator</option>
-                                        <option value="eval">Eval</option>
-                                    </select> 
+                              <li>
+                                  <a class="item-link smart-select smart-select-init" data-open-in="popover">
+                                  <select name="jabatan" id="jabatan">
+                                    <option value="mahasiswa" selected>Mahasiswa</option>
+                                    <option value="fasilitator">Fasilitator</option>
+                                    <option value="eval">Eval</option>
+                                  </select>
+                                  <div class="item-content">
+                                    <div class="item-inner">
+                                      <div class="item-title">Jabatan</div>
+                                    </div>
                                   </div>
                               </li>
                             </ul>
                           </div>
                           <div class="list-block">
-                            <br/>
                             <ul>
                               <li>
                                 <a href="#" class="item-link list-button" id="btnMasuk">Sign In</a>
@@ -165,19 +167,11 @@
                 </div>
             </div>
           </div>
-<!-- Bottom Toolbar-->
-
         </div>
     </div>
 
 <script type="text/javascript" src="cordova.js"></script>
 <script type="text/javascript" src="js/framework7.min.js"></script>
 <script type="text/javascript" src="js/my-app.js"></script>
-<script>
-         var myApp = new Framework7 ({
-            material: true
-         });
-      </script>
 </body>
-
 </html>

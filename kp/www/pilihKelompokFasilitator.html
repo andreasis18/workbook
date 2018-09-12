@@ -58,78 +58,33 @@
               <!-- We need cool sliding animation on title element, so we have additional "sliding" class -->
               <div class="center sliding">Pilih Kelompok</div>
               <div class="right">
-                        <!--
-                          Right link contains only icon - additional "icon-only" class
-                          Additional "open-panel" class tells app to open panel when we click on this link
-                        -->
-                      </div>
-                    </div>
-                  </div>
+                <a href="#" class="button back">Back</a>
+              </div>
+            </div>
+          </div>
                   <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
-                  <div class="pages navbar-through toolbar-through">
-                    <!-- Page, "data-page" contains page name -->
-                    <div data-page="pilihKelompokFasilitator" class="page">
-                      <!-- Scrollable page content -->
-                      <div class="page-content">
-                        <div class="center sliding">
-                          <div class="list-block">
-
-                            <ul>
-                              <!-- Smart select item -->
-                              <li>
-                                <!-- Additional "smart-select" class -->
-                                <a href="#" class="item-link smart-select">
-                                  <!-- select -->
-                                  <select name="kelompok">
-                                    <option value="1" selected>Kelompok Alfa</option>
-                                    <option value="2">Kelompok Omega</option>
-                                    ...
-                                  </select>
-                                  <div class="item-content">
-                                    <div class="item-inner">
-                                      <!-- Select label -->
-                                      <div class="item-title">Nama Kelompok</div>
-                                      <!-- Selected value, not required -->
-                                      <div class="item-after">Alfa</div>
-                                    </div>
-                                  </div>
-                                </a>
-
-
-                                <ul>
-              <li>
-                <a href="#" class="button" id="btnMasukKelompok">Masuk</a>
-            </li>
-        </ul>
-
-
-                              </li>
-                              
-
-                            </ul>
-                          </br>
-                          <!-- Another smart selects or list view elements 
-                          <ul>
-                            <li>
-                              <a href="#" class="item-link list-button" id="btnMasukKelompok">Masuk</a>
-                            </li>
-                          </ul>
-                          -->
-                        </div>
-
-                      </div>
+          <div class="pages navbar-through toolbar-through">
+            <!-- Page, "data-page" contains page name -->
+            <div data-page="pilihKelompokFasilitator" class="page">
+              <!-- Scrollable page content -->
+              <div class="page-content">
+                <div class="content-block">
+                  <div class="center sliding">
+                    <div class="list-block">
+                      <ul id="pilihKelompok">
+                      </ul>
                     </div>
                   </div>
-                  <!-- Bottom Toolbar-->
-
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+  <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
+  <script type="text/javascript" src="js/my-app.js"></script>
+</body>
 
-              <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
-              <script type="text/javascript" src="js/my-app.js"></script>
-            </body>
-
-            </html>
+</html>
 
               <!-- buat ambil value smart select :
                Selected value text
