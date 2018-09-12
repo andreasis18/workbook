@@ -16,29 +16,14 @@ var mainView = myApp.addView('.view-main', {
 });
 
 
-function hapusLocalAll() {
+function hapusLocalAll(){
     localStorage.removeItem('username');
     localStorage.removeItem('jabatan');
-    localStorage.removeItem('jawabanMyBigDream');
-    localStorage.removeItem('jawabanLifelist');
-    localStorage.removeItem('jawabanOutdoor');
-    localStorage.removeItem('jawabanEntong');
-    localStorage.removeItem('jawabanLessonLearned');
-    localStorage.removeItem('jawabanRefleksiMini');
-    localStorage.removeItem('jawabanManajemenEmosiForm');
-    localStorage.removeItem('jawabanManajemenEmosiForm2');
-    localStorage.removeItem('jawabanActionPlanForm');
-    localStorage.removeItem('jawabanActionPlanFormTabel');
-    localStorage.removeItem('jawabanEntong');
-    localStorage.removeItem('jawabanFishboneBaru');
     localStorage.removeItem('tenda');
     localStorage.removeItem('bus');
     localStorage.removeItem('nama_kelompok');
-	localStorage.removeItem('nama_mhs');
-    // localStorage.removeItem('jawabanFishboneBaru');
-    // localStorage.removeItem('jawabanFishboneSupport');
-    // localStorage.removeItem('jawabanFishboneDetailSupport');
-
+    localStorage.removeItem('nama_mhs');
+	localStorage.removeItem('nrp_mhs');
 } //buat hapus smua local storage
 
 var jawabanMyBigDream=[];
@@ -55,6 +40,7 @@ var tenda=0;
 var bus=0;
 var nama_kelompok="";
 var nama_mhs="";
+var nrp_mhs="";
 
 
 var gelombangFasilitator=["cek","koneksi","internet","keluar","dan","login","kembali","thanks"];
@@ -76,8 +62,6 @@ var soalOutdoor=[["C1","Group Walk"],
 ["C2","Fishing / Maze-Maze"],
 ["C3","Catch the Flag/Jembatan Selamat Bersama"],
 ["C4","Spider Web"]
-];
-var soalMyBigDream=[["A1","My Big Dream"]
 ];
 var soalMyLifeList=["B1","Tuliskan Life List yang ada"];
 var soalEntong=[["H1","Yang kupikirkan tentang impian masa depan dan kondisi nenek yang dicintai si Entong"],
@@ -151,59 +135,17 @@ myApp.onPageInit('index', function (page) {
     });
 
     $$('#myBigDreamSide').on('click',function(){
-        mainView.router.loadPage("mybigdream.html");
-        myApp.closePanel();
-    });
-
-    $$('#myLifeListSide').on('click',function(){
-        if(JSON.parse(localStorage.getItem("jawabanMyBigDream"))){
-            mainView.router.loadPage("mylifelist.html");
-            myApp.closePanel();
-        }
-        else
-            myApp.alert("Isi My Big Dream Terlebih Dahulu","Error");
-    });
-
-    $$('#outdoorSide').on('click',function(){
-        mainView.router.loadPage("outdoor.html");
-        myApp.closePanel();
-    });
-
-    // $$('#akuDanKelompokku').on('click',function(){
-    // mainView.router.loadPage("akuDanKelompokku.html");
-    // });
-
-    $$('#manajemenEmosiSide').on('click',function(){
-        mainView.router.loadPage("manajemenEmosi.html");
-        myApp.closePanel();
-    });
-
-    $$('#manajemenEmosi2Side').on('click',function(){
-        mainView.router.loadPage("manajemenEmosi2.html");
-        myApp.closePanel();
-    });
-
-    $$('#actionPlanSide').on('click',function(){
-        if(JSON.parse(localStorage.getItem("jawabanLifelist"))){
-            mainView.router.loadPage("formActionPlan.html");
-            myApp.closePanel();
-        }
-        else
-            myApp.alert("Isi My Life List Terlebih Dahulu","Error");
-    });
-
-    $$('#fishboneSide').on('click',function(){
-        mainView.router.loadPage("fishbone.html");
+        mainView.router.loadPage("pilihBigDream.html");
         myApp.closePanel();
     });
 
     $$('#kisahEntongSide').on('click',function(){
-        mainView.router.loadPage("kisahEntong.html");
+        mainView.router.loadPage("pilihEntong.html");
         myApp.closePanel();
     });
 
-    $$('#lessonLearnedSide').on('click',function(){
-        mainView.router.loadPage("lessonLearned.html");
+    $$('#manajemenEmosiSide').on('click',function(){
+        mainView.router.loadPage("pilihManajemenEmosi.html");
         myApp.closePanel();
     });
 
@@ -212,6 +154,10 @@ myApp.onPageInit('index', function (page) {
         myApp.closePanel();
     });
 
+    $$('#fishboneSide').on('click',function(){
+        mainView.router.loadPage("fishbone.html");
+        myApp.closePanel();
+    });
 
     if(page='index'){
         if(JSON.parse(localStorage.getItem("username"))&&JSON.parse(localStorage.getItem("jabatan")))
@@ -222,29 +168,12 @@ myApp.onPageInit('index', function (page) {
                 mainView.router.loadPage('menu.html');            
         }
     }
-    $$('#uploadJawaban').on('click',function(){
-        var dataPribadi=[nrp,password];
-        var dataLifeListUntukPhp=[soalMyLifeList[0],jawabanLifelist];
-        var paketManajemenEmosiPhp=[soalManajemenEmosi[0],jawabanManajemenEmosiForm];
-        var paketManajemenEmosiPhp2=[soalManajemenEmosi2[0],jawabanManajemenEmosiForm2];
-        var paketLessonLearnedPhp=[soalLessonLearned[0],jawabanLessonLearned];
-    	var koleksiJawaban=[dataPribadi,jawabanMyBigDream,dataLifeListUntukPhp,jawabanOutdoor,paketManajemenEmosiPhp,paketManajemenEmosiPhp2,
-        jawabanActionPlanForm,jawabanFishboneBaru,jawabanEntong,paketLessonLearnedPhp,jawabanRefleksiMini];
-        	
-    	$$.post(directory,{opsi:"uploadJawaban", datae:JSON.stringify(koleksiJawaban)
-    	},function(data){
-            myApp.alert(data,"Hasil Upload");
-    	});
-        	
-    });
 
     $$('#logout').on('click',function(){
-        myApp.confirm('Logout Menyebabkan Seluruh Hasil Pekerjaan Pada HP Hilang', 'Sudah Upload Belum?', function () {
-            myApp.confirm('Logout = Menghapus Seluruh Hasil Pekerjaan Pada Memory Internal dan Keluar Aplikasi', 'Sudah Sangat Yakin?', function () {
-                hapusLocalAll();
-                myApp.closePanel();
-                mainView.router.back({url: 'index.html',force: true,ignoreCache: true});
-            });
+        myApp.confirm('Logout Menyebabkan Pekerjaan yang Belum di Submit Hilang', 'Apakah Anda Yakin?', function () {
+            hapusLocalAll();
+            myApp.closePanel();
+            mainView.router.back({url: 'index.html',force: true,ignoreCache: true});
         });
     });
 
@@ -267,6 +196,7 @@ myApp.onPageInit('index', function (page) {
                         localStorage.setItem("bus",JSON.stringify(tendaBisTemp['bus']));
                         localStorage.setItem("nama_kelompok",JSON.stringify(tendaBisTemp['nama_kelompok']));
                         localStorage.setItem("nama_mhs",JSON.stringify(tendaBisTemp['nama']));
+                        localStorage.setItem("nrp_mhs",JSON.stringify(tendaBisTemp['id_nrp']));
                         localStorage.setItem("password",JSON.stringify(password));
                         localStorage.setItem("username",JSON.stringify(username.value));
                         localStorage.setItem("jabatan",JSON.stringify('mahasiswa')); 
@@ -274,6 +204,7 @@ myApp.onPageInit('index', function (page) {
                 }
                 else
                 {
+                    console.log(data);
                     myApp.alert("Data login tidak ditemukan","Error");
                 }
                 
@@ -347,7 +278,6 @@ myApp.onPageInit('hehePage', function (page) {
             //setTimeout( function() {deleteOtepe()}, 60000 );
         }
     });
-
 })
 function deleteOtepe()
 {
@@ -355,7 +285,8 @@ function deleteOtepe()
             },function(data){
             });
 }
-function timerDelete() {
+function timerDelete() 
+{
                 c = c - 1;
                 $$('#tempatTimer').html(c + " Detik");
                 if(c>0)
@@ -370,14 +301,13 @@ function timerDelete() {
 
 
 myApp.onPageInit('menu', function (page) {
-
     myApp.showNavbar($$('.navbar'));
     var mySwiper1 = myApp.swiper('.swiper-container', {
-              pagination:'.swiper-pagination',
-              paginationHide: false,
-              autoplay:4000,
-              spaceBetween: 50
-               });
+                      pagination:'.swiper-pagination',
+                      paginationHide: false,
+                      autoplay:4000,
+                      spaceBetween: 50
+                    });
     $$.post(directory,{opsi:"ambilPengumuman2"},function(data){
             //var gambar=JSON.parse(data);
         var gambar="";
@@ -389,9 +319,6 @@ myApp.onPageInit('menu', function (page) {
         for(var i=0;i<gambar.length;i++)
         {
             var gambarku="<img src="+gambar[i]+" style=width:100%; height:50%;>";
-            /*if(gambar!=""){
-                $$('.swiper-wrapper').append("<div class=swiper-slide>"+gambarku+"</div>")
-            }*/
             var testSlide="<div class=swiper-slide>"+gambarku+"</div>";
             mySwiper1.appendSlide(testSlide);
         }
@@ -470,7 +397,7 @@ myApp.onPageInit('menu', function (page) {
     }
 
     $$('#myBigDreamPilih').on('click',function(){
-    mainView.router.loadPage("pilihBigDream.html");
+        mainView.router.loadPage("pilihBigDream.html");
     });
 
     $$('#kisahEntongPilih').on('click',function(){
@@ -486,8 +413,6 @@ myApp.onPageInit('menu', function (page) {
     });
 
     $$('#fishbone').on('click',function(){
-        /*myApp.alert("Untuk Sementara Fitur Ini Belum Tersedia", "Coming Soon");
-        mainView.router.back({url: 'menu.html',force: true,ignoreCache: true});*/
         mainView.router.loadPage("fishbone.html");
     });
 
@@ -495,64 +420,62 @@ myApp.onPageInit('menu', function (page) {
         mainView.router.loadPage("outdoor.html");
     });
 
-    $$('#fotoMahasiswa').html('<img src=https://my.ubaya.ac.id/img/mhs/160415093_m.jpg>');
-    $$('#tempatTendaBis').html(nama_mhs+"<br/>Tenda: "+tenda+"<br/>Bus: "+bus+"<br/>Nama Kelompok: "+nama_kelompok);
+    $$('#namaMahasiswa').html(nama_mhs);
+    $$('#fotoMahasiswa').html('<img src="https://my.ubaya.ac.id/img/mhs/160415093_m.jpg" width="60" height="80">');
+    $$('#tempatTendaBis').html("Tenda: "+tenda+"<br/>Bus: "+bus+"<br/>Kelompok: "+nama_kelompok);
    
 
     if(jawabanActionPlanForm!=""){
-    for(var i=0;i<jawabanActionPlanForm.length;i++)
-    {
-        if(jawabanActionPlanForm[i][5]){
-            for(var j=0;j<jawabanActionPlanForm[i][5].length;j++)
-            {
-                if(jawabanActionPlanForm[i][5][j][2])
+        for(var i=0;i<jawabanActionPlanForm.length;i++)
+        {
+            if(jawabanActionPlanForm[i][5]){
+                for(var j=0;j<jawabanActionPlanForm[i][5].length;j++)
                 {
-                    var date1= new Date().setHours(0,0,0,0);
-                    var date2= new Date(jawabanActionPlanForm[i][5][j][2]).setHours(0,0,0,0);
+                    if(jawabanActionPlanForm[i][5][j][2])
+                    {
+                        var date1= new Date().setHours(0,0,0,0);
+                        var date2= new Date(jawabanActionPlanForm[i][5][j][2]).setHours(0,0,0,0);
 
-                    if(date1.valueOf()== date2.valueOf() && (jawabanActionPlanForm[i][5][j][5]==0||jawabanActionPlanForm[i][5][j][5]==4)){
+                        if(date1.valueOf()== date2.valueOf() && (jawabanActionPlanForm[i][5][j][5]==0||jawabanActionPlanForm[i][5][j][5]==4)){
 
-                        myApp.alert("Saatnya Evaluasi Tabel pada Action Plan "+jawabanLifelist[i],"Evaluasi");
-                        myApp.alert("Task : "+jawabanActionPlanForm[i][5][j][0]+"<br/>Resource : "+jawabanActionPlanForm[i][5][j][1]+
-                            "<br/>Timeline : "+jawabanActionPlanForm[i][5][j][2]+"<br/>Evidence of success : "+jawabanActionPlanForm[i][5][j][3]+"<br/>Evaluation process : "+jawabanActionPlanForm[i][5][j][4],"Detail");
-                    
-                        if(jawabanActionPlanForm[i][5][j][5]==0) // kalo statusnya masih 0, diubah jdi harus eval
-                        {
-                            jawabanActionPlanForm[i][5].splice(j,1,[jawabanActionPlanForm[i][5][j][0],jawabanActionPlanForm[i][5][j][1]
-                            ,jawabanActionPlanForm[i][5][j][2],jawabanActionPlanForm[i][5][j][3],jawabanActionPlanForm[i][5][j][4]
-                            ,4]); //ubah status di index 4 menjadi 4 = harus eval
-                        }
-                    
-                    }//tutupe if date=date
-        
-                }//tutupe if kalo ada tanggal nd tabel
+                            myApp.alert("Saatnya Evaluasi Tabel pada Action Plan "+jawabanLifelist[i],"Evaluasi");
+                            myApp.alert("Task : "+jawabanActionPlanForm[i][5][j][0]+"<br/>Resource : "+jawabanActionPlanForm[i][5][j][1]+
+                                "<br/>Timeline : "+jawabanActionPlanForm[i][5][j][2]+"<br/>Evidence of success : "+jawabanActionPlanForm[i][5][j][3]+"<br/>Evaluation process : "+jawabanActionPlanForm[i][5][j][4],"Detail");
+                        
+                            if(jawabanActionPlanForm[i][5][j][5]==0) // kalo statusnya masih 0, diubah jdi harus eval
+                            {
+                                jawabanActionPlanForm[i][5].splice(j,1,[jawabanActionPlanForm[i][5][j][0],jawabanActionPlanForm[i][5][j][1]
+                                ,jawabanActionPlanForm[i][5][j][2],jawabanActionPlanForm[i][5][j][3],jawabanActionPlanForm[i][5][j][4]
+                                ,4]); //ubah status di index 4 menjadi 4 = harus eval
+                            }
+                        
+                        }//tutupe if date=date
             
-            }// tutupe for tabel
+                    }//tutupe if kalo ada tanggal nd tabel
+                
+                }// tutupe for tabel
 
-        }// tutupe if ada tabel atau gak
+            }// tutupe if ada tabel atau gak
 
-        if(jawabanActionPlanForm[i][3]){
-        var date1= new Date().setHours(0,0,0,0);
+            if(jawabanActionPlanForm[i][3]){
+                var date1= new Date().setHours(0,0,0,0);
 
-        var date2= new Date(jawabanActionPlanForm[i][3]).setHours(0,0,0,0);
+                var date2= new Date(jawabanActionPlanForm[i][3]).setHours(0,0,0,0);
 
-            if(date1.valueOf()== date2.valueOf()&& (jawabanActionPlanForm[i][4]==0||jawabanActionPlanForm[i][4]==4)){
-                myApp.alert("Saatnya Evaluasi Action Plan "+jawabanLifelist[i],"Evaluasi");
-                if(jawabanActionPlanForm[i][4]==0) // kalo statusnya masih 0, diubah jdi harus eval
+                if(date1.valueOf()== date2.valueOf()&& (jawabanActionPlanForm[i][4]==0||jawabanActionPlanForm[i][4]==4)){
+                    myApp.alert("Saatnya Evaluasi Action Plan "+jawabanLifelist[i],"Evaluasi");
+                    if(jawabanActionPlanForm[i][4]==0) // kalo statusnya masih 0, diubah jdi harus eval
                     {
                         jawabanActionPlanForm.splice(i,1,[jawabanActionPlanForm[i][0],jawabanActionPlanForm[i][1]
                         ,jawabanActionPlanForm[i][2],jawabanActionPlanForm[i][3],4
                         ,jawabanActionPlanForm[i][5]]); //ubah status di index 4 menjadi 4 = harus eval
                         
                     }
-            }
-        }//tutupe if tanggal actionplan
-    }//tutupe for actionplan
+                }
+            }//tutupe if tanggal actionplan
+        }//tutupe for actionplan
 
     } // tutupe if (actionplan ada gak)
-
-
-
 })
 
 $$(document).on('deviceready', function() {
@@ -565,41 +488,49 @@ $$(document).on('deviceready', function() {
 
 
 myApp.onPageInit('pilihBigDream', function (page) {
-    $$('#masukMyBigDream').on('click', function () {
-       mainView.router.loadPage("mybigdream.html");
+    $$.post(directory,{opsi:'ambilStatusBigDream', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+        $$('#BigDreamList').html(data);
+        $$('#masukMyBigDream').on('click', function () {
+           mainView.router.loadPage("mybigdream.html");
+        });
+        $$('#masukMyLifelist').on('click', function () {
+            mainView.router.loadPage("mylifelist.html");
+        });
+        $$('#masukActionPlan').on('click', function () {
+            mainView.router.loadPage("formActionPlan.html");
+        });
     });
-    $$('#masukMyLifelist').on('click', function () {
-       if(JSON.parse(localStorage.getItem("jawabanMyBigDream")))
-        mainView.router.loadPage("mylifelist.html");
-        else
-        {
-        	myApp.alert("Isi My Big Dream Terlebih Dahulu","Error");
-        	mainView.router.back({url: 'pilihBigDream.html',force: true});
-        }
-        
-    });
-    $$('#masukActionPlan').on('click', function () {
-        if(JSON.parse(localStorage.getItem("jawabanLifelist")))
-                mainView.router.loadPage("formActionPlan.html");
-        else
-        {
-        	myApp.alert("Isi My Life List Terlebih Dahulu","Error");
-        	mainView.router.back({url: 'pilihBigDream.html',force: true});
-        }
-        
-    });
-    
 })
-
-
-myApp.onPageInit('pilihManajemenEmosi', function (page) {
-    
-    $$('#studikasus').on('click', function () {
-       mainView.router.loadPage("manajemenEmosi.html");
-    });
-    $$('#masukManajemenEmosi2').on('click', function () {
-       mainView.router.loadPage("manajemenEmosi2.html");
-    });
+myApp.onPageInit('mybigdream', function (page) {
+    var nrpMhs=localStorage.getItem('nrp_mhs');
+    $$.post(directory,{opsi:'ambilBigDream', nrp:nrpMhs}, function(data){
+        $$('#formBigDream').html(data);
+        $$('#btnSubmitBigDream').on('click', function () {
+            var jawaban= document.getElementById("jawabBigDream").value;
+            if(jawaban==""){
+                myApp.alert('Tolong isi Big Dream');
+            }
+            else{
+                $$.post(directory,{opsi:'jawabBigDream',nrp:nrpMhs,jawab:jawaban}, function(data){
+                    console.log(data);
+                });   
+            }
+            mainView.router.back({url: 'pilihBigDream.html',force: true,ignoreCache: true});
+        });
+        $$('#btnUploadBigDream').on('click', function () {
+            var jawaban= document.getElementById("jawabBigDream").value;
+            if(jawaban==""){
+                myApp.alert('Tolong isi Big Dream');
+            }
+            else{
+                $$.post(directory,{opsi:'updateBigDream',nrp:nrpMhs,jawab:jawaban}, function(data){
+                    console.log(data);
+                    console.log(data);
+                });
+            }
+            mainView.router.back({url: 'pilihBigDream.html',force: true,ignoreCache: true});
+        });
+    });  
     
 })
 
@@ -613,43 +544,20 @@ myApp.onPageInit('pilihEntong', function (page) {
     });
     
 })
-
-
-myApp.onPageInit('mybigdream', function (page) {
-    if(JSON.parse(localStorage.getItem("jawabanMyBigDream")))
-    {
-	    for(var i=0;i<soalMyBigDream.length;i++)
-	        {
-	            $$('#formBigDream').append('<div class="item-input">'+
-                    '<textarea class="resizable" id="'+soalMyBigDream[i][0]+'" style="width:100%;height:100vw;font-size:20px;"  placeholder="'+soalMyBigDream[i][1]+', Big Dream haruslah Bold, Spesific, Concise dan Consistent">'+jawabanMyBigDream[i][1]+'</textarea></div>');
-	        }
-	        
-    }
-    else
-    {
-    	for(var i=0;i<soalMyBigDream.length;i++)
-	        {
-	            $$('#formBigDream').append('<div class="item-input">'+
-                    '<textarea class="resizable" id="'+soalMyBigDream[i][0]+'" style="width:100%;height:100vw;font-size:20px;"  placeholder="'+soalMyBigDream[i][1]+', Big Dream haruslah Bold, Spesific, Concise dan Consistent"></textarea></div>');
-	        }    }
-
-
-
-    $$('#btnSubmitBigDream').on('click', function () {
-    	jawabanMyBigDream=[];
-        
-    	for(var i=0;i<soalMyBigDream.length;i++)
-        {
-        	var id=document.getElementsByTagName("textarea").item(i).id;
-            var jawaban=document.getElementsByTagName("textarea").item(i).value;
-            jawabanMyBigDream.push([id,jawaban]);
-        }
-
-        localStorage.setItem("jawabanMyBigDream",JSON.stringify(jawabanMyBigDream));
-    	mainView.router.back();
+myApp.onPageInit('pilihManajemenEmosi', function (page) {
+    
+    $$('#studikasus').on('click', function () {
+       mainView.router.loadPage("manajemenEmosi.html");
+    });
+    $$('#masukManajemenEmosi2').on('click', function () {
+       mainView.router.loadPage("manajemenEmosi2.html");
     });
     
 })
+
+
+
+
 
 myApp.onPageInit('myLifeList', function (page) {
 	 if(jawabanMyBigDream!="")
@@ -766,85 +674,235 @@ function createChipLifeList(jawabane, aidine)
         return chip;
     }
 
-myApp.onPageInit('outdoor', function (page) {
-    if(JSON.parse(localStorage.getItem("jawabanOutdoor")))
+
+var statusActionFormTabel=0;
+var idLife="";
+var idTabel="";
+myApp.onPageInit('formActionPlanFormTabel', function (page) {
+    var bantuanPenyimpananTemp=[]; //buat mbantu nyimpen di tempat yang benar
+    var taska=document.getElementById("taska");
+    var resource=document.getElementById("resource");
+    var evidenceTabel=document.getElementById("evidenceTabel");
+    var evaluationTabel=document.getElementById("evaluationTabel");
+    
+    
+    var timeline1 = myApp.calendar({
+    input: '#calendar-events',
+    dateFormat: 'M dd yyyy',
+    monthPicker:true,
+    yearPicker:true,
+    closeOnSelect:true
+    });
+    
+
+    var timeline=document.getElementById("calendar-events");
+    if(jawabanActionPlanForm[idLife][5]) // kalo ada jawaban tabel
+        bantuanPenyimpananTemp=jawabanActionPlanForm[idLife][5]; // masukno jawaban tabel lama ke bantuantemp
+
+    if(page.query.idTabel) // misal ada idtabel brarti buat edit, tampilno smua value lama
     {
-	    for(var i=0;i<soalOutdoor.length;i++)
-	        {
-	            $$('#outdoorActivity').append('<div class="card">'+
-                '<div class="card-header" align="center">'+soalOutdoor[i][1]+'</div>'+
-                '<div class="card-content">'+
-                '<div class="card-content-inner"><textarea style="text-align:center;" rows="4" cols="36" id="'+soalOutdoor[i][0]+'">'+jawabanOutdoor[i][1]+'</textarea></div>'+
-                '</div>'+
-                '</div>');
-	        }
-	        
-    }
-    else
-    {
-    	for(var i=0;i<soalOutdoor.length;i++)
-	        {
-	             $$('#outdoorActivity').append('<div class="card">'+
-                '<div class="card-header" align="center">'+soalOutdoor[i][1]+'</div>'+
-                '<div class="card-content">'+
-                '<div class="card-content-inner"><textarea style="text-align:center;" rows="4" cols="36" id="'+soalOutdoor[i][0]+'"></textarea></div>'+
-                '</div>'+
-                '</div>');
-	        }    }
-
-
-
-    $$('#btnSubmitOutdoor').on('click', function () {
-    	jawabanOutdoor=[];
-        
-    	for(var i=0;i<soalOutdoor.length;i++)
+        idTabel=page.query.idTabel;
+        document.getElementById("btnDeleteActionPlanTabel").style.visibility = "visible";
+        taska.value=bantuanPenyimpananTemp[idTabel][0];
+        resource.value=bantuanPenyimpananTemp[idTabel][1];
+        timeline.value=bantuanPenyimpananTemp[idTabel][2];
+        evidenceTabel.value=bantuanPenyimpananTemp[idTabel][3];
+        evaluationTabel.value=bantuanPenyimpananTemp[idTabel][4];
+        if(bantuanPenyimpananTemp[idTabel][5]==4) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
         {
-        	var id=document.getElementsByTagName("textarea").item(i).id;
-            var jawaban=document.getElementsByTagName("textarea").item(i).value;
-            jawabanOutdoor.push([id,jawaban]);
+            document.getElementById("harusEval").style.visibility = "visible";
         }
+        if(bantuanPenyimpananTemp[idTabel][5]==1) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
+        {
+            document.getElementById("evaluasiBerhasilTabel").style.visibility = "visible";
+        }
+        if(bantuanPenyimpananTemp[idTabel][5]==2) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
+        {
+            document.getElementById("evaluasiGagalTabel").style.visibility = "visible";
+        }
+    }
+    $$('#btnSubmitTabel').on('click', function () {
+        if(page.query.idTabel)
+            bantuanPenyimpananTemp.splice(idTabel,1,[taska.value,resource.value,timeline.value,evidenceTabel.value,evaluationTabel.value,statusActionFormTabel]);//kalo ada diganti
+        else
+            bantuanPenyimpananTemp.push([taska.value,resource.value,timeline.value,evidenceTabel.value,evaluationTabel.value,statusActionFormTabel]);// seng baru dipush ke bantuantemp
+        jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],
+            jawabanActionPlanForm[idLife][1],
+            jawabanActionPlanForm[idLife][2],
+            jawabanActionPlanForm[idLife][3],
+            jawabanActionPlanForm[idLife][4],
+            bantuanPenyimpananTemp]);// masukno bantuantemp ke index ke 5,sisane sama
+        localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
+        mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
+        //balikno ke halaman seng sbelume, karna halaman sbelume itu dynamic jadi harus pake magical code diatas
+    });
 
-        localStorage.setItem("jawabanOutdoor",JSON.stringify(jawabanOutdoor));
-    	mainView.router.back();
+    $$('#btnBerhasilTabel').on('click', function () {
+        myApp.confirm('Sudah Berhasil?', 'Berhasil Tercapai?', function () {
+            myApp.alert('Selamat Telah Berhasil Mengerjakannya (^.^)/',"SELAMAT!!");
+            bantuanPenyimpananTemp.splice(idTabel,1,[bantuanPenyimpananTemp[idTabel][0],bantuanPenyimpananTemp[idTabel][1]
+                ,bantuanPenyimpananTemp[idTabel][2],bantuanPenyimpananTemp[idTabel][3],bantuanPenyimpananTemp[idTabel][4]
+                ,1]);
+            jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],
+            jawabanActionPlanForm[idLife][1],
+            jawabanActionPlanForm[idLife][2],
+            jawabanActionPlanForm[idLife][3],
+            jawabanActionPlanForm[idLife][4],
+            bantuanPenyimpananTemp]);
+            localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
+            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
+        });
+        
+    });
+    $$('#btnGagalTabel').on('click', function () {
+        myApp.confirm('Apakah tidak tercapai?', 'Gagal Tercapai?', function () {
+            myApp.alert('Sayang sekali, tetap semangat yaa (^.^)/',"Coba Lagi Lain Kali");
+            bantuanPenyimpananTemp.splice(idTabel,1,[bantuanPenyimpananTemp[idTabel][0],bantuanPenyimpananTemp[idTabel][1]
+                ,bantuanPenyimpananTemp[idTabel][2],bantuanPenyimpananTemp[idTabel][3],bantuanPenyimpananTemp[idTabel][4]
+                ,2]);
+            jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],
+            jawabanActionPlanForm[idLife][1],
+            jawabanActionPlanForm[idLife][2],
+            jawabanActionPlanForm[idLife][3],
+            jawabanActionPlanForm[idLife][4],
+            bantuanPenyimpananTemp]);
+            localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
+            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
+        });
+    });
+
+    $$('#btnDeleteActionPlanTabel').on('click', function () {
+        bantuanPenyimpananTemp.splice(idTabel,1);//didelete
+        jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],jawabanActionPlanForm[idLife][1],
+            jawabanActionPlanForm[idLife][2],jawabanActionPlanForm[idLife][3],bantuanPenyimpananTemp]);// masukno bantuantemp ke index ke 3,sisane sama
+        localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
+        mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
+        //balikno ke halaman seng sbelume, karna halaman sbelume itu dynamic jadi harus pake magical code diatas
     });
     
 })
+var statusActionForm=0;
+myApp.onPageInit('formActionPlanForm', function (page) {
+     
+ 
+    var timeline2 = myApp.calendar({
+    input: '#calendar-events-tercapai',
+    dateFormat: 'M dd yyyy',
+    monthPicker:true,
+    yearPicker:true,
+    closeOnSelect:true
+    });
 
 
-/*var jawabanAkuDanKelompokkuForm=[];
-myApp.onPageInit('akuDanKelompokkuForm', function (page) {
-	var situasi=document.getElementById("situasi");
-	var pemikiran=document.getElementById("pemikiran");
-	var emosi=document.getElementById("emosi");
-	var perilaku=document.getElementById("perilaku");
-	
+    var obstacle=document.getElementById("obstacle");
+    var evidence=document.getElementById("evidence");
+    var evaluation=document.getElementById("evaluation");
+    var target=document.getElementById("calendar-events-tercapai");
+    idLife=page.query.idLifeList;
+    
+    $$('#judulActionPlanForm').html(jawabanLifelist[idLife]);
+        obstacle.value=jawabanActionPlanForm[idLife][0];
+        evidence.value=jawabanActionPlanForm[idLife][1];
+        evaluation.value=jawabanActionPlanForm[idLife][2];
+        if(jawabanActionPlanForm[idLife][3]!="")
+            target.value=jawabanActionPlanForm[idLife][3];
+        if(jawabanActionPlanForm[idLife][4]==4) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
+        {
+            document.getElementById("harusEvalForm").style.visibility = "visible";
+        }
+        if(jawabanActionPlanForm[idLife][4]==1) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
+        {
+            document.getElementById("evaluasiBerhasilForm").style.visibility = "visible";
+        }
+        if(jawabanActionPlanForm[idLife][4]==2) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
+        {
+            document.getElementById("evaluasiGagalForm").style.visibility = "visible";
+        }
+        
+    $$('#btnBerhasilForm').on('click', function () {
+        
+        myApp.confirm('Sudah Berhasil?', 'Berhasil Tercapai?', function () {
+            myApp.alert('Selamat Telah Berhasil Mengerjakannya (^.^)/',"SELAMAT!!");
+            jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],jawabanActionPlanForm[idLife][1]
+                        ,jawabanActionPlanForm[idLife][2],jawabanActionPlanForm[idLife][3],1
+                        ,jawabanActionPlanForm[idLife][5]]); //ubah status di index 4 menjadi 1 = berhasil
+            localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
+            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
+        });
+        
+    });
+    $$('#btnGagalForm').on('click', function () {
+        myApp.confirm('Apakah tidak tercapai?', 'Gagal Tercapai?', function () {
+            myApp.alert('Sayang sekali, tetap semangat yaa (^.^)/',"Coba Lagi Lain Kali");
+            jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],jawabanActionPlanForm[idLife][1]
+                        ,jawabanActionPlanForm[idLife][2],jawabanActionPlanForm[idLife][3],2
+                        ,jawabanActionPlanForm[idLife][5]]); //ubah status di index 4 menjadi 2 = gagal
+            localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
+            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
+        });
+    });
+
+    $$('#btnDeleteActForm').on('click', function () {
+        jawabanActionPlanForm.splice(idLife,1,["","","","",""]);
+        localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
+        mainView.router.back();
+    });
+
+    $$('.floating-button').on('click', function () {
+       mainView.router.loadPage("formActionPlanFormTabel.html");
+    });
 
     $$('#btnSubmit').on('click', function () {
-    	jawabanAkuDanKelompokkuForm.push([situasi.value,pemikiran.value,emosi.value,perilaku.value]);
-    	
-    	mainView.router.loadPage("akuDanKelompokku.html");
-        mainView.router.refreshPreviousPage();
-    	//mainView.router.back({url: 'akuDanKelompokku.html',force: true,ignoreCache: true});
+        if(jawabanActionPlanForm[idLife][5]) //kalo ada jawaban tabel di load , kalo ga yo ga di load
+            jawabanActionPlanForm.splice(idLife,1,[obstacle.value,evidence.value,evaluation.value,target.value,statusActionForm,jawabanActionPlanForm[idLife][5]]);
+        else
+            jawabanActionPlanForm.splice(idLife,1,[obstacle.value,evidence.value,evaluation.value,target.value,statusActionForm]);
+        localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
+        mainView.router.back();
     });
+    
+    if(jawabanActionPlanForm[idLife][5])
+    {
+        var bantuanDoang=jawabanActionPlanForm[idLife][5];//memudahkan mbaca koding
+
+        for(var i=0;i<bantuanDoang.length;i++)
+        {
+            var cawangsilang="";
+            if(bantuanDoang[i][5]==1)
+              cawangsilang ='<i class="icon f7-icons">check</i>';
+            else if(bantuanDoang[i][5]==2)
+                cawangsilang ='<i class="icon f7-icons">close</i>';
+           $$('#listTabelFormActionPlan').append('<a href="formActionPlanFormTabel.html?idTabel='+i+'">'+
+                '<div class="card-header" style="text-align:center;" >'+(i+1)+cawangsilang+'</div>'+
+                '<div class="card-content">'+
+                '<div class="card-content-inner">'+
+                '<div>'+soalFormTabel[0]+' : '+bantuanDoang[i][0]+'</div>'+ 
+                '<div>'+soalFormTabel[1]+' : '+bantuanDoang[i][1]+'</div>'+ 
+                '<div>'+soalFormTabel[2]+' : '+bantuanDoang[i][2]+'</div>'+ 
+                '<div>'+soalFormTabel[3]+' : '+bantuanDoang[i][3]+'</div>'+
+                '<div>'+soalFormTabel[4]+' : '+bantuanDoang[i][4]+'</div>'+
+                '</div>'+
+                '</div></a>');
+        }
+    }
 })
 
-myApp.onPageInit('akuDanKelompokku', function (page) {
-	$$('#formInput').on('click', function () {
-        mainView.router.loadPage("akuDanKelompokkuForm.html");
-    });
+myApp.onPageInit('formActionPlan', function (page) {
 
-    myApp.alert(jawabanAkuDanKelompokkuForm.length);
-	for(var i=0;i<jawabanAkuDanKelompokkuForm.length;i++)
+    for(var i=0;i<jawabanLifelist.length;i++)
         {
-        	myApp.alert(jawabanAkuDanKelompokkuForm[i][0]);
+            var cawangsilang="";
+            if(jawabanActionPlanForm[i][4]==1)
+              cawangsilang ='<i class="icon f7-icons">check</i>';
+            else if(jawabanActionPlanForm[i][4]==2)
+                cawangsilang ='<i class="icon f7-icons">close</i>';
 
-            //$$('#listJawaban').html((i+1)+". "+jawabanAkuDanKelompokkuForm[i][0]+"<br/>");
-
-            $$('#listJawaban').append((i+1)+" Situasi : "+jawabanAkuDanKelompokkuForm[i][0]+"<br/>" 
-                                    +"Pemikiran :" +jawabanAkuDanKelompokkuForm[i][1]+"<br/>" + "Emosi :" +jawabanAkuDanKelompokkuForm[i][2]+"<br/>"
-                                    +"Perilaku :" + jawabanAkuDanKelompokkuForm[i][3]+"<br/>");
+            $$('#listMyLifeList').append('<a href="formActionPlanForm.html?idLifeList='+i+'" class="item-link item-content no-ripple">'+
+                '<div class="card">'+
+                '<div class="card-header" align="center" >'+(i+1)+". "+jawabanLifelist[i]+cawangsilang+'</div>');
         }
-})*/
+})
+
 
 myApp.onPageInit('manajemenEmosiForm', function (page) {
     var situasi=document.getElementById("situasi");
@@ -884,7 +942,6 @@ myApp.onPageInit('manajemenEmosiForm', function (page) {
         });
     }
 
-    
 })
 
 myApp.onPageInit('manajemenEmosi', function (page) {
@@ -962,262 +1019,6 @@ myApp.onPageInit('manajemenEmosi2', function (page) {
                 '<div>'+soalManajemenEmosi2[3]+' : '+jawabanManajemenEmosiForm2[i][2]+'</div>'+ 
                 '</div>'+
                 '</div></a>');
-        }
-})
-var statusActionFormTabel=0;
-var idLife="";
-var idTabel="";
-myApp.onPageInit('formActionPlanFormTabel', function (page) {
-    var bantuanPenyimpananTemp=[]; //buat mbantu nyimpen di tempat yang benar
-    var taska=document.getElementById("taska");
-    var resource=document.getElementById("resource");
-    var evidenceTabel=document.getElementById("evidenceTabel");
-    var evaluationTabel=document.getElementById("evaluationTabel");
-    
-    
-    var timeline1 = myApp.calendar({
-    input: '#calendar-events',
-    dateFormat: 'M dd yyyy',
-    monthPicker:true,
-    yearPicker:true,
-    closeOnSelect:true
-    });
-    
-
-    var timeline=document.getElementById("calendar-events");
-    if(jawabanActionPlanForm[idLife][5]) // kalo ada jawaban tabel
-        bantuanPenyimpananTemp=jawabanActionPlanForm[idLife][5]; // masukno jawaban tabel lama ke bantuantemp
-
-    if(page.query.idTabel) // misal ada idtabel brarti buat edit, tampilno smua value lama
-    {
-        idTabel=page.query.idTabel;
-        document.getElementById("btnDeleteActionPlanTabel").style.visibility = "visible";
-        taska.value=bantuanPenyimpananTemp[idTabel][0];
-        resource.value=bantuanPenyimpananTemp[idTabel][1];
-        timeline.value=bantuanPenyimpananTemp[idTabel][2];
-        evidenceTabel.value=bantuanPenyimpananTemp[idTabel][3];
-        evaluationTabel.value=bantuanPenyimpananTemp[idTabel][4];
-        if(bantuanPenyimpananTemp[idTabel][5]==4) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
-        {
-            document.getElementById("harusEval").style.visibility = "visible";
-        }
-        if(bantuanPenyimpananTemp[idTabel][5]==1) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
-        {
-            document.getElementById("evaluasiBerhasilTabel").style.visibility = "visible";
-        }
-        if(bantuanPenyimpananTemp[idTabel][5]==2) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
-        {
-            document.getElementById("evaluasiGagalTabel").style.visibility = "visible";
-        }
-    }
-    $$('#btnSubmitTabel').on('click', function () {
-        if(page.query.idTabel)
-            bantuanPenyimpananTemp.splice(idTabel,1,[taska.value,resource.value,timeline.value,evidenceTabel.value,evaluationTabel.value,statusActionFormTabel]);//kalo ada diganti
-        else
-            bantuanPenyimpananTemp.push([taska.value,resource.value,timeline.value,evidenceTabel.value,evaluationTabel.value,statusActionFormTabel]);// seng baru dipush ke bantuantemp
-        jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],
-            jawabanActionPlanForm[idLife][1],
-            jawabanActionPlanForm[idLife][2],
-            jawabanActionPlanForm[idLife][3],
-            jawabanActionPlanForm[idLife][4],
-            bantuanPenyimpananTemp]);// masukno bantuantemp ke index ke 5,sisane sama
-        localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
-        mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
-        //balikno ke halaman seng sbelume, karna halaman sbelume itu dynamic jadi harus pake magical code diatas
-    });
-
-    $$('#btnBerhasilTabel').on('click', function () {
-        
-        myApp.confirm('Sudah Berhasil?', 'Berhasil Tercapai?', function () {
-            myApp.alert('Selamat Telah Berhasil Mengerjakannya (^.^)/',"SELAMAT!!");
-            bantuanPenyimpananTemp.splice(idTabel,1,[bantuanPenyimpananTemp[idTabel][0],bantuanPenyimpananTemp[idTabel][1]
-                ,bantuanPenyimpananTemp[idTabel][2],bantuanPenyimpananTemp[idTabel][3],bantuanPenyimpananTemp[idTabel][4]
-                ,1]);
-            jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],
-            jawabanActionPlanForm[idLife][1],
-            jawabanActionPlanForm[idLife][2],
-            jawabanActionPlanForm[idLife][3],
-            jawabanActionPlanForm[idLife][4],
-            bantuanPenyimpananTemp]);
-            localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
-            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
-        });
-        
-    });
-    $$('#btnGagalTabel').on('click', function () {
-        myApp.confirm('Apakah tidak tercapai?', 'Gagal Tercapai?', function () {
-            myApp.alert('Sayang sekali, tetap semangat yaa (^.^)/',"Coba Lagi Lain Kali");
-            bantuanPenyimpananTemp.splice(idTabel,1,[bantuanPenyimpananTemp[idTabel][0],bantuanPenyimpananTemp[idTabel][1]
-                ,bantuanPenyimpananTemp[idTabel][2],bantuanPenyimpananTemp[idTabel][3],bantuanPenyimpananTemp[idTabel][4]
-                ,2]);
-            jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],
-            jawabanActionPlanForm[idLife][1],
-            jawabanActionPlanForm[idLife][2],
-            jawabanActionPlanForm[idLife][3],
-            jawabanActionPlanForm[idLife][4],
-            bantuanPenyimpananTemp]);
-            localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
-            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
-        });
-    });
-
-    $$('#btnDeleteActionPlanTabel').on('click', function () {
-        bantuanPenyimpananTemp.splice(idTabel,1);//didelete
-        jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],jawabanActionPlanForm[idLife][1],
-            jawabanActionPlanForm[idLife][2],jawabanActionPlanForm[idLife][3],bantuanPenyimpananTemp]);// masukno bantuantemp ke index ke 3,sisane sama
-        localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
-        mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
-        //balikno ke halaman seng sbelume, karna halaman sbelume itu dynamic jadi harus pake magical code diatas
-    });
-    
-})
-var statusActionForm=0;
-myApp.onPageInit('formActionPlanForm', function (page) {
-     
- 
-    var timeline2 = myApp.calendar({
-    input: '#calendar-events-tercapai',
-    dateFormat: 'M dd yyyy',
-    monthPicker:true,
-    yearPicker:true,
-    closeOnSelect:true
-    });
-
-
-    var obstacle=document.getElementById("obstacle");
-    var evidence=document.getElementById("evidence");
-    var evaluation=document.getElementById("evaluation");
-    var target=document.getElementById("calendar-events-tercapai");
-    idLife=page.query.idLifeList;
-    
-    $$('#judulActionPlanForm').html(jawabanLifelist[idLife]);
-        obstacle.value=jawabanActionPlanForm[idLife][0];
-        evidence.value=jawabanActionPlanForm[idLife][1];
-        evaluation.value=jawabanActionPlanForm[idLife][2];
-        if(jawabanActionPlanForm[idLife][3]!="")
-			target.value=jawabanActionPlanForm[idLife][3];
-        if(jawabanActionPlanForm[idLife][4]==4) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
-        {
-            document.getElementById("harusEvalForm").style.visibility = "visible";
-        }
-        if(jawabanActionPlanForm[idLife][4]==1) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
-        {
-            document.getElementById("evaluasiBerhasilForm").style.visibility = "visible";
-        }
-        if(jawabanActionPlanForm[idLife][4]==2) //4 = eval, 0 belom apa-apa, 1 berhasil, 2 gagal
-        {
-            document.getElementById("evaluasiGagalForm").style.visibility = "visible";
-        }
-        
-    $$('#btnBerhasilForm').on('click', function () {
-        
-        myApp.confirm('Sudah Berhasil?', 'Berhasil Tercapai?', function () {
-            myApp.alert('Selamat Telah Berhasil Mengerjakannya (^.^)/',"SELAMAT!!");
-            jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],jawabanActionPlanForm[idLife][1]
-                        ,jawabanActionPlanForm[idLife][2],jawabanActionPlanForm[idLife][3],1
-                        ,jawabanActionPlanForm[idLife][5]]); //ubah status di index 4 menjadi 1 = berhasil
-            localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
-            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
-        });
-        
-    });
-    $$('#btnGagalForm').on('click', function () {
-        myApp.confirm('Apakah tidak tercapai?', 'Gagal Tercapai?', function () {
-            myApp.alert('Sayang sekali, tetap semangat yaa (^.^)/',"Coba Lagi Lain Kali");
-            jawabanActionPlanForm.splice(idLife,1,[jawabanActionPlanForm[idLife][0],jawabanActionPlanForm[idLife][1]
-                        ,jawabanActionPlanForm[idLife][2],jawabanActionPlanForm[idLife][3],2
-                        ,jawabanActionPlanForm[idLife][5]]); //ubah status di index 4 menjadi 2 = gagal
-            localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
-            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
-        });
-    });
-
-
-    /*$$('#btnSelesai').on('click', function () {
-        var buttons = [
-        {
-            text: 'Selesai',
-            bold: true,
-            onClick: function () {
-                myApp.alert('MARI BOS');
-            }
-        },
-        {
-            text: 'Belum',
-            bold: true,
-            onClick: function () {
-                myApp.alert('Lah MARIKNO BOS');
-            }
-        },
-        {
-            text: 'Cancel',
-            color: 'red'
-        },
-        ];
-        myApp.actions(buttons);
-    });*/
-
-    $$('#btnDeleteActForm').on('click', function () {
-        jawabanActionPlanForm.splice(idLife,1,["","","","",""]);
-        localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
-        mainView.router.back();
-    });
-
-    $$('.floating-button').on('click', function () {
-       mainView.router.loadPage("formActionPlanFormTabel.html");
-    });
-
-    $$('#btnSubmit').on('click', function () {
-        if(jawabanActionPlanForm[idLife][5]) //kalo ada jawaban tabel di load , kalo ga yo ga di load
-            jawabanActionPlanForm.splice(idLife,1,[obstacle.value,evidence.value,evaluation.value,target.value,statusActionForm,jawabanActionPlanForm[idLife][5]]);
-        else
-            jawabanActionPlanForm.splice(idLife,1,[obstacle.value,evidence.value,evaluation.value,target.value,statusActionForm]);
-        localStorage.setItem("jawabanActionPlanForm",JSON.stringify(jawabanActionPlanForm));
-        mainView.router.back();
-    });
-    
-    if(jawabanActionPlanForm[idLife][5])
-    {
-        var bantuanDoang=jawabanActionPlanForm[idLife][5];//memudahkan mbaca koding
-
-        for(var i=0;i<bantuanDoang.length;i++)
-        {
-            var cawangsilang="";
-            if(bantuanDoang[i][5]==1)
-              cawangsilang ='<i class="icon f7-icons">check</i>';
-            else if(bantuanDoang[i][5]==2)
-                cawangsilang ='<i class="icon f7-icons">close</i>';
-           $$('#listTabelFormActionPlan').append('<a href="formActionPlanFormTabel.html?idTabel='+i+'">'+
-                '<div class="card-header" style="text-align:center;" >'+(i+1)+cawangsilang+'</div>'+
-                '<div class="card-content">'+
-                '<div class="card-content-inner">'+
-                '<div>'+soalFormTabel[0]+' : '+bantuanDoang[i][0]+'</div>'+ 
-                '<div>'+soalFormTabel[1]+' : '+bantuanDoang[i][1]+'</div>'+ 
-                '<div>'+soalFormTabel[2]+' : '+bantuanDoang[i][2]+'</div>'+ 
-                '<div>'+soalFormTabel[3]+' : '+bantuanDoang[i][3]+'</div>'+
-                '<div>'+soalFormTabel[4]+' : '+bantuanDoang[i][4]+'</div>'+
-                '</div>'+
-                '</div></a>');
-        }
-    }
-})
-
-
-
-
-myApp.onPageInit('formActionPlan', function (page) {
-
-    for(var i=0;i<jawabanLifelist.length;i++)
-        {
-            var cawangsilang="";
-            if(jawabanActionPlanForm[i][4]==1)
-              cawangsilang ='<i class="icon f7-icons">check</i>';
-            else if(jawabanActionPlanForm[i][4]==2)
-                cawangsilang ='<i class="icon f7-icons">close</i>';
-
-            $$('#listMyLifeList').append('<a href="formActionPlanForm.html?idLifeList='+i+'" class="item-link item-content no-ripple">'+
-                '<div class="card">'+
-                '<div class="card-header" align="center" >'+(i+1)+". "+jawabanLifelist[i]+cawangsilang+'</div>');
         }
 })
 
@@ -1323,11 +1124,6 @@ function createChipFishboneDetailSupport(jawabane, aidine)
 
         return chip;
     }
-
-
-
-
-
 
 myApp.onPageInit('fishboneForm', function (page) {
     bantuanFishForm=[];
@@ -1913,16 +1709,6 @@ myApp.onPageInit('pilihGelombangEval', function (page) {
 
     });
     
-    /*var cawangsilang="";
-            if(jawabanActionPlanForm[i][4]==1)
-              cawangsilang ='<i class="icon f7-icons">check</i>';
-            else if(jawabanActionPlanForm[i][4]==2)
-                cawangsilang ='<i class="icon f7-icons">close</si>';
-
-            $$('#listMyLifeList').append('<a href="formActionPlanForm.html?idLifeList='+i+'" class="item-link item-content no-ripple">'+
-                '<div class="card">'+
-                '<div class="card-header" align="center" >'+(i+1)+". "+jawabanLifelist[i]+cawangsilang+'</div>');*/
-    
    
 })
 myApp.onPageInit('pilihGelombangFasilitator', function (page) {
@@ -2035,13 +1821,6 @@ myApp.onPageInit('pilihGelombangFasilitator', function (page) {
         $$('#fishKMhs').html("");
         $$('#fishSMhs').html("");
         $$('#fishDSMhs').html("");
-       /* $$.post(directory,{opsi:"getJwbMhsBigDream", nrpMhs: nrpMhs },function(data){
-            var bigDreamMhs=JSON.parse(data);
-            for(var i=0;i<bigDreamMhs.length;i++)
-            {
-                $$('#bigDreamMhs').append(bigDreamMhs[i]+"<br/>")
-            }   
-        });*/
         $$.post(directory,{opsi:"getSoalJwbMhsBigDream", nrpMhs: nrpMhs },function(data){
             var bigDreamMhs=JSON.parse(data);
             if(bigDreamMhs==""){
@@ -2226,20 +2005,3 @@ myApp.onPageInit('pilihGelombangFasilitator', function (page) {
     });
 })
 
-
-// Option 2. Using one 'pageInit' event handler for all pages:
-$$(document).on('pageInit', function (e) {
-    // Get page data from event data
-    var page = e.detail.page;
-
-    if (page.name === 'about') {
-        // Following code will be executed for page with data-page attribute equal to "about"
-        myApp.alert('Here comes About page');
-    }
-})
-
-// Option 2. Using live 'pageInit' event handlers for each page
-$$(document).on('pageInit', '.page[data-page="about"]', function (e) {
-    // Following code will be executed for page with data-page attribute equal to "about"
-    myApp.alert('Here comes About page');
-})
