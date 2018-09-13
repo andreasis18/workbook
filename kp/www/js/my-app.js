@@ -156,6 +156,7 @@ myApp.onPageInit('index', function (page) {
     	var pilihan = document.getElementById("jabatan");
     	password = document.getElementById("password").value;
     	var username = document.getElementById("username");
+<<<<<<< HEAD
 		var jabatan = pilihan.options[pilihan.selectedIndex].value;
     	if(jabatan=='mahasiswa')
         {
@@ -210,6 +211,31 @@ myApp.onPageInit('index', function (page) {
                 }
                 
             });
+=======
+    	
+        $$.post(directory,{opsi:"loginMhs", nrp:username.value,password:password},function(data){
+            if(data=="berhasil") //cek ada atau tdk id server
+            {
+                $$.post(directory,{opsi:"getBisTenda", nrp:username.value},function(data){
+                    var tendaBisTemp=JSON.parse(data);
+                    mainView.router.loadPage('menu.html');
+                    localStorage.setItem("tenda",JSON.stringify(tendaBisTemp['tenda']));
+                    localStorage.setItem("bus",JSON.stringify(tendaBisTemp['bus']));
+                    localStorage.setItem("nama_kelompok",JSON.stringify(tendaBisTemp['nama_kelompok']));
+                    localStorage.setItem("nama_mhs",JSON.stringify(tendaBisTemp['nama']));
+                    localStorage.setItem("nrp_mhs",JSON.stringify(tendaBisTemp['id_nrp']));
+                    localStorage.setItem("password",JSON.stringify(password));
+                    localStorage.setItem("username",JSON.stringify(username.value));
+                    localStorage.setItem("jabatan",JSON.stringify('mahasiswa')); 
+                });
+                mainView.router.loadPage("menu.html");
+            }
+            else
+            {
+                console.log(data);
+                myApp.alert("Data login tidak ditemukan","Error");
+            }
+>>>>>>> master
             
         }
         else if(jabatan=='eval')
@@ -377,7 +403,7 @@ myApp.onPageInit('myLifeList', function (page) {
         $$('#sortableLifeList').html(data);
         $$('.deleteList').on('click', function(){
             myApp.confirm('Apakah anda yakin akan menghapus life list ini?', 'Apakah Anda Yakin?', function () {
-                var id = trim($$(this).attr('id'), 's');
+                var id = $$(this).attr('id').replace('s','');
                 var item = document.getElementById(id);
                 var list = document.getElementById('LifeList');
                 list.removeChild(item);
@@ -459,7 +485,7 @@ myApp.onPageInit('formActionPlanDetail', function (page) {
         if(result["action"] !=undefined){
             for(var i=0;i<result["action"].length;i++)
             {   
-               $$('#listTabelFormActionPlan').append('<a href="formActionPlanForm.html?idTabel='+result["action"][i]["id"]+'">'+
+               $$('#listTabelFormActionPlan').append('<a href="formActionPlanForm.html?idLifeList='+idLife+'&idTabel='+result["action"][i]["id"]+'">'+
                     '<div class="card-header" style="text-align:center;" >'+(i+1)+'</div>'+
                     '<div class="card-content">'+
                     '<div class="card-content-inner">'+
@@ -477,13 +503,12 @@ myApp.onPageInit('formActionPlanDetail', function (page) {
     $$('#btnSubmit').on('click', function () {
         console.log(idLife);
         $$.post(directory,{opsi:'jawabDetailLifeList',  ids:idLife, targets:target.value, obstacles:obstacle.value, evidences:evidence.value, evaluations:evaluation.value}, function(data){
-            console.log(data);
             myApp.alert("Detail Life List Berhasil disimpan.");
         });   
     });
 
     $$('.floating-button').on('click', function () {
-       mainView.router.loadPage("formActionPlanForm.html?idLife="+idLife);
+       mainView.router.loadPage("formActionPlanForm.html?idLifeList="+idLife+"&idLife="+idLife);
     });
 })
 
@@ -502,6 +527,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
     });
     var timeline=document.getElementById("calendar-events");
     
+    var idLife=page.query.idLifeList;
     var idTabel="";
     if(page.query.idTabel) // misal ada idtabel brarti buat edit, tampilno smua value lama
     {
@@ -520,8 +546,8 @@ myApp.onPageInit('formActionPlanForm', function (page) {
         $$('#btnSubmitTabel').on('click', function () {
             $$.post(directory,{opsi:'updateActionPlan',  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
                 console.log(data);
+                mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife,force: true,ignoreCache: true});
             });  
-            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
         });
     }
     else{
@@ -529,8 +555,9 @@ myApp.onPageInit('formActionPlanForm', function (page) {
         $$('#btnSubmitTabel').on('click', function () {
             $$.post(directory,{opsi:'jawabActionPlan', nrp:localStorage.getItem('nrp_mhs'),  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
                 console.log(data);
+                console.log("submit");
+                mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife,force: true,ignoreCache: true});
             });  
-            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
         });
     }
 
@@ -543,6 +570,55 @@ myApp.onPageInit('formActionPlanForm', function (page) {
     
 })
 
+<<<<<<< HEAD
+=======
+myApp.onPageInit('tujuanHidup', function (page) {
+
+    $$.post(directory,{opsi:'getTujuanHidup', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+        $$('#listTujuan').html(data);
+        $$('.deleteTujuan').on('click', function(){
+            myApp.confirm('Apakah anda yakin akan menghapus tujuan hidup ini?', 'Apakah Anda Yakin?', function () {
+                var id = $$(this).attr('id').replace('s','');
+                var item = document.getElementById(id);
+                var list = document.getElementById('listTujuan');
+                list.removeChild(item);
+
+                $$.post(directory,{opsi:'deleteTujuanHidup', id:ids}, function(data){
+                    console.log(data);
+                });   
+            });
+        });
+    });
+
+    $$('#insertTujuan').on('click', function () {
+        var jawaban= document.getElementById("jawabTujuan").value;
+            myApp.alert(jawaban);
+        if(jawaban==""){
+            myApp.alert('Tolong isi Tujuan Hidup');
+        }
+        else{
+            $$.post(directory,{opsi:'addTujuan', nrp:localStorage.getItem('nrp_mhs'), jawab:jawaban}, function(data){
+                $$('#listTujuan').append(data);
+                $$('#jawabTujuan').html("");
+                $$('#jawabTujuan').focus();
+                $$('.deleteTujuan').on('click', function(){
+                    myApp.confirm('Apakah anda yakin akan menghapus tujuan hidup ini?', 'Apakah Anda Yakin?', function () {
+                        var id = $$(this).attr('id').replace('s','');
+                        var item = document.getElementById(id);
+                        var list = document.getElementById('listTujuan');
+                        list.removeChild(item);
+
+                        $$.post(directory,{opsi:'deleteTujuanHidup', id:ids}, function(data){
+                            console.log(data);
+                        });   
+                    });
+                });
+            });   
+        }
+    });
+})
+
+>>>>>>> master
 myApp.onPageInit('kisahEntong', function (page) {
     $$.post(directory,{opsi:'getKisahEntong', nrp:localStorage.getItem('nrp_mhs')}, function(data){
         console.log(data);
