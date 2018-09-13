@@ -13,7 +13,6 @@
 
     <!-- Your app title -->
     <title>My App</title>
-    -->
 
     <link rel="stylesheet" href="lib/framework7/css/framework7.ios.min.css">
     <link rel="stylesheet" href="lib/framework7/css/framework7.ios.colors.min.css">
@@ -34,7 +33,7 @@
             <div class="navbar">
                 <div class="navbar-inner">
                     <div class="left"><a href="#" class="link icon-only open-panel no-ripple"><i class="icon icon-bars"></i></a></div>
-                    <div class="center sliding">Fishbone</div>
+                    <div id="judulFishboneSupport" class="center sliding">Fishbone Support Detail</div>
                       <div class="right">
                     <a href="#" class="button back">Back</a>
                   </div>
@@ -43,20 +42,20 @@
             <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
             <div class="pages navbar-through toolbar-through">
                 <!-- Page, "data-page" contains page name -->
-                <div data-page="fishbone" class="page">
+                <div data-page="fishboneSupportDetail" class="page">  
                     <!-- Scrollable page content -->
                     <div class="page-content">
                       <div class="content-block">
                         <div class="center sliding">
                           <div class="list-block">
-                            <ul id="listKepala">
+                            <ul id="listSupportDetail">
                               
                             </ul>
+                            <a href="#" class="floating-button color-teal no-ripple" id="addSupportDetail">
+                              <i class="icon icon-plus"></i>
+                            </a>
                           </div>
                         </div>
-                        <a href="#" class="floating-button color-teal no-ripple" id="addKepala">
-                          <i class="icon icon-plus"></i>
-                        </a>
                       </div>    
                     </div>
                   </div>
@@ -69,5 +68,4 @@
       <script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
       <script type="text/javascript" src="js/my-app.js"></script>
   </body>
-
   </html>

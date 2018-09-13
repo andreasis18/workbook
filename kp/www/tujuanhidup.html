@@ -2,8 +2,6 @@
 <html>
 <head>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
-
-    <!-- Required meta tags-->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -14,51 +12,39 @@
     <!-- Your app title -->
     <title>My App</title>
 
-    <link rel="stylesheet" href="lib/framework7/css/framework7.ios.min.css">
-    <link rel="stylesheet" href="lib/framework7/css/framework7.ios.colors.min.css">
-
-    <link rel="stylesheet" href="lib/framework7/css/framework7.material.min.css">
-    <link rel="stylesheet" href="lib/framework7/css/framework7.material.colors.css">
+    <link rel="stylesheet" href="css/framework7.ios.min.css">
+    <link rel="stylesheet" href="css/framework7.ios.colors.min.css">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 
 <body>
-    <!-- Status bar overlay for full screen mode (PhoneGap) -->
     <div class="statusbar-overlay"></div>
-
-    <!-- Panels overlay-->
     <div class="panel-overlay"></div>
-    <!-- Left panel with reveal effect-->
-    <div class="panel panel-left panel-reveal">
-        <div class="content-block">
-            <p>Left panel content goes here</p>
-        </div>
-    </div>
-
+    <!-- Views -->
     <div class="views">
         <div class="view view-main">
             <div class="navbar">
                 <div class="navbar-inner">
-                    <div class="center sliding">Manfaat dari kisah entong</div>
+                    <div class="left"><a href="#" class="link icon-only open-panel no-ripple"><i class="icon icon-bars"></i></a></div>
+                    <div class="center sliding">Tujuan Hidup</div>
                     <div class="right">
-                    <a href="#" class="button back">Back</a>
-                  </div>
+                        <a href="#" class="button back">Back</a>
+                    </div>
               </div>
           </div>
           
-        <div class="pages navbar-through toolbar-through">
-            <div data-page="lessonLearned" class="page">
+          <div class="pages navbar-through toolbar-through">
+            <div data-page="tujuanHidup" class="page">
                 <div class="page-content">
                     <div class="content-block">
                         <div class="block" style="width: 100%;">
-                            <div id="soalEntong"  style="margin-bottom:10px"> Dari Kisah si Entong dan proses diskusi yang telah dilakukan, pelajaran yang dapat saya ambil adalah: </div>
                             <div class="row">
-                                <textarea rows="2" id="jawabLesson" style="width:80%; font-size:20px;"  placeholder="Lesson Learned"></textarea>   
-                                <button class="button" id="insertLesson" style="margin-top: 7px;">Add</button> 
+                                <textarea rows="2" id="jawabTujuan" style="width:80%; font-size:20px;"  placeholder="Tujuan Hidup"></textarea>   
+                                <button class="button" id="insertTujuan" style="margin-top: 7px;">Add</button> 
                             </div>
                         </div>
                         <div class="list-block sortable">
-                          <ul id="listJawabanLessonLearned">
+                          <ul id="listTujuan">
                           </ul>
                         </div>
                     </div>
