@@ -160,8 +160,7 @@ myApp.onPageInit('index', function (page) {
         $$.post(directory,{opsi:"loginMhs", nrp:username.value,password:password},function(data){
             if(data=="berhasil") //cek ada atau tdk id server
             {
-                $$.post(directory,{opsi:"getBisTenda", nrp:username.value
-                },function(data){
+                $$.post(directory,{opsi:"getBisTenda", nrp:username.value},function(data){
                     var tendaBisTemp=JSON.parse(data);
                     mainView.router.loadPage('menu.html');
                     localStorage.setItem("tenda",JSON.stringify(tendaBisTemp['tenda']));
@@ -173,6 +172,7 @@ myApp.onPageInit('index', function (page) {
                     localStorage.setItem("username",JSON.stringify(username.value));
                     localStorage.setItem("jabatan",JSON.stringify('mahasiswa')); 
                 });
+                mainView.router.loadPage("menu.html");
             }
             else
             {
