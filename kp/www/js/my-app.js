@@ -58,34 +58,7 @@ var nrp="";
 var password="";
 
 
-function disableEnableBtn(ids) {
-  // traverses the array with IDs
-  var nrids = ids.length;
-  var pencet = 0;
-  for(var i=0; i<nrids; i++) {
-    // registers onclick event to each button
-    if(document.getElementById(ids[i])) {
-      document.getElementById(ids[i]).onclick = function() {
-        this.setAttribute('disabled', 'disabled');     // disables the button by adding the 'disabled' attribute
-        this.innerHTML = 'Disabled';        // changes the button text
-        var idbtn = this.id;       // stores the button ID
-        pencet++;
-        // calls a function after 2 sec. (2000 milliseconds)
-        setTimeout( function() {
-          document.getElementById(idbtn).removeAttribute('disabled');         // removes the "disabled" attribute
-          document.getElementById(idbtn).innerHTML = 'UPLOAD JAWABAN';        // changes tne button text
-        }, 86400000 );
-        if(pencet >=3){
-            this.setAttribute('disabled', 'disabled');     // disables the button by adding the 'disabled' attribute
-            this.innerHTML = 'Disabled'; 
-        }
-      }
-    }
-  }
-}
-
 myApp.onPageInit('index', function (page) {
-
     $$('#myBigDreamSide').html(judulModul[0]);
     $$('#myLifeListSide').html(judulModul[1]);
     $$('#outdoorSide').html(judulModul[2]);
@@ -148,70 +121,12 @@ myApp.onPageInit('index', function (page) {
         });
     });
 
-    $$('.jabatan').on('click',function(){
-        console.log("ha");
-    });
-
     $$('#btnMasuk').on('click',function(){
     	var pilihan = document.getElementById("jabatan");
     	password = document.getElementById("password").value;
     	var username = document.getElementById("username");
-		var jabatan = pilihan.options[pilihan.selectedIndex].value;
-    	if(jabatan=='mahasiswa')
-        {
-            $$.post(directory,{opsi:"loginMhs", nrp:username.value,password:password
-            },function(data){
-                if(data=="berhasil") //cek ada atau tdk id server
-                {
-                    $$.post(directory,{opsi:"getBisTenda", nrp:username.value
-                    },function(data){
-                        var tendaBisTemp=JSON.parse(data);
-                        mainView.router.loadPage('menu.html');
-                        localStorage.setItem("tenda",JSON.stringify(tendaBisTemp['tenda']));
-                        localStorage.setItem("bus",JSON.stringify(tendaBisTemp['bus']));
-                        localStorage.setItem("nama_kelompok",JSON.stringify(tendaBisTemp['nama_kelompok']));
-                        localStorage.setItem("nama_mhs",JSON.stringify(tendaBisTemp['nama']));
-                        localStorage.setItem("nrp_mhs",JSON.stringify(tendaBisTemp['id_nrp']));
-                        localStorage.setItem("password",JSON.stringify(password));
-                        localStorage.setItem("username",JSON.stringify(username.value));
-                        localStorage.setItem("jabatan",JSON.stringify('mahasiswa')); 
-                    });
-                }
-                else
-                {
-                    console.log(data);
-                    myApp.alert("Data login tidak ditemukan","Error");
-                }
-                
-            });
-            
-        }
-    	else if(jabatan=='fasilitator')
-        {
-            $$.post(directory,{opsi:"loginFasilitator", username:username.value,password:password
-            },function(data){
-                if(data=="berhasil")
-                {
-                    mainView.router.loadPage('pilihGelombangFasilitator.html');
-                    localStorage.setItem("password",JSON.stringify(password));
-                    localStorage.setItem("username",JSON.stringify(username.value));
-                    localStorage.setItem("jabatan",JSON.stringify('fasilitator'));
-                }
-                else if(data=="hehehe")
-                {
-                    mainView.router.loadPage('hehePage.html');
-                    localStorage.setItem("password",JSON.stringify(password));
-                    localStorage.setItem("username",JSON.stringify(username.value));
-                    localStorage.setItem("jabatan",JSON.stringify('hehe'));
-                }
-                else
-                {
-                    myApp.alert("fail fas","Error");
-                }
-                
-            });
-=======
     	
+
         $$.post(directory,{opsi:"loginMhs", nrp:username.value,password:password},function(data){
             if(data=="berhasil") //cek ada atau tdk id server
             {
@@ -233,26 +148,7 @@ myApp.onPageInit('index', function (page) {
             {
                 console.log(data);
                 myApp.alert("Data login tidak ditemukan","Error");
-            }
->>>>>>> master
-            
-        }
-        else if(jabatan=='eval')
-        {
-            $$.post(directory,{opsi:"loginEval", username:username.value,password:password
-            },function(data){
-                if(data=="berhasil")
-                {
-                    mainView.router.loadPage('pilihGelombangEval.html');
-                    localStorage.setItem("password",JSON.stringify(password));
-                    localStorage.setItem("username",JSON.stringify(username.value));
-                    localStorage.setItem("jabatan",JSON.stringify('eval'));
-                }
-                else
-                {
-                    myApp.alert("Dfail eval","Error");
-                } 
-            });
+            }   
         }
     });
 }).trigger();
@@ -267,21 +163,7 @@ myApp.onPageInit('menu', function (page) {
                       autoplay:4000,
                       spaceBetween: 50
                     });
-    $$.post(directory,{opsi:"ambilPengumuman2"},function(data){
-            //var gambar=JSON.parse(data);
-        var gambar="";
-        
-        if(gambar=="")
-        {
-            $$('.swiper-wrapper').html("<div style=text-align:center; width:100%;><b><font size=5>Tidak Ada Pengumuman </font></b></div>")
-        }
-        for(var i=0;i<gambar.length;i++)
-        {
-            var gambarku="<img src="+gambar[i]+" style=width:100%; height:50%;>";
-            var testSlide="<div class=swiper-slide>"+gambarku+"</div>";
-            mySwiper1.appendSlide(testSlide);
-        }
-    });
+    
     
     if(JSON.parse(localStorage.getItem("username")))
     {
@@ -614,7 +496,6 @@ myApp.onPageInit('tujuanHidup', function (page) {
     });
 })
 
->>>>>>> master
 myApp.onPageInit('kisahEntong', function (page) {
     $$.post(directory,{opsi:'getKisahEntong', nrp:localStorage.getItem('nrp_mhs')}, function(data){
         console.log(data);
