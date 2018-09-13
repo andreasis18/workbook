@@ -287,7 +287,7 @@ myApp.onPageInit('myLifeList', function (page) {
             var id = event.target.id.replace('s','');
             myApp.confirm('Apakah anda yakin akan menghapus life list ini?', 'Apakah Anda Yakin?', function () {
                 var item = document.getElementById(id);
-                var list = document.getElementById('LifeList');
+                var list = document.getElementById('sortableLifeList');
                 list.removeChild(item);
                 $$('#saveList').show();
             });
