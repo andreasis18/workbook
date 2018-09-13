@@ -11,8 +11,8 @@ var myApp = new Framework7({
 
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7;
-var directory= 'http://localhost/kp/server/projectkp.php';
-//var directory='http://admingpb.000webhostapp.com/projectkp.php'; //tmpat php aplikasi
+//var directory= 'http://localhost/kp/server/projectkp.php';
+var directory='http://admingpb.000webhostapp.com/projectkp.php'; //tmpat php aplikasi
 
 // Add view
 var mainView = myApp.addView('.view-main', {
