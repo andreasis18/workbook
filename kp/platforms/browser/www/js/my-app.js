@@ -58,34 +58,7 @@ var nrp="";
 var password="";
 
 
-function disableEnableBtn(ids) {
-  // traverses the array with IDs
-  var nrids = ids.length;
-  var pencet = 0;
-  for(var i=0; i<nrids; i++) {
-    // registers onclick event to each button
-    if(document.getElementById(ids[i])) {
-      document.getElementById(ids[i]).onclick = function() {
-        this.setAttribute('disabled', 'disabled');     // disables the button by adding the 'disabled' attribute
-        this.innerHTML = 'Disabled';        // changes the button text
-        var idbtn = this.id;       // stores the button ID
-        pencet++;
-        // calls a function after 2 sec. (2000 milliseconds)
-        setTimeout( function() {
-          document.getElementById(idbtn).removeAttribute('disabled');         // removes the "disabled" attribute
-          document.getElementById(idbtn).innerHTML = 'UPLOAD JAWABAN';        // changes tne button text
-        }, 86400000 );
-        if(pencet >=3){
-            this.setAttribute('disabled', 'disabled');     // disables the button by adding the 'disabled' attribute
-            this.innerHTML = 'Disabled'; 
-        }
-      }
-    }
-  }
-}
-
 myApp.onPageInit('index', function (page) {
-
     $$('#myBigDreamSide').html(judulModul[0]);
     $$('#myLifeListSide').html(judulModul[1]);
     $$('#outdoorSide').html(judulModul[2]);
@@ -148,20 +121,16 @@ myApp.onPageInit('index', function (page) {
         });
     });
 
-    $$('.jabatan').on('click',function(){
-        console.log("ha");
-    });
-
     $$('#btnMasuk').on('click',function(){
     	var pilihan = document.getElementById("jabatan");
     	password = document.getElementById("password").value;
     	var username = document.getElementById("username");
     	
+
         $$.post(directory,{opsi:"loginMhs", nrp:username.value,password:password},function(data){
             if(data=="berhasil") //cek ada atau tdk id server
             {
-                $$.post(directory,{opsi:"getBisTenda", nrp:username.value
-                },function(data){
+                $$.post(directory,{opsi:"getBisTenda", nrp:username.value},function(data){
                     var tendaBisTemp=JSON.parse(data);
                     mainView.router.loadPage('menu.html');
                     localStorage.setItem("tenda",JSON.stringify(tendaBisTemp['tenda']));
@@ -173,15 +142,14 @@ myApp.onPageInit('index', function (page) {
                     localStorage.setItem("username",JSON.stringify(username.value));
                     localStorage.setItem("jabatan",JSON.stringify('mahasiswa')); 
                 });
+                mainView.router.loadPage("menu.html");
             }
             else
             {
                 console.log(data);
                 myApp.alert("Data login tidak ditemukan","Error");
-            }
-            
-        });
-        
+            }   
+        })
     });
 }).trigger();
 
@@ -195,21 +163,7 @@ myApp.onPageInit('menu', function (page) {
                       autoplay:4000,
                       spaceBetween: 50
                     });
-    $$.post(directory,{opsi:"ambilPengumuman2"},function(data){
-            //var gambar=JSON.parse(data);
-        var gambar="";
-        
-        if(gambar=="")
-        {
-            $$('.swiper-wrapper').html("<div style=text-align:center; width:100%;><b><font size=5>Tidak Ada Pengumuman </font></b></div>")
-        }
-        for(var i=0;i<gambar.length;i++)
-        {
-            var gambarku="<img src="+gambar[i]+" style=width:100%; height:50%;>";
-            var testSlide="<div class=swiper-slide>"+gambarku+"</div>";
-            mySwiper1.appendSlide(testSlide);
-        }
-    });
+    
     
     if(JSON.parse(localStorage.getItem("username")))
     {
@@ -496,7 +450,6 @@ myApp.onPageInit('formActionPlanForm', function (page) {
     });
     
 })
-
 myApp.onPageInit('tujuanHidup', function (page) {
 
     $$.post(directory,{opsi:'getTujuanHidup', nrp:localStorage.getItem('nrp_mhs')}, function(data){
@@ -611,6 +564,66 @@ myApp.onPageInit('lessonLearned', function (page) {
         }
     });
 })
+
+function createChipLessonLearned(jawabane, aidine)
+{
+    //chip
+    var chip=document.createElement('div');
+    chip.className='chip';
+
+    //chip label
+    var chipLabel=document.createElement('div');
+    chipLabel.className='chip-label';
+    chipLabel.appendChild(document.createTextNode(jawabane));
+
+    //chip media
+    var chipMedia=document.createElement('div');
+    chipMedia.className='chip-media bg-teal';
+    chipMedia.appendChild(document.createTextNode(aidine+1));
+
+    //chip delete btn
+    var deleteBtn=document.createElement('a');
+    deleteBtn.setAttribute('href','#');
+    deleteBtn.className='chip-delete';
+
+
+    chip.appendChild(chipMedia);
+    chip.appendChild(chipLabel);
+    chip.appendChild(deleteBtn);
+
+    //delete chip
+    deleteBtn.onclick=function (e) {
+        e.preventDefault();
+        myApp.confirm('Hapus '+jawabane+"?","Yakin Hapus?", function () {
+            jawabanLessonLearned.splice(aidine,1);
+            localStorage.setItem("jawabanLessonLearned",JSON.stringify(jawabanLessonLearned));
+            chip.remove();
+
+        });
+    };
+
+    chipLabel.onclick=function (e) {
+        e.preventDefault();
+
+        myApp.modal({
+        title: 'Edit Nomor '+(aidine+1),
+        text: 'Edit Jawaban',
+        afterText: '<input type="text" id="txtEditLessonLearned" class="modal-text-input" style="text-align: center;" value="'+jawabanLessonLearned[aidine]+'"">',
+        buttons: [{
+        text: 'Cancel'
+        }, {
+        text: 'OK',
+        onClick: function() {
+            jawabanLessonLearned.splice(aidine,1,$$('#txtEditLessonLearned').val());
+            localStorage.setItem("jawabanLessonLearned",JSON.stringify(jawabanLessonLearned));
+            refreshLessonLearned();
+        }
+        }, ]
+        });
+    };
+
+    return chip;
+}
 
 myApp.onPageInit('pilihManajemenEmosi', function (page) {
     $$('#studikasus').on('click', function () {
@@ -799,46 +812,809 @@ myApp.onPageInit('refleksiMini', function (page) {
     
 })
 
-myApp.onPageInit('fishbone', function (page) {
-    $$.post(directory,{opsi:'getFishbone', nrp:localStorage.getItem('nrp_mhs')}, function(data){
-        $$('#listKepala').html(data);
+var jawabanFishboneBaru=[];
+
+var idKepala=0;
+var idSirip=0;
+var bantuanFishForm=[];
+var bantuanFishTabel=[];
+
+
+
+myApp.onPageInit('fishboneTabel', function (page) {
+   bantuanFishTabel=[]
+    var idSirip=page.query.idSirip;
+    $$('#judulFishboneTabel').html(jawabanFishboneBaru[idKepala][1][idSirip][0]);
+    
+    if(jawabanFishboneBaru[idKepala][1][idSirip][1])
+        bantuanFishTabel=jawabanFishboneBaru[idKepala][1][idSirip][1];
+
+    refreshFishboneDetailSupport();
+
+    $$('#fabTabel').on('click', function () {
+    myApp.prompt('Nomor '+(bantuanFishTabel.length+1), 'Fishbone Detail Support', function (value) {
+        bantuanFishTabel.push(value); 
+        refreshFishboneDetailSupport();
+        jawabanFishboneBaru[idKepala][1][idSirip].splice(1,1,bantuanFishTabel);
+        localStorage.setItem("jawabanFishboneBaru",JSON.stringify(jawabanFishboneBaru));
+    });
+    });
+})
+
+
+
+function refreshFishboneDetailSupport()
+{
+    $$('#listSiripTabelFishbone').html("");
+            for(var i=0;i<bantuanFishTabel.length;i++)
+            {
+                $$('#listSiripTabelFishbone').append(createChipFishboneDetailSupport(bantuanFishTabel[i],i));
+                $$('#listSiripTabelFishbone').append("<br/>Tekan Pada Jawaban Untuk Edit<br/>");
+                //$$('.listJawaban').append((i+1)+". "+jawabanLifelist[i]+"<br/>");
+            }
+}
+
+function createChipFishboneDetailSupport(jawabane, aidine)
+    {
+        //chip
+        var chip=document.createElement('div');
+        chip.className='chip';
+
+        //chip label
+        var chipLabel=document.createElement('div');
+        chipLabel.className='chip-label';
+        chipLabel.appendChild(document.createTextNode(jawabane));
+
+        //chip media
+        var chipMedia=document.createElement('div');
+        chipMedia.className='chip-media bg-teal';
+        chipMedia.appendChild(document.createTextNode(aidine+1));
+
+        //chip delete btn
+        var deleteBtn=document.createElement('a');
+        deleteBtn.setAttribute('href','#');
+        deleteBtn.className='chip-delete';
+
+
+        chip.appendChild(chipMedia);
+        chip.appendChild(chipLabel);
+        chip.appendChild(deleteBtn);
+
+        //delete chip
+        deleteBtn.onclick=function (e) {
+            e.preventDefault();
+            myApp.confirm('Hapus '+jawabane+"?","Yakin Hapus?", function () {
+                jawabanFishboneBaru[idKepala][1][idSirip][1].splice(aidine,1);
+                refreshFishboneDetailSupport();
+                localStorage.setItem("jawabanFishboneBaru",JSON.stringify(jawabanFishboneBaru));
+                chip.remove();
+
+            });
+        };
+
+        chipLabel.onclick=function (e) {
+            e.preventDefault();
+
+            myApp.modal({
+            title: 'Edit Nomor '+(aidine+1),
+            text: 'Edit Jawaban :',
+            afterText: '<input type="text" id="txtEditFishboneDetailSupport" class="modal-text-input" style="text-align: center;" value="'+jawabane+'"">',
+            buttons: [{
+            text: 'Cancel'
+            }, {
+            text: 'OK',
+            onClick: function() {
+                jawabanFishboneBaru[idKepala][1][idSirip][1].splice(aidine,1,$$('#txtEditFishboneDetailSupport').val());
+                localStorage.setItem("jawabanFishboneBaru",JSON.stringify(jawabanFishboneBaru));
+                refreshFishboneDetailSupport();
+            }
+            }]
+            });
+        };
+
+        return chip;
+    }
+
+myApp.onPageInit('fishboneForm', function (page) {
+    bantuanFishForm=[];
+    idKepala=page.query.idKepala;
+    if(jawabanFishboneBaru[idKepala][1])
+        bantuanFishForm=jawabanFishboneBaru[idKepala][1];
+    
+    $$('#judulKepala').html(jawabanFishboneBaru[idKepala][0]);
+
+    refreshFishboneSupport();
+
+    $$('#fabForm').on('click', function () {
+    myApp.prompt('Nomor '+(bantuanFishForm.length+1), 'Fishbone Support', function (value) {
+        bantuanFishForm.push([value]);
+        refreshFishboneSupport();
+        jawabanFishboneBaru[idKepala].splice(1,1,bantuanFishForm);
+        localStorage.setItem("jawabanFishboneBaru",JSON.stringify(jawabanFishboneBaru));
+    });
     });
 
-    $$('#addKepala').on('click', function () {
-        myApp.prompt('', 'Fishbone Kepala', function (value) {
-            $$.post(directory,{opsi:'jawabFishbone', nrp:localStorage.getItem('nrp_mhs'), jawab:value}, function(data){
-                $$('#listKepala').append(data);
+
+})
+
+function refreshFishboneSupport()
+{
+    $$('#listSiripFishbone').html("");
+            for(var i=0;i<bantuanFishForm.length;i++)
+            {
+                $$('#listSiripFishbone').append(createChipFishboneSupport(bantuanFishForm[i][0],i));
+                $$('#listSiripFishbone').append("<br/>Tekan Pada Jawaban Untuk Edit<br/>");
+                $$('#listSiripFishbone').append('<a href="fishboneTabel.html?idSirip='+i+'" class="item-link item-content no-ripple">Masuk Detail Support '+bantuanFishForm[i][0]+'</a><br/>');
+                //$$('.listJawaban').append((i+1)+". "+jawabanLifelist[i]+"<br/>");
+            }
+}
+
+function createChipFishboneSupport(jawabane, aidine)
+    {
+        //chip
+        var chip=document.createElement('div');
+        chip.className='chip';
+
+        //chip label
+        var chipLabel=document.createElement('div');
+        chipLabel.className='chip-label';
+        chipLabel.appendChild(document.createTextNode(jawabane));
+
+        //chip media
+        var chipMedia=document.createElement('div');
+        chipMedia.className='chip-media bg-teal';
+        chipMedia.appendChild(document.createTextNode(aidine+1));
+
+        //chip delete btn
+        var deleteBtn=document.createElement('a');
+        deleteBtn.setAttribute('href','#');
+        deleteBtn.className='chip-delete';
+
+
+        chip.appendChild(chipMedia);
+        chip.appendChild(chipLabel);
+        chip.appendChild(deleteBtn);
+
+        //delete chip
+        deleteBtn.onclick=function (e) {
+            e.preventDefault();
+            myApp.confirm('Hapus '+jawabane+"?","Yakin Hapus?", function () {
+                jawabanFishboneBaru[idKepala][1].splice(aidine,1);
+                refreshFishboneSupport();
+                localStorage.setItem("jawabanFishboneBaru",JSON.stringify(jawabanFishboneBaru));
+                chip.remove();
+
             });
+        };
+
+        chipLabel.onclick=function (e) {
+            e.preventDefault();
+
+            myApp.modal({
+            title: 'Edit Nomor '+(aidine+1),
+            text: 'Edit Jawaban :',
+            afterText: '<input type="text" id="txtEditFishboneSirip" class="modal-text-input" style="text-align: center;" value="'+bantuanFishForm[aidine][0]+'"">',
+            buttons: [{
+            text: 'Cancel'
+            }, {
+            text: 'OK',
+            onClick: function() {
+                jawabanFishboneBaru[idKepala][1][aidine].splice(0,1,$$('#txtEditFishboneSirip').val());
+                localStorage.setItem("jawabanFishboneBaru",JSON.stringify(jawabanFishboneBaru));
+                refreshFishboneSupport();
+            }
+            }]
+            });
+        };
+
+        return chip;
+    }
+
+
+myApp.onPageInit('fishbone', function (page) {
+
+    refreshFishboneKepala();
+
+    $$('#fabKepala').on('click', function () {
+    myApp.prompt('Nomor '+(jawabanFishboneBaru.length+1), 'Fishbone Kepala', function (value) {
+        jawabanFishboneBaru.push([value]);
+        refreshFishboneKepala();
+        localStorage.setItem("jawabanFishboneBaru",JSON.stringify(jawabanFishboneBaru));
+    });
+    });
+    
+})
+
+
+function refreshFishboneKepala()
+{
+    $$('#listKepalaFishbone').html("");
+        for(var i=0;i<jawabanFishboneBaru.length;i++)
+        {
+            $$('#listKepalaFishbone').append(createChipFishboneKepala(jawabanFishboneBaru[i][0],i));
+            $$('#listKepalaFishbone').append("<br/>Tekan Pada Jawaban Untuk Edit<br/>");
+            $$('#listKepalaFishbone').append('<a href="fishboneForm.html?idKepala='+i+'" class="item-link item-content no-ripple">Masuk Support '+jawabanFishboneBaru[i][0]+'</a><br/>');
+            
+        }
+}
+
+function createChipFishboneKepala(jawabane, aidine)
+    {
+        //chip
+        var chip=document.createElement('div');
+        chip.className='chip';
+
+        //chip label
+        var chipLabel=document.createElement('div');
+        chipLabel.className='chip-label';
+        chipLabel.appendChild(document.createTextNode(jawabane));
+
+        //chip media
+        var chipMedia=document.createElement('div');
+        chipMedia.className='chip-media bg-teal';
+        chipMedia.appendChild(document.createTextNode(aidine+1));
+
+        //chip delete btn
+        var deleteBtn=document.createElement('a');
+        deleteBtn.setAttribute('href','#');
+        deleteBtn.className='chip-delete';
+
+
+        chip.appendChild(chipMedia);
+        chip.appendChild(chipLabel);
+        chip.appendChild(deleteBtn);
+
+        //delete chip
+        deleteBtn.onclick=function (e) {
+            e.preventDefault();
+            myApp.confirm('Hapus '+jawabane+"?","Yakin Hapus?", function () {
+                jawabanFishboneBaru.splice(aidine,1);
+                refreshFishboneKepala();
+                localStorage.setItem("jawabanFishboneBaru",JSON.stringify(jawabanFishboneBaru));
+                chip.remove();
+
+            });
+        };
+
+        chipLabel.onclick=function (e) {
+            e.preventDefault();
+
+            myApp.modal({
+            title: 'Edit Nomor '+(aidine+1),
+            text: 'Edit Jawaban :',
+            afterText: '<input type="text" id="txtEditFishboneBaru" class="modal-text-input" style="text-align: center;" value="'+jawabanFishboneBaru[aidine][0]+'"">',
+            buttons: [{
+            text: 'Cancel'
+            }, {
+            text: 'OK',
+            onClick: function() {
+                jawabanFishboneBaru.splice(aidine,1,[$$('#txtEditFishboneBaru').val(),jawabanFishboneBaru[aidine][1]]);
+                localStorage.setItem("jawabanFishboneBaru",JSON.stringify(jawabanFishboneBaru));
+                refreshFishboneKepala();
+            }
+            }]
+            });
+        };
+
+        return chip;
+    }
+
+
+myApp.onPageInit('pilihGelombangFasilitator', function (page) {
+    var gelombang = document.getElementById('gelombang');
+    var kelompok = document.getElementById('kelompok');
+    var mhs = document.getElementById('mhs');
+
+    $$.post(directory,{opsi:"getGelombangPadaPeriodeAktif"},function(data){
+        $$('#pilihGelombang').html(data);
+    });
+
+    
+    $$('#btnLogoutFasilitator').on('click', function () 
+    {
+        localStorage.removeItem('username');
+        localStorage.removeItem('jabatan');
+        mainView.router.back({url: 'index.html',force: true,ignoreCache: true});
+    });
+
+
+    $$('#kelompok').on('change', function(){
+        var namaKelompok = kelompok.options[kelompok.selectedIndex].text;
+        indexKelompok=kelompok.options[kelompok.selectedIndex].value;
+        $$("#passwordKelompok").attr("placeholder", "Ketik Password untuk " +namaKelompok );
+        document.getElementById("passwordKelompok").style.visibility = "visible";
+        document.getElementById("submitPasswordKelompok").style.visibility = "visible";
+        document.getElementById("mhsHidden").style.visibility = "hidden";
+        document.getElementById("untukCommentMhs").style.visibility = "hidden";
+        
+        $$('#mhs').html("");
+        $$.post(directory,{opsi:"getMhsDalamKelompok", indexKelompok: indexKelompok},function(data){
+            mhsFasilitator=JSON.parse(data);
+            for(var i=0;i<mhsFasilitator.length;i++)
+            {
+                $$('#mhs').append("<option value="+mhsFasilitator[i][0]+">"+mhsFasilitator[i][0]+
+                    " - "+mhsFasilitator[i][1]+
+                    "</option>");
+            }   
+        });
+    });
+
+    $$('#mhs').on('change', function(){
+        document.getElementById("fotoMhs").style.visibility = "visible";
+        document.getElementById("bigDreamMhs").style.visibility = "visible";
+        document.getElementById("lifelistMhs").style.visibility = "visible";
+        document.getElementById("oMhs").style.visibility = "visible";
+        document.getElementById("me1Mhs").style.visibility = "visible";
+        document.getElementById("me2Mhs").style.visibility = "visible";
+         document.getElementById("eMhs").style.visibility = "visible";
+         document.getElementById("llMhs").style.visibility = "visible";
+          document.getElementById("rmMhs").style.visibility = "visible";
+          document.getElementById("apMhs").style.visibility = "visible";
+           document.getElementById("aptMhs").style.visibility = "visible";
+           document.getElementById("fishKMhs").style.visibility = "visible";
+           document.getElementById("fishSMhs").style.visibility = "visible";
+           document.getElementById("fishDSMhs").style.visibility = "visible";
+        var nrpMhs=mhs.options[mhs.selectedIndex].value;
+        $$('#fotoMhs').html("");
+         $$('#fotoMhs').html("<img src=https://my.ubaya.ac.id/img/mhs/"+nrpMhs+"_m.jpg>");
+        $$('#bigDreamMhs').html("");
+        $$('#lifelistMhs').html("");
+        $$('#oMhs').html("");
+        $$('#me1Mhs').html("");
+        $$('#me2Mhs').html("");
+        $$('#eMhs').html("");
+        $$('#llMhs').html("");
+        $$('#rmMhs').html("");
+        $$('#apMhs').html("");
+        $$('#aptMhs').html("");
+        $$('#fishKMhs').html("");
+        $$('#fishSMhs').html("");
+        $$('#fishDSMhs').html("");
+        $$.post(directory,{opsi:"getSoalJwbMhsBigDream", nrpMhs: nrpMhs },function(data){
+            var bigDreamMhs=JSON.parse(data);
+            if(bigDreamMhs==""){
+                $$('#bigDreamMhs').append("<div style=text-align:center;><b><font size=5>My Big Dream :</font></b></div><br/><div style=text-align:center;>-</div><br/>")
+            }
+            for(var i=0;i<bigDreamMhs.length;i++)
+            {
+                if(bigDreamMhs!=""){
+                    $$('#bigDreamMhs').append("<div style=text-align:center;><b><font size=5>My Big Dream :</font></b></div><br/>"+
+                                              "<div style=text-align:center;>"+bigDreamMhs[i][0]+"</div><br/><div style=text-align:center;>"+bigDreamMhs[i][1]+"</div><br/>")
+                }
+            }   
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsLifelist", nrpMhs: nrpMhs },function(data){
+            var lifelistMhs=JSON.parse(data);
+            if(lifelistMhs==""){
+                $$('#lifelistMhs').append("<div style=text-align:center;><b><font size=5>Lifelist :</font></b></div><br/><div style=text-align:center;>-</div><br/>")
+            }
+            for(var i=0;i<lifelistMhs.length;i++)
+            {
+                if(lifelistMhs!=""){
+                    $$('#lifelistMhs').append("<div style=text-align:center;><b><font size=5>Lifelist :</font></b></div><br/>"+
+                                              "<div style=text-align:center;>"+lifelistMhs[i][0]+"</div><br/><div style=text-align:center;>"+lifelistMhs[i][1]+"</div><br/>")
+                }
+            }   
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsOutdoor", nrpMhs: nrpMhs },function(data){
+            var oMhs=JSON.parse(data);
+            if(oMhs==""){
+                $$('#oMhs').append("<div style=text-align:center;><b><font size=5>Outdoor :</font></b></div><br/><div style=text-align:center;>-</div><br/>")
+            }
+            for(var i=0;i<oMhs.length;i++)
+            {
+                if(oMhs!="" ){
+                    $$('#oMhs').append("<div style=text-align:center;><b><font size=5>Outdoor :</font></b></div><br/>"+
+                                       "<div style=text-align:center;>"+oMhs[i][0]+"</div><br/><div style=text-align:center;>"+oMhs[i][1]+"</div><br/>")
+                }
+            }
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsMe1", nrpMhs: nrpMhs },function(data){
+            var me1Mhs=JSON.parse(data);
+            if(me1Mhs==""){
+                $$('#me1Mhs').append("<div style=text-align:center;><b><font size=5>Manajemen Emosi :</font></b></div><br/><div style=text-align:center;>-</div><br/>")
+            }
+            for(var i=0;i<me1Mhs.length;i++)
+            {
+                if(me1Mhs!="" ){
+                    $$('#me1Mhs').append("<div style=text-align:center;><b><font size=5>Manajemen Emosi :</font></b></div><br/>"+
+                                         "<div style=text-align:center;>"+me1Mhs[i][0]+"</div><br/><div style=text-align:center;>"+me1Mhs[i][4]+"</div><br/>"+
+                                         "<div style=text-align:center;>"+me1Mhs[i][1]+"</div><br/><div style=text-align:center;>"+me1Mhs[i][5]+"</div><br/>"+
+                                         "<div style=text-align:center;>"+me1Mhs[i][2]+"</div><br/><div style=text-align:center;>"+me1Mhs[i][6]+"</div><br/>"+
+                                         "<div style=text-align:center;>"+me1Mhs[i][3]+"</div><br/><div style=text-align:center;>"+me1Mhs[i][7]+"</div><br/>")
+                }
+            }
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsMe2", nrpMhs: nrpMhs },function(data){
+            var me2Mhs=JSON.parse(data);
+            if(me2Mhs==""){
+                $$('#me2Mhs').append("<div style=text-align:center;><b><font size=5>Manajemen Emosi 2:</font></b></div><br/><div style=text-align:center;>-</div><br/>")
+            }
+            for(var i=0;i<me2Mhs.length;i++)
+            {
+                if(me2Mhs!="" ){
+                    $$('#me2Mhs').append("<div style=text-align:center;><b><font size=5>Manajemen Emosi 2 :</font></b></div><br/>"+
+                                         "<div style=text-align:center;>"+me2Mhs[i][0]+"</div><br/><div style=text-align:center;>"+me2Mhs[i][3]+"</div><br/>"+
+                                         "<div style=text-align:center;>"+me2Mhs[i][1]+"</div><br/><div style=text-align:center;>"+me2Mhs[i][4]+"</div><br/>"+
+                                         "<div style=text-align:center;>"+me2Mhs[i][2]+"</div><br/><div style=text-align:center;>"+me2Mhs[i][5]+"</div><br/>")
+                }
+            }
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsEntong", nrpMhs: nrpMhs },function(data){
+            var eMhs=JSON.parse(data);
+            if(eMhs==""){
+                $$('#eMhs').append("<div style=text-align:center;><b><font size=5>Soal Entong :</font></b></div><br/><div style=text-align:center;>-</div><br/>")
+            }
+            for(var i=0;i<eMhs.length;i++)
+            {
+                if(eMhs!=""){
+                    $$('#eMhs').append("<div style=text-align:center;><b><font size=5>Soal Entong "+(i+1)+"</font></b></div><br/>"+
+                                              "<div style=text-align:center;>"+eMhs[i][0]+"</div><br/><div style=text-align:center;>"+eMhs[i][1]+"</div><br/>")
+                }
+            }   
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsLessonLearned", nrpMhs: nrpMhs },function(data){
+            var llMhs=JSON.parse(data);
+            if(llMhs==""){
+                $$('#llMhs').append("<div style=text-align:center;><b><font size=5>Lesson learned :</font></b></div><br/><div style=text-align:center;>-</div><br/>")
+            }
+            for(var i=0;i<llMhs.length;i++)
+            {
+                if(llMhs!=""){
+                    $$('#llMhs').append("<div style=text-align:center;><b><font size=5>Lesson Learned :</font></b></div><br/>"+
+                                              "<div style=text-align:center;>"+llMhs[i][0]+"</div><br/><div style=text-align:center;>"+llMhs[i][1]+"</div><br/>")
+                }
+            }   
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsRm", nrpMhs: nrpMhs },function(data){
+            var rmMhs=JSON.parse(data);
+            if(rmMhs==""){
+                $$('#rmMhs').append("<div style=text-align:center;><b><font size=5>Refleksi Mini :</font></b></div><br/><div style=text-align:center;>-</div><br/>")
+            }
+            for(var i=0;i<rmMhs.length;i++)
+            {
+                if(rmMhs!=""){
+                    $$('#rmMhs').append("<div style=text-align:center;><b><font size=5>Refleksi mini "+(i+1)+"</font></b></div><br/>"+
+                                              "<div style=text-align:center;>"+rmMhs[i][0]+"</div><br/><div style=text-align:center;>"+rmMhs[i][1]+"</div><br/>")
+                }
+            }   
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsFormAp", nrpMhs: nrpMhs },function(data){
+            var apMhs=JSON.parse(data);
+            if(apMhs==""){
+                $$('#apMhs').append("<div style=text-align:center;><b><font size=5>Jawaban Form Action Plan :</font></b></div><br/><div style=text-align:center;>-</div><br/>")
+            }
+            for(var i=0;i<apMhs.length;i++)
+            {
+                 if(apMhs!="" ){
+                    $$('#apMhs').append("<div style=text-align:center;><b><font size=5>Jawaban Form Action Plan :</font></b></div><br/>"+
+                                         "<div style=text-align:center;>Obstacle :</div><br/><div style=text-align:center;>"+apMhs[i][0]+"</div><br/>"+
+                                         "<div style=text-align:center;>Evidence :</div><br/><div style=text-align:center;>"+apMhs[i][1]+"</div><br/>"+
+                                         "<div style=text-align:center;>Evaluation :</div><br/><div style=text-align:center;>"+apMhs[i][2]+"</div><br/>"+
+                                         "<div style=text-align:center;>Target :</div><br/><div style=text-align:center;>"+apMhs[i][3]+"</div><br/>"+
+                                         "<div style=text-align:center;>Status :</div><br/><div style=text-align:center;>"+apMhs[i][4]+"</div><br/>")
+                }
+            }   
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsFormTableAp", nrpMhs: nrpMhs },function(data){
+            var aptMhs=JSON.parse(data);
+            if(aptMhs==""){
+                $$('#aptMhs').append("<div style=text-align:center;><b><font size=5>Jawaban Detail Form Action Plan :</font></b></div><br/><div style=text-align:center;>-</div><br/>")
+            }
+            for(var i=0;i<aptMhs.length;i++)
+            {
+                 if(aptMhs!="" ){
+                    $$('#aptMhs').append("<div style=text-align:center;><b><font size=5>Jawaban Detail Form Action Plan  :</font></b></div><br/>"+
+                                         "<div style=text-align:center;>Task :</div><br/><div style=text-align:center;>"+aptMhs[i][0]+"</div><br/>"+
+                                         "<div style=text-align:center;>Resource :</div><br/><div style=text-align:center;>"+aptMhs[i][1]+"</div><br/>"+
+                                         "<div style=text-align:center;>Timeline :</div><br/><div style=text-align:center;>"+aptMhs[i][2]+"</div><br/>"+
+                                         "<div style=text-align:center;>Evidence_Table :</div><br/><div style=text-align:center;>"+aptMhs[i][3]+"</div><br/>"+
+                                         "<div style=text-align:center;>Evaluation_Table :</div><br/><div style=text-align:center;>"+aptMhs[i][4]+"</div><br/>")
+                }
+            }   
+        });
+        
+        $$.post(directory,{opsi:"getSoalJwbMhsAllFishbone", nrpMhs: nrpMhs },function(data){
+            var fishKMhs=JSON.parse(data);
+            if(fishKMhs==""){
+                $$('#fishKMhs').append("<div style=text-align:center;><b><font size=5>Jawaban Fishbone :</font></b></div><br/><div style=text-align:center;>-</div><br/>")
+            }
+            for(var i=0;i<fishKMhs.length;i++)
+            {
+                if(fishKMhs!=""){
+                    $$('#fishKMhs').append("<div style=text-align:center;><b><font size=5>Jawaban Fishbone :</font></b></div><br/>"+
+                                            "<div style=text-align:center;>Kepala Fishbone :</div><br/><div style=text-align:center;>"+fishKMhs[i][0]+"</div><br/>"+
+                                             "<div style=text-align:center;>Sirip Fishbone :</div><br/><div style=text-align:center;>"+fishKMhs[i][1]+"</div><br/>"+
+                                             "<div style=text-align:center;>Detail Sirip Fishbone :</div><br/><div style=text-align:center;>"+fishKMhs[i][2]+"</div><br/>")
+                }
+            }   
+        });
+
+        var namaMhs = mhs.options[mhs.selectedIndex].text;
+        $$("#commentUntukDiinsert").attr("placeholder", "Ketik Comment untuk " +namaMhs );
+        document.getElementById("untukCommentMhs").style.visibility = "visible";
+
+    });
+
+    
+    $$('#submitInsertComment').on('click',function(){
+        
+        var komen=$$("#commentUntukDiinsert").val();
+        var indexMhs=mhs.options[mhs.selectedIndex].value;
+        $$.post(directory,{opsi:"insertCommentMhs", indexMhs: indexMhs,komen:komen },function(data){
+            if(data=="berhasil")
+            {
+                myApp.alert("Comment Berhasil Disimpan","Berhasil");
+            }
+            else
+            {
+                myApp.alert("Comment Tidak Tersimpan","Gagal");
+            }
+        });
+    });
+})
+
+myApp.onPageInit('pilihKelompokFasilitator', function (page) {
+    var idGelombang = page.query.idGelombang;
+    $$.post(directory,{opsi:"getKelompokDariGelombang", id:idGelombang},function(data){
+        $$('#pilihKelompok').html(data);
+    });
+})
+
+myApp.onPageInit('pilihMahasiswaFasilitator', function (page) {
+    var idKelompok = page.query.idKelompok;
+    $$.post(directory,{opsi:"getMahasiswaDariKelompok", id:idKelompok},function(data){
+        $$('#pilihMahasiswa').html(data);
+    });
+})
+
+myApp.onPageInit('halamanMahasiswaFasilitator', function (page) {
+    var nrp = page.query.idNrp;
+    $$.post(directory,{opsi:"getDetailMhs", id:nrp},function(data){
+        $$('#statusMahasiswa').html(data);
+    });
+
+    $$('#insertComment').on('click', function () {
+        var komen=document.getElementById("comments"); 
+        $$.post(directory,{opsi:'insertCommentMhs', idNrp:nrp, komens: komen.value}, function(data){
+            console.log(data);
+            myApp.alert("Comment berhasil disimpan.");
         });
     });    
 })
 
-myApp.onPageInit('fishboneSupport', function (page) {
-    var ids = page.query.idKepala;
-    $$.post(directory,{opsi:'getFishboneSupport', id:ids}, function(data){
-        $$('#listSupport').html(data);
-    });
-
-    $$('#addSupport').on('click', function () {
-        myApp.prompt('', 'Fishbone Support', function (value) {
-            $$.post(directory,{opsi:'jawabFishboneSupport', id:ids, jawab:value}, function(data){
-                $$('#listSupport').append(data);
-            });
-        });
+myApp.onPageInit('detailJawabMahasiswaFasilitator', function (page) {
+    var nrp = page.query.idNrp;
+    var submodul = page.query.id_Submodul;
+    
+    $$.post(directory,{opsi:"getDetailJawabanMhs", ids:nrp, modul:submodul},function(data){
+        $$('#blockAnswer').html(data);
     });
 })
 
-myApp.onPageInit('fishboneSupportDetail', function (page) {
-    var ids = page.query.idSupport;
-    $$.post(directory,{opsi:'getFishboneSupportDetail', id:ids}, function(data){
-        $$('#listSupportDetail').html(data);
+var indexKelompok=0;
+myApp.onPageInit('pilihGelombangEval', function (page) {
+    var gelombang = document.getElementById('gelombang');
+    var kelompok = document.getElementById('kelompok');
+    var mhs = document.getElementById('mhs');
+    $$('#gelombang').html("");
+    $$.post(directory,{opsi:"getGelombangPadaPeriodeAktif"},function(data){
+        gelombangFasilitator=JSON.parse(data);
+        for(var i=0;i<gelombangFasilitator.length;i++)
+        {
+            $$('#gelombang').append("<option value="+gelombangFasilitator[i][0]+"> Gelombang " 
+                +gelombangFasilitator[i][1]+
+                "</option>")
+        }       
     });
 
-    $$('#addSupportDetail').on('click', function () {
-        myApp.prompt('', 'Fishbone Support Detail', function (value) {
-             $$.post(directory,{opsi:'jawabFishboneSupportDetail', id:ids, jawab:value}, function(data){
-                $$('#listSupportDetail').append(data);
-            });
+    $$('#gelombang').on('change', function(){
+        $$('#kelompok').html("");
+        $$('#textKelompok').html("Belum Memilih Kelompok");
+        document.getElementById("mhsHidden").style.visibility = "hidden";
+        var indexGelombang = gelombang.options[gelombang.selectedIndex].value;
+        $$.post(directory,{opsi:"getKelompokDariGelombang", idGelombang: indexGelombang},function(data){
+            KelompokFasilitator=JSON.parse(data);
+            for(var i=0;i<KelompokFasilitator.length;i++)
+            {
+                $$('#kelompok').append("<option value="+KelompokFasilitator[i][0]+"> Kelompok " 
+                    +KelompokFasilitator[i][1]+
+                    "</option>")
+            }
+            document.getElementById("kelompokHidden").style.visibility = "visible";     
         });
     });
+
+    
+    $$('#btnLogoutFasilitator').on('click', function () 
+    {
+        localStorage.removeItem('username');
+        localStorage.removeItem('jabatan');
+        mainView.router.back({url: 'index.html',force: true,ignoreCache: true});
+    });
+
+
+    $$('#kelompok').on('change', function(){
+        
+
+        var namaKelompok = kelompok.options[kelompok.selectedIndex].text;
+        indexKelompok=kelompok.options[kelompok.selectedIndex].value;
+        document.getElementById("mhsHidden").style.visibility = "visible";
+        
+        $$('#mhs').html("");
+        $$.post(directory,{opsi:"getMhsDalamKelompok", indexKelompok: indexKelompok},function(data){
+            mhsFasilitator=JSON.parse(data);
+            for(var i=0;i<mhsFasilitator.length;i++)
+            {
+                $$('#mhs').append("<option value="+mhsFasilitator[i][0]+">"+mhsFasilitator[i][0]+
+                    " - "+mhsFasilitator[i][1]+
+                    "</option>")
+            }   
+        });
+    });
+    var bigDreamMhs="";
+    var lifelistMhs="";
+    var oMhs="";
+    var me1Mhs="";
+    var me2Mhs="";
+    var eMhs="";
+    var llMhs="";
+    var rmMhs="";
+    var apMhs="";
+    var aptMhs="";
+    var fishKMhs="";
+    $$('#mhs').on('change', function(){
+        document.getElementById("halo").style.display = "none";
+        document.getElementById("gelombang").style.display = "none";
+        document.getElementById("kelompokHidden").style.display = "none";
+        document.getElementById("textKelompok").style.display = "none";
+        document.getElementById("kelompok").style.display = "none";
+        document.getElementById("ilangPilihM").style.display = "none";
+
+        document.getElementById("fotoMhs").style.visibility = "visible";
+        document.getElementById("bigDreamMhs").style.visibility = "visible";
+        document.getElementById("lifelistMhs").style.visibility = "visible";
+        document.getElementById("oMhs").style.visibility = "visible";
+        document.getElementById("me1Mhs").style.visibility = "visible";
+        document.getElementById("me2Mhs").style.visibility = "visible";
+         document.getElementById("eMhs").style.visibility = "visible";
+         document.getElementById("llMhs").style.visibility = "visible";
+          document.getElementById("rmMhs").style.visibility = "visible";
+          document.getElementById("apMhs").style.visibility = "visible";
+           document.getElementById("aptMhs").style.visibility = "visible";
+           document.getElementById("fishKMhs").style.visibility = "visible";
+           document.getElementById("fishSMhs").style.visibility = "visible";
+        var nrpMhs=mhs.options[mhs.selectedIndex].value;
+        $$('#fotoMhs').html("");
+         $$('#fotoMhs').html("<div style='text-align:center;'><img src=https://my.ubaya.ac.id/img/mhs/"+nrpMhs+"_m.jpg></div>");
+        $$('#bigDreamMhs').html("");
+        $$('#lifelistMhs').html("");
+        $$('#oMhs').html("");
+        $$('#me1Mhs').html("");
+        $$('#me2Mhs').html("");
+        $$('#eMhs').html("");
+        $$('#llMhs').html("");
+        $$('#rmMhs').html("");
+        $$('#apMhs').html("");
+        $$('#aptMhs').html("");
+        $$('#fishKMhs').html("");
+        $$('#fishSMhs').html("");
+
+        $$.post(directory,{opsi:"getSoalJwbMhsBigDream", nrpMhs: nrpMhs },function(data){
+            bigDreamMhs=JSON.parse(data);
+            if(bigDreamMhs!=""){
+                $$('#bigDreamMhs').append("<br/><div style='text-align:left;'>Modul Big Dream<span style='float:right;'><i class='icon f7-icons'>check_round_fill</i></span><hr></div>")
+            }
+            else{
+                $$('#bigDreamMhs').append("<br/><div style='text-align:left;'>Modul Big Dream<span style='float:right;'><i class='icon f7-icons'>close_round_fill</i></span><hr></div>")
+            }
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsLifelist", nrpMhs: nrpMhs },function(data){
+            lifelistMhs=JSON.parse(data);
+            if(lifelistMhs!=""){
+                $$('#lifelistMhs').append("<div style='text-align:left;'>Modul Lifelist<span style='float:right;'><i class='icon f7-icons'>check_round_fill</i></span><hr></div>")
+            }
+            else{
+                $$('#lifelistMhs').append("<div style='text-align:left;'>Modul Lifelist<span style='float:right;'><i class='icon f7-icons'>close_round_fill</i></span><hr></div>")
+            }
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsOutdoor", nrpMhs: nrpMhs },function(data){
+            oMhs=JSON.parse(data);
+            if(oMhs!=""){
+                $$('#oMhs').append("<div style='text-align:left;'>Modul Outdoor<span style='float:right;'><i class='icon f7-icons'>check_round_fill</i></span><hr></div>")
+            }
+            else{
+                $$('#oMhs').append("<div style='text-align:left;'>Modul Outdoor<span style='float:right;'><i class='icon f7-icons'>close_round_fill</i></span><hr></div>")
+            }
+
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsMe1", nrpMhs: nrpMhs },function(data){
+            me1Mhs=JSON.parse(data);
+            if(me1Mhs!=""){
+                $$('#me1Mhs').append("<div style='text-align:left;'>Modul Manajemen Emosi 1<span style='float:right;'><i class='icon f7-icons'>check_round_fill</i></span><hr></div>")
+            }
+            else{
+                $$('#me1Mhs').append("<div style='text-align:left;'>Modul Manajemen Emosi 2<span style='float:right;'><i class='icon f7-icons'>close_round_fill</i></span><hr></div>")
+            }
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsMe2", nrpMhs: nrpMhs },function(data){
+            me2Mhs=JSON.parse(data);
+            if(me2Mhs!=""){
+                $$('#me2Mhs').append("<div style='text-align:left;'>Modul Manajemen Emosi 2<span style='float:right;'><i class='icon f7-icons'>check_round_fill</i></span><hr></div>")
+            }
+            else{
+                $$('#me2Mhs').append("<div style='text-align:left;'>Modul Manajemen Emosi 2<span style='float:right;'><i class='icon f7-icons'>close_round_fill</i></span><hr></div>")
+            }
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsEntong", nrpMhs: nrpMhs },function(data){
+            eMhs=JSON.parse(data);
+            if(eMhs!=""){
+                $$('#eMhs').append("<div style='text-align:left;'>Modul Entong<span style='float:right;'><i class='icon f7-icons'>check_round_fill</i></span><hr></div>")
+            }
+            else{
+                $$('#eMhs').append("<div style='text-align:left;'>Modul Entong<span style='float:right;'><i class='icon f7-icons'>close_round_fill</i></span><hr></div>")
+            }  
+
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsLessonLearned", nrpMhs: nrpMhs },function(data){
+            llMhs=JSON.parse(data);
+            if(llMhs!=""){
+                $$('#llMhs').append("<div style='text-align:left;'>Modul Lesson learned<span style='float:right;'><i class='icon f7-icons'>check_round_fill</i></span><hr></div>")
+            }
+            else{
+                $$('#llMhs').append("<div style='text-align:left;'>Modul Lesson Learned<span style='float:right;'><i class='icon f7-icons'>close_round_fill</i></span><hr></div>")
+            }  
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsRm", nrpMhs: nrpMhs },function(data){
+            rmMhs=JSON.parse(data);
+            if(rmMhs!=""){
+                $$('#rmMhs').append("<div style='text-align:left;'>Modul Refleksi Mini<span style='float:right;'><i class='icon f7-icons'>check_round_fill</i></span><hr></div>")
+            } 
+            else{
+                $$('#rmMhs').append("<div style='text-align:left;'>Modul Refleksi Mini<span style='float:right;'><i class='icon f7-icons'>close_round_fill</i></span><hr></div>")
+            }
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsFormAp", nrpMhs: nrpMhs },function(data){
+            apMhs=JSON.parse(data);
+            if(apMhs!=""){
+                $$('#apMhs').append("<div style='text-align:left;'>Modul Action Plan<span style='float:right;'><i class='icon f7-icons'>check_round_fill</i></span><hr></div>")
+            }
+            else{
+                $$('#apMhs').append("<div style='text-align:left;'>Modul Action Plan<span style='float:right;'><i class='icon f7-icons'>close_round_fill</i></span><hr></div>")
+            }
+        });
+        $$.post(directory,{opsi:"getSoalJwbMhsFormTableAp", nrpMhs: nrpMhs },function(data){
+            aptMhs=JSON.parse(data);
+            if(aptMhs!=""){
+                $$('#aptMhs').append("<div style='text-align:left;'>Detail Action Plan<span style='float:right;'><i class='icon f7-icons'>check_round_fill</i></span><hr></div>")
+            }
+            else{
+                $$('#aptMhs').append("<div style='text-align:left;'>Detail Action Plan<span style='float:right;'><i class='icon f7-icons'>close_round_fill</i></span><hr></div>")
+            }
+
+        });
+        
+        $$.post(directory,{opsi:"getSoalJwbMhsAllFishbone", nrpMhs: nrpMhs },function(data){
+            fishKMhs=JSON.parse(data);
+            if(fishKMhs!=""){
+                $$('#fishKMhs').append("<div style='text-align:left;'>Modul Fishbone<span style='float:right;'><i class='icon f7-icons'>check_round_fill</i></span><hr></div>")
+            }
+             else{
+                $$('#fishKMhs').append("<div style='text-align:left;'>Modul Fishbone<span style='float:right;'><i class='icon f7-icons'>close_round_fill</i></span><hr></div>")
+            } 
+        });
+
+    if(bigDreamMhs!="" && lifelistMhs!="" && oMhs!="" && me1Mhs!=""&&me2Mhs!=""&&eMhs!=""&&llMhs!=""&&rmMhs!=""&&apMhs!=""&&aptMhs!=""&&fishKMhs!=""){
+        $$('#fishSMhs').append("<div style='text-align:center;'>Mahasiswa ini lulus GPB</div>");
+    }
+    else{
+        $$('#fishSMhs').append("<div style='text-align:center;'>Mahasiswa ini belum lulus GPB</div>");
+
+    }
+        
+
+    });
+    
+   
 })
+
