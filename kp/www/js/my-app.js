@@ -156,79 +156,32 @@ myApp.onPageInit('index', function (page) {
     	var pilihan = document.getElementById("jabatan");
     	password = document.getElementById("password").value;
     	var username = document.getElementById("username");
-		var jabatan = pilihan.options[pilihan.selectedIndex].value;
-    	if(jabatan=='mahasiswa')
-        {
-            $$.post(directory,{opsi:"loginMhs", nrp:username.value,password:password
-            },function(data){
-                if(data=="berhasil") //cek ada atau tdk id server
-                {
-                    $$.post(directory,{opsi:"getBisTenda", nrp:username.value
-                    },function(data){
-                        var tendaBisTemp=JSON.parse(data);
-                        mainView.router.loadPage('menu.html');
-                        localStorage.setItem("tenda",JSON.stringify(tendaBisTemp['tenda']));
-                        localStorage.setItem("bus",JSON.stringify(tendaBisTemp['bus']));
-                        localStorage.setItem("nama_kelompok",JSON.stringify(tendaBisTemp['nama_kelompok']));
-                        localStorage.setItem("nama_mhs",JSON.stringify(tendaBisTemp['nama']));
-                        localStorage.setItem("nrp_mhs",JSON.stringify(tendaBisTemp['id_nrp']));
-                        localStorage.setItem("password",JSON.stringify(password));
-                        localStorage.setItem("username",JSON.stringify(username.value));
-                        localStorage.setItem("jabatan",JSON.stringify('mahasiswa')); 
-                    });
-                }
-                else
-                {
-                    console.log(data);
-                    myApp.alert("Data login tidak ditemukan","Error");
-                }
-                
-            });
+    	
+        $$.post(directory,{opsi:"loginMhs", nrp:username.value,password:password},function(data){
+            if(data=="berhasil") //cek ada atau tdk id server
+            {
+                $$.post(directory,{opsi:"getBisTenda", nrp:username.value
+                },function(data){
+                    var tendaBisTemp=JSON.parse(data);
+                    mainView.router.loadPage('menu.html');
+                    localStorage.setItem("tenda",JSON.stringify(tendaBisTemp['tenda']));
+                    localStorage.setItem("bus",JSON.stringify(tendaBisTemp['bus']));
+                    localStorage.setItem("nama_kelompok",JSON.stringify(tendaBisTemp['nama_kelompok']));
+                    localStorage.setItem("nama_mhs",JSON.stringify(tendaBisTemp['nama']));
+                    localStorage.setItem("nrp_mhs",JSON.stringify(tendaBisTemp['id_nrp']));
+                    localStorage.setItem("password",JSON.stringify(password));
+                    localStorage.setItem("username",JSON.stringify(username.value));
+                    localStorage.setItem("jabatan",JSON.stringify('mahasiswa')); 
+                });
+            }
+            else
+            {
+                console.log(data);
+                myApp.alert("Data login tidak ditemukan","Error");
+            }
             
-        }
-    	else if(jabatan=='fasilitator')
-        {
-            $$.post(directory,{opsi:"loginFasilitator", username:username.value,password:password
-            },function(data){
-                if(data=="berhasil")
-                {
-                    mainView.router.loadPage('pilihGelombangFasilitator.html');
-                    localStorage.setItem("password",JSON.stringify(password));
-                    localStorage.setItem("username",JSON.stringify(username.value));
-                    localStorage.setItem("jabatan",JSON.stringify('fasilitator'));
-                }
-                else if(data=="hehehe")
-                {
-                    mainView.router.loadPage('hehePage.html');
-                    localStorage.setItem("password",JSON.stringify(password));
-                    localStorage.setItem("username",JSON.stringify(username.value));
-                    localStorage.setItem("jabatan",JSON.stringify('hehe'));
-                }
-                else
-                {
-                    myApp.alert("fail fas","Error");
-                }
-                
-            });
-            
-        }
-        else if(jabatan=='eval')
-        {
-            $$.post(directory,{opsi:"loginEval", username:username.value,password:password
-            },function(data){
-                if(data=="berhasil")
-                {
-                    mainView.router.loadPage('pilihGelombangEval.html');
-                    localStorage.setItem("password",JSON.stringify(password));
-                    localStorage.setItem("username",JSON.stringify(username.value));
-                    localStorage.setItem("jabatan",JSON.stringify('eval'));
-                }
-                else
-                {
-                    myApp.alert("Dfail eval","Error");
-                } 
-            });
-        }
+        });
+        
     });
 }).trigger();
 
