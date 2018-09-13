@@ -330,7 +330,7 @@ myApp.onPageInit('myLifeList', function (page) {
         $$('#sortableLifeList').html(data);
         $$('.deleteList').on('click', function(){
             myApp.confirm('Apakah anda yakin akan menghapus life list ini?', 'Apakah Anda Yakin?', function () {
-                var id = trim($$(this).attr('id'), 's');
+                var id = $$(this).attr('id').replace('s','');
                 var item = document.getElementById(id);
                 var list = document.getElementById('LifeList');
                 list.removeChild(item);
@@ -412,7 +412,7 @@ myApp.onPageInit('formActionPlanDetail', function (page) {
         if(result["action"] !=undefined){
             for(var i=0;i<result["action"].length;i++)
             {   
-               $$('#listTabelFormActionPlan').append('<a href="formActionPlanForm.html?idTabel='+result["action"][i]["id"]+'">'+
+               $$('#listTabelFormActionPlan').append('<a href="formActionPlanForm.html?idLifeList='+idLife+'&idTabel='+result["action"][i]["id"]+'">'+
                     '<div class="card-header" style="text-align:center;" >'+(i+1)+'</div>'+
                     '<div class="card-content">'+
                     '<div class="card-content-inner">'+
@@ -430,13 +430,12 @@ myApp.onPageInit('formActionPlanDetail', function (page) {
     $$('#btnSubmit').on('click', function () {
         console.log(idLife);
         $$.post(directory,{opsi:'jawabDetailLifeList',  ids:idLife, targets:target.value, obstacles:obstacle.value, evidences:evidence.value, evaluations:evaluation.value}, function(data){
-            console.log(data);
             myApp.alert("Detail Life List Berhasil disimpan.");
         });   
     });
 
     $$('.floating-button').on('click', function () {
-       mainView.router.loadPage("formActionPlanForm.html?idLife="+idLife);
+       mainView.router.loadPage("formActionPlanForm.html?idLifeList="+idLife+"&idLife="+idLife);
     });
 })
 
@@ -455,6 +454,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
     });
     var timeline=document.getElementById("calendar-events");
     
+    var idLife=page.query.idLifeList;
     var idTabel="";
     if(page.query.idTabel) // misal ada idtabel brarti buat edit, tampilno smua value lama
     {
@@ -473,8 +473,8 @@ myApp.onPageInit('formActionPlanForm', function (page) {
         $$('#btnSubmitTabel').on('click', function () {
             $$.post(directory,{opsi:'updateActionPlan',  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
                 console.log(data);
+                mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife,force: true,ignoreCache: true});
             });  
-            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
         });
     }
     else{
@@ -482,8 +482,9 @@ myApp.onPageInit('formActionPlanForm', function (page) {
         $$('#btnSubmitTabel').on('click', function () {
             $$.post(directory,{opsi:'jawabActionPlan', nrp:localStorage.getItem('nrp_mhs'),  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
                 console.log(data);
+                console.log("submit");
+                mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife,force: true,ignoreCache: true});
             });  
-            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
         });
     }
 
@@ -502,7 +503,7 @@ myApp.onPageInit('tujuanHidup', function (page) {
         $$('#listTujuan').html(data);
         $$('.deleteTujuan').on('click', function(){
             myApp.confirm('Apakah anda yakin akan menghapus tujuan hidup ini?', 'Apakah Anda Yakin?', function () {
-                var id = trim($$(this).attr('id'), 's');
+                var id = $$(this).attr('id').replace('s','');
                 var item = document.getElementById(id);
                 var list = document.getElementById('listTujuan');
                 list.removeChild(item);
@@ -527,7 +528,7 @@ myApp.onPageInit('tujuanHidup', function (page) {
                 $$('#jawabTujuan').focus();
                 $$('.deleteTujuan').on('click', function(){
                     myApp.confirm('Apakah anda yakin akan menghapus tujuan hidup ini?', 'Apakah Anda Yakin?', function () {
-                        var id = trim($$(this).attr('id'), 's');
+                        var id = $$(this).attr('id').replace('s','');
                         var item = document.getElementById(id);
                         var list = document.getElementById('listTujuan');
                         list.removeChild(item);
