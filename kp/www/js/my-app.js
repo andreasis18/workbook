@@ -156,7 +156,6 @@ myApp.onPageInit('index', function (page) {
     	var pilihan = document.getElementById("jabatan");
     	password = document.getElementById("password").value;
     	var username = document.getElementById("username");
-<<<<<<< HEAD
 		var jabatan = pilihan.options[pilihan.selectedIndex].value;
     	if(jabatan=='mahasiswa')
         {
@@ -569,9 +568,6 @@ myApp.onPageInit('formActionPlanForm', function (page) {
     });
     
 })
-
-<<<<<<< HEAD
-=======
 myApp.onPageInit('tujuanHidup', function (page) {
 
     $$.post(directory,{opsi:'getTujuanHidup', nrp:localStorage.getItem('nrp_mhs')}, function(data){
