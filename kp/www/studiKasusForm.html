@@ -13,7 +13,7 @@
 
     <!-- Your app title -->
     <title>My App</title>
-    -->
+
 
     <link rel="stylesheet" href="lib/framework7/css/framework7.ios.min.css">
     <link rel="stylesheet" href="lib/framework7/css/framework7.ios.colors.min.css">
@@ -26,42 +26,68 @@
 <body>
     <!-- Status bar overlay for full screen mode (PhoneGap) -->
     <div class="statusbar-overlay"></div>
+
+    <!-- Panels overlay-->
+    <div class="panel-overlay"></div>
+    <!-- Left panel with reveal effect-->
+    <div class="panel panel-left panel-reveal">
+        <div class="content-block">
+            <p>Left panel content goes here</p>
+        </div>
+    </div>
+
     <!-- Views -->
     <div class="views">
-        <!-- Your main view, should have "view-main" class -->
         <div class="view view-main">
             <!-- Top Navbar-->
             <div class="navbar">
                 <div class="navbar-inner">
                     <div class="left"><a href="#" class="link icon-only open-panel no-ripple"><i class="icon icon-bars"></i></a></div>
-                    <div class="center sliding">Fishbone</div>
-                      <div class="right">
+                    <div class="center sliding">Form</div>
+                    <div class="right">
                     <a href="#" class="button back">Back</a>
                   </div>
                 </div>
             </div>
-            <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
+
             <div class="pages navbar-through toolbar-through">
                 <!-- Page, "data-page" contains page name -->
-                <div data-page="fishbone" class="page">
-                    <!-- Scrollable page content -->
-                    <div class="page-content">
-                      <div class="content-block">
-                        <div class="center sliding">
-                          <div class="list-block">
-                            <ul id="listKepala">
-                              
-                            </ul>
+                <div data-page="studiKasusForm" class="page">
+                    
+                  <!-- Scrollable page content -->
+                  <div class="page-content">
+                    <div class="content-block">
+                    <div class="list-block">
+                      <ul>
+                        <!-- Text inputs -->
+                        <div class="card">
+                          <div class="card-header"  >
+                            <input type="text" id="situasi" placeholder="Situasi" style="text-align:center;">
                           </div>
+                            <div class="card-content" >
+                              <div class="card-content-inner">
+                                <input type="text" id="pemikiran" placeholder="Pemikiran" style="text-align:center;">
+                              </div>
+                              <hr />
+                              <div class="card-content-inner">
+                                <input type="text" id="emosi" placeholder="Emosi Yang Muncul" style="text-align:center;">
+                              </div>
+                            </div>
+                           <div class="card-footer" ><input type="text" id="perilaku" placeholder="Perilaku yang ditunjukkan" style="text-align:center;"></div>
                         </div>
-                        <a href="#" class="floating-button color-teal no-ripple" id="addKepala">
-                          <i class="icon icon-plus"></i>
-                        </a>
-                      </div>    
+
+                        <li>
+                          <a href="#" class="item-link list-button" id="btnDeleteStudiKasus" style="visibility: hidden;">Delete</a>
+                        </li>
+                        <li>
+                          <a href="#" class="item-link list-button" id="btnSubmitStudiKasus">Submit</a>
+                        </li>
+                      </ul> 
+                    </div>
                     </div>
                   </div>
-              </div>
-              <!-- Bottom Toolbar-->
+                </div>
+            </div>
           </div>
       </div>
 
