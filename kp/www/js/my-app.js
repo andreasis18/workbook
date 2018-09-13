@@ -149,7 +149,7 @@ myApp.onPageInit('index', function (page) {
                 console.log(data);
                 myApp.alert("Data login tidak ditemukan","Error");
             }   
-        }
+        })
     });
 }).trigger();
 
