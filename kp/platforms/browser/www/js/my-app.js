@@ -122,6 +122,7 @@ myApp.onPageInit('index', function (page) {
     });
 
     $$('#btnMasuk').on('click',function(){
+        console.log("asfdsa");
     	var pilihan = document.getElementById("jabatan");
     	password = document.getElementById("password").value;
     	var username = document.getElementById("username");
@@ -224,7 +225,51 @@ $$(document).on('deviceready', function() {
 myApp.onPageInit('pilihBigDream', function (page) {
     $$.post(directory,{opsi:'ambilStatusBigDream', nrp:localStorage.getItem('nrp_mhs')}, function(data){
         console.log(data);
-        $$('#BigDreamList').html(data);
+        var result = JSON.parse(data);
+        var bigdream=false;
+        var lifelist=false;
+        console.log(result["big"]);
+        for(var i=0;i<result["big"].length;i++)
+        {
+            var imageName = result["big"][i]['judul_submodul'].toLowerCase().replace(' ', '');
+            $$('#BigDreamList').append('<div class="card demo-card-header-pic">'+
+                        '<div style="background-image:url(img/'+imageName+'.jpg); background-size:auto; background-repeat:no-repeat; width : 100%; height:180px;" class="card-header align-items-flex-end"></div>'+
+                        '<div class="card-content card-content-padding">'+
+                          '<p style="padding-left:10px;">'+result["big"][i]['soal']+'</p>'+
+                        '</div>');
+            if(result["big"][i]['id_submodul']==1){
+                $$('#BigDreamList').append('<div class="card-footer"><a href="#" id="masukMyBigDream" class="link">Isi Big Dream</a></div>');
+                bigdream=true;
+            }
+            else if(result["big"][i]['id_submodul']==2){
+                if(result["big"][i]['status']==0 && !$bigdream){
+                    $$('#BigDreamList').append('<div class="card-footer">Isi Big Dream terlebih dahulu!</div>');    
+                }   
+                else{
+                    $$('#BigDreamList').append('<div class="card-footer"><a href="#" id="masukMyLifelist" class="link">Isi Life List</a></div>');
+                }
+                if(result["big"][i]['status']==1){
+                    lifelist=true;
+                }
+            }
+            else if(result["big"][i]['id_submodul']==3){
+                if(result["big"][i]['status']==0 && !$lifelist){
+                    $$('#BigDreamList').append('<div class="card-footer">Isi Life List terlebih dahulu</div>');
+                }   
+                else{
+                    $$('#BigDreamList').append('<div class="card-footer"><a href="#" id="masukActionPlan" class="link">Isi Action Plan</a></div>');
+                }
+            }
+            else{
+                if(!bigdream){
+                    $$('#BigDreamList').append('<div class="card-footer">Isi Big Dream terlebih dahulu!</div>');    
+                }
+                else{
+                    $$('#BigDreamList').append('<div class="card-footer"><a href="tujuanhidup.html" id="masukTujuanHidup" class="link">Isi Tujuan Hidup</a></div>');    
+                }
+            }
+            $$('#BigDreamList').append("</div>");
+        }
         $$('#masukMyBigDream').on('click', function () {
            mainView.router.loadPage("mybigdream.html");
         });
@@ -283,7 +328,6 @@ myApp.onPageInit('myLifeList', function (page) {
     $$.post(directory,{opsi:'getLifeList', nrp:localStorage.getItem('nrp_mhs'), code:codes}, function(data){
         $$('#sortableLifeList').html(data);
         $$('.deleteList').on('click', function(event){
-
             var id = event.target.id.replace('s','');
             myApp.confirm('Apakah anda yakin akan menghapus life list ini?', 'Apakah Anda Yakin?', function () {
                 var item = document.getElementById(id);
@@ -305,22 +349,28 @@ myApp.onPageInit('myLifeList', function (page) {
             if(length==''){
                 length==0;
             }
-            $$.post(directory,{opsi:'addLifeList', jawab:jawaban, count:length}, function(data){
-                $$('#sortableLifeList').append(data);
-                $$('#jawabLifeList').html("");
-                $$('#jawabLifeList').focus();
-                $$('.deleteList').on('click', function(event){
-                     var id = event.target.id.replace('s','');
-                    var item = document.getElementById(id);
-                    var list = document.getElementById('sortableLifeList');
-                    list.removeChild(item);
-                });
+            length++;
+            $$('#sortableLifeList').append('<li id="'+length+'">'+
+                      '<div class="sortable-handler"></div>'+
+                      '<div class="item-content">'+
+                        '<div class="item-media"><i class="f7-icons deleteList" id="'+length+'s">close</i></div>'+
+                        '<div class="item-inner"> '+
+                          '<div class="item-title listContent">'+jawaban+'</div>'+
+                        '</div>'+
+                     '</div>'+
+                    '</li>');
+            $$('#jawabLifeList').html("");
+            $$('#jawabLifeList').focus();
+            $$('.deleteList').on('click', function(event){
+                 var id = event.target.id.replace('s','');
+                var item = document.getElementById(id);
+                var list = document.getElementById('sortableLifeList');
+                list.removeChild(item);
             });   
         }
     });
     $$('#saveList').on('click', function(){
         var jawaban = [];
-
         $$('.listContent').each(function(){
           jawaban.push($$(this).text());
         })
@@ -564,66 +614,6 @@ myApp.onPageInit('lessonLearned', function (page) {
         }
     });
 })
-
-function createChipLessonLearned(jawabane, aidine)
-{
-    //chip
-    var chip=document.createElement('div');
-    chip.className='chip';
-
-    //chip label
-    var chipLabel=document.createElement('div');
-    chipLabel.className='chip-label';
-    chipLabel.appendChild(document.createTextNode(jawabane));
-
-    //chip media
-    var chipMedia=document.createElement('div');
-    chipMedia.className='chip-media bg-teal';
-    chipMedia.appendChild(document.createTextNode(aidine+1));
-
-    //chip delete btn
-    var deleteBtn=document.createElement('a');
-    deleteBtn.setAttribute('href','#');
-    deleteBtn.className='chip-delete';
-
-
-    chip.appendChild(chipMedia);
-    chip.appendChild(chipLabel);
-    chip.appendChild(deleteBtn);
-
-    //delete chip
-    deleteBtn.onclick=function (e) {
-        e.preventDefault();
-        myApp.confirm('Hapus '+jawabane+"?","Yakin Hapus?", function () {
-            jawabanLessonLearned.splice(aidine,1);
-            localStorage.setItem("jawabanLessonLearned",JSON.stringify(jawabanLessonLearned));
-            chip.remove();
-
-        });
-    };
-
-    chipLabel.onclick=function (e) {
-        e.preventDefault();
-
-        myApp.modal({
-        title: 'Edit Nomor '+(aidine+1),
-        text: 'Edit Jawaban',
-        afterText: '<input type="text" id="txtEditLessonLearned" class="modal-text-input" style="text-align: center;" value="'+jawabanLessonLearned[aidine]+'"">',
-        buttons: [{
-        text: 'Cancel'
-        }, {
-        text: 'OK',
-        onClick: function() {
-            jawabanLessonLearned.splice(aidine,1,$$('#txtEditLessonLearned').val());
-            localStorage.setItem("jawabanLessonLearned",JSON.stringify(jawabanLessonLearned));
-            refreshLessonLearned();
-        }
-        }, ]
-        });
-    };
-
-    return chip;
-}
 
 myApp.onPageInit('pilihManajemenEmosi', function (page) {
     $$('#studikasus').on('click', function () {
