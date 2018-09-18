@@ -23,7 +23,6 @@ var mainView = myApp.addView('.view-main', {
 
 function hapusLocalAll(){
     localStorage.removeItem('username');
-    localStorage.removeItem('jabatan');
     localStorage.removeItem('tenda');
     localStorage.removeItem('bus');
     localStorage.removeItem('nama_kelompok');
@@ -38,9 +37,6 @@ var nama_mhs="";
 var nrp_mhs="";
 
 
-var gelombangFasilitator=["cek","koneksi","internet","keluar","dan","login","kembali","thanks"];
-var KelompokFasilitator=["cek","koneksi","internet","keluar","dan","login","kembali","thanks"];
-var mhsFasilitator=["cek","koneksi","internet","keluar","dan","login","kembali","thanks"];
 
 var judulModul=[["MY BIG DREAM"],
 ["MY LIFE LIST"],
@@ -59,17 +55,6 @@ var password="";
 
 
 myApp.onPageInit('index', function (page) {
-    $$('#myBigDreamSide').html(judulModul[0]);
-    $$('#myLifeListSide').html(judulModul[1]);
-    $$('#outdoorSide').html(judulModul[2]);
-    $$('#manajemenEmosiSide').html(judulModul[3]);
-    $$('#manajemenEmosi2Side').html(judulModul[4]);
-    $$('#actionPlanSide').html(judulModul[5]);
-    $$('#fishboneSide').html(judulModul[6]);
-    $$('#kisahEntongSide').html(judulModul[7]);
-    $$('#lessonLearnedSide').html(judulModul[8]);
-    $$('#refleksiMiniSide').html(judulModul[9]);
-
     $$('#menuAwal').on('click',function(){
         mainView.router.loadPage("menu.html");
         myApp.closePanel();
@@ -100,30 +85,24 @@ myApp.onPageInit('index', function (page) {
         myApp.closePanel();
     });
 
-    if(page='index'){
-        if(JSON.parse(localStorage.getItem("username"))&&JSON.parse(localStorage.getItem("jabatan")))
-        {
-            if(JSON.parse(localStorage.getItem("jabatan"))=='fasilitator')
-                mainView.router.loadPage('pilihGelombangFasilitator.html');
-            else if(JSON.parse(localStorage.getItem("jabatan"))=='mahasiswa')
-                mainView.router.loadPage('menu.html');            
-        }
-        else{
-            myApp.hideNavbar($$('.navbar'));
-        }
+    if(JSON.parse(localStorage.getItem("username")))
+    {
+        mainView.router.loadPage('menu.html'); 
+    }
+    else{
+        myApp.hideNavbar($$('.navbar'));
     }
 
     $$('#logout').on('click',function(){
         myApp.confirm('Anda akan logout dari aplikasi', 'Apakah Anda Yakin?', function () {
             hapusLocalAll();
-            mainView.router.back({url: 'index.html',force: true,ignoreCache: true});
             myApp.closePanel();
+            mainView.router.back({url: 'index.html',force: true,ignoreCache: true});
         });
     });
 
     $$('#btnMasuk').on('click',function(){
         console.log("asfdsa");
-    	var pilihan = document.getElementById("jabatan");
     	password = document.getElementById("password").value;
     	var username = document.getElementById("username");
     	
@@ -139,9 +118,7 @@ myApp.onPageInit('index', function (page) {
                     localStorage.setItem("nama_kelompok",JSON.stringify(tendaBisTemp['nama_kelompok']));
                     localStorage.setItem("nama_mhs",JSON.stringify(tendaBisTemp['nama']));
                     localStorage.setItem("nrp_mhs",JSON.stringify(tendaBisTemp['id_nrp']));
-                    localStorage.setItem("password",JSON.stringify(password));
                     localStorage.setItem("username",JSON.stringify(username.value));
-                    localStorage.setItem("jabatan",JSON.stringify('mahasiswa')); 
                 });
                 mainView.router.loadPage("menu.html");
             }
@@ -154,18 +131,8 @@ myApp.onPageInit('index', function (page) {
     });
 }).trigger();
 
-
-
 myApp.onPageInit('menu', function (page) {
-    myApp.showNavbar($$('.navbar'));
-    var mySwiper1 = myApp.swiper('.swiper-container', {
-                      pagination:'.swiper-pagination',
-                      paginationHide: false,
-                      autoplay:4000,
-                      spaceBetween: 50
-                    });
-    
-    
+        
     if(JSON.parse(localStorage.getItem("username")))
     {
     	nrp=JSON.parse(localStorage.getItem("username"));
@@ -176,11 +143,6 @@ myApp.onPageInit('menu', function (page) {
         bus=JSON.parse(localStorage.getItem("bus"));
         nama_kelompok=JSON.parse(localStorage.getItem("nama_kelompok"));
         nama_mhs=JSON.parse(localStorage.getItem("nama_mhs"));
-    }
-
-    if(JSON.parse(localStorage.getItem("password")))
-    {
-    	password=JSON.parse(localStorage.getItem("password"));
     }
 
     $$('#myBigDreamPilih').on('click',function(){
