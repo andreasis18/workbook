@@ -172,6 +172,7 @@ myApp.onPageInit('menu', function (page) {
     $$('#namaMahasiswa').html(nama_mhs);
     $$('#fotoMahasiswa').html('<img src="https://my.ubaya.ac.id/img/mhs/160415093_m.jpg" width="60" height="80">');
     $$('#tempatTendaBis').html("Tenda: "+tenda+"<br/>Bus: "+bus+"<br/>Kelompok: "+nama_kelompok);
+    $$('.overlay, .overlay-message').hide();
 })
 
 $$(document).on('deviceready', function() {
@@ -232,8 +233,9 @@ myApp.onPageInit('pilihBigDream', function (page) {
                 }
             }
             bigList+='</div>'+
-                                    '</div>';
+                    '</div>';
             $$('#BigDreamList').append(bigList);
+            $$('.overlay, .overlay-message').hide();
             $$('#masukMyBigDream').on('click', function () {
                mainView.router.loadPage("mybigdream.html");
             });
@@ -254,6 +256,7 @@ myApp.onPageInit('mybigdream', function (page) {
     var nrpMhs=localStorage.getItem('nrp_mhs');
     $$.post(directory,{opsi:'ambilBigDream', nrp:nrpMhs}, function(data){
         $$('#formBigDream').html(data);
+        $$('.overlay, .overlay-message').hide();
         $$('#btnSubmitBigDream').on('click', function () {
             var jawaban= document.getElementById("jawabBigDream").value;
             if(jawaban==""){
@@ -292,6 +295,7 @@ myApp.onPageInit('myLifeList', function (page) {
     var codes =1;
     $$.post(directory,{opsi:'getLifeList', nrp:localStorage.getItem('nrp_mhs'), code:codes}, function(data){
         $$('#sortableLifeList').html(data);
+        $$('.overlay, .overlay-message').hide();
         $$('.deleteList').on('click', function(event){
             var id = event.target.id.replace('s','');
             myApp.confirm('Apakah anda yakin akan menghapus life list ini?', 'Apakah Anda Yakin?', function () {
@@ -352,6 +356,7 @@ myApp.onPageInit('formActionPlan', function (page) {
     $$.post(directory,{opsi:'getLifeList', nrp:localStorage.getItem('nrp_mhs'), code:codes}, function(data){
         console.log(data);
         $$('#listMyLifeList').html(data);
+        $$('.overlay, .overlay-message').hide();
     });
 })
 
@@ -395,6 +400,7 @@ myApp.onPageInit('formActionPlanDetail', function (page) {
                     '</div></a>');
             }
         }
+        $$('.overlay, .overlay-message').hide();
     });  
 
     $$('#btnSubmit').on('click', function () {
@@ -437,6 +443,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
             timeline.value=result["timeline"];
             evidenceTabel.value=result["evidence"];
             evaluationTabel.value=result["evaluation"];
+            $$('.overlay, .overlay-message').hide();
         });  
         document.getElementById("btnDeleteActionPlanTabel").style.visibility = "visible";
 
@@ -470,6 +477,7 @@ myApp.onPageInit('tujuanHidup', function (page) {
 
     $$.post(directory,{opsi:'getTujuanHidup', nrp:localStorage.getItem('nrp_mhs')}, function(data){
         $$('#listTujuan').html(data);
+        $$('.overlay, .overlay-message').hide();
         $$('.deleteTujuan').on('click', function(event){
             var ids = event.target.id.replace('s','');
             myApp.confirm('Apakah anda yakin akan menghapus tujuan hidup ini?', 'Apakah Anda Yakin?', function () {
@@ -515,6 +523,7 @@ myApp.onPageInit('kisahEntong', function (page) {
     $$.post(directory,{opsi:'getKisahEntong', nrp:localStorage.getItem('nrp_mhs')}, function(data){
         console.log(data);
         $$('#formKisahEntong').html(data);
+        $$('.overlay, .overlay-message').hide();
     });
 
     $$('#btnSubmitKisahEntong').on('click', function () {
@@ -539,6 +548,7 @@ myApp.onPageInit('lessonLearned', function (page) {
 
     $$.post(directory,{opsi:'getLessonLearned', nrp:localStorage.getItem('nrp_mhs')}, function(data){
         $$('#listJawabanLessonLearned').html(data);
+        $$('.overlay, .overlay-message').hide();
         $$('.deleteLesson').on('click', function(event){
             var ids = event.target.id.replace('s','');
             var item = document.getElementById(ids);
@@ -613,6 +623,7 @@ myApp.onPageInit('studiKasus', function (page) {
                     '</div></a>');
             }
         }
+        $$('.overlay, .overlay-message').hide();
     }); 
 })
 
@@ -634,6 +645,7 @@ myApp.onPageInit('studiKasusForm', function (page) {
             emosi.value=result["kasus"]["emosi"];
             perilaku.value=result["kasus"]["perilaku"];
             document.getElementById("btnDeleteStudiKasus").style.visibility = "visible";
+            $$('.overlay, .overlay-message').hide();
         }); 
         
         $$('#btnDeleteStudiKasus').on('click', function () {
@@ -685,6 +697,8 @@ myApp.onPageInit('pengalamanPribadi', function (page) {
                     '</div></a>');
             }
         }
+
+        $$('.overlay, .overlay-message').hide();
     }); 
 })
 
@@ -704,6 +718,7 @@ myApp.onPageInit('pengalamanPribadiForm', function (page) {
             situasi.value= result["pengalaman"]["situasi"];
             strategi.value=result["pengalaman"]["strategi"];
             document.getElementById("btnDeletePengalamanPribadi").style.visibility = "visible";
+            $$('.overlay, .overlay-message').hide();
         }); 
         
         $$('#btnDeletePengalamanPribadi').on('click', function () {
@@ -735,6 +750,7 @@ myApp.onPageInit('refleksiMini', function (page) {
     $$.post(directory,{opsi:'getRefleksi', nrp:localStorage.getItem('nrp_mhs')}, function(data){
         console.log(data);
         $$('#formRefleksiMini').html(data);
+        $$('.overlay, .overlay-message').hide();
     });
 
     $$('#btnSubmitRefleksiMini').on('click', function () {
@@ -770,6 +786,7 @@ myApp.onPageInit('refleksiMini', function (page) {
 myApp.onPageInit('fishbone', function (page) {
     $$.post(directory,{opsi:'getFishbone', nrp:localStorage.getItem('nrp_mhs')}, function(data){
         $$('#listKepala').html(data);
+        $$('.overlay, .overlay-message').hide();
     });
     $$('#addKepala').on('click', function () {
         myApp.prompt('', 'Fishbone Kepala', function (value) {
@@ -787,6 +804,7 @@ myApp.onPageInit('fishboneSupport', function (page) {
     var ids = page.query.idKepala;
     $$.post(directory,{opsi:'getFishboneSupport', id:ids}, function(data){
         $$('#listSupport').html(data);
+        $$('.overlay, .overlay-message').hide();
     });
 
     $$('#addSupport').on('click', function () {
@@ -805,6 +823,7 @@ myApp.onPageInit('fishboneSupportDetail', function (page) {
     var ids = page.query.idSupport;
     $$.post(directory,{opsi:'getFishboneSupportDetail', id:ids}, function(data){
         $$('#listSupportDetail').html(data);
+        $$('.overlay, .overlay-message').hide();
     });
     $$('#addSupportDetail').on('click', function () {
         myApp.prompt('', 'Fishbone Support Detail', function (value) {
