@@ -235,14 +235,13 @@ myApp.onPageInit('pilihBigDream', function (page) {
             $$('#BigDreamList').append('<div class="card demo-card-header-pic">'+
                         '<div style="background-image:url(img/'+imageName+'.jpg); background-size:auto; background-repeat:no-repeat; width : 100%; height:180px;" class="card-header align-items-flex-end"></div>'+
                         '<div class="card-content card-content-padding">'+
-                          '<p style="padding-left:10px;">'+result["big"][i]['soal']+'</p>'+
                         '</div>');
             if(result["big"][i]['id_submodul']==1){
                 $$('#BigDreamList').append('<div class="card-footer"><a href="#" id="masukMyBigDream" class="link">Isi Big Dream</a></div>');
                 bigdream=true;
             }
             else if(result["big"][i]['id_submodul']==2){
-                if(result["big"][i]['status']==0 && !$bigdream){
+                if(result["big"][i]['status']==0 && !bigdream){
                     $$('#BigDreamList').append('<div class="card-footer">Isi Big Dream terlebih dahulu!</div>');    
                 }   
                 else{
@@ -253,7 +252,7 @@ myApp.onPageInit('pilihBigDream', function (page) {
                 }
             }
             else if(result["big"][i]['id_submodul']==3){
-                if(result["big"][i]['status']==0 && !$lifelist){
+                if(result["big"][i]['status']==0 && !lifelist){
                     $$('#BigDreamList').append('<div class="card-footer">Isi Life List terlebih dahulu</div>');
                 }   
                 else{
