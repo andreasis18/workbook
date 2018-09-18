@@ -811,9 +811,12 @@ myApp.onPageInit('fishbone', function (page) {
     });
     $$('#addKepala').on('click', function () {
         myApp.prompt('', 'Fishbone Kepala', function (value) {
-            $$.post(directory,{opsi:'jawabFishbone', nrp:localStorage.getItem('nrp_mhs'), jawab:value}, function(data){
-                $$('#listKepala').append(data);
-            });
+            if(value!='')
+            {
+                $$.post(directory,{opsi:'jawabFishbone', nrp:localStorage.getItem('nrp_mhs'), jawab:value}, function(data){
+                    $$('#listKepala').append(data);
+                });   
+            }
         });
     });    
 })
@@ -826,9 +829,12 @@ myApp.onPageInit('fishboneSupport', function (page) {
 
     $$('#addSupport').on('click', function () {
         myApp.prompt('', 'Fishbone Support', function (value) {
-            $$.post(directory,{opsi:'jawabFishboneSupport', id:ids, jawab:value}, function(data){
-                $$('#listSupport').append(data);
-            });
+            if(value!='')
+            {
+                $$.post(directory,{opsi:'jawabFishboneSupport', id:ids, jawab:value}, function(data){
+                    $$('#listSupport').append(data);
+                });
+            }
         });
     });
 })
@@ -840,9 +846,12 @@ myApp.onPageInit('fishboneSupportDetail', function (page) {
     });
     $$('#addSupportDetail').on('click', function () {
         myApp.prompt('', 'Fishbone Support Detail', function (value) {
-             $$.post(directory,{opsi:'jawabFishboneSupportDetail', id:ids, jawab:value}, function(data){
-                $$('#listSupportDetail').append(data);
-            });
+            if(value!='')
+            {
+                $$.post(directory,{opsi:'jawabFishboneSupportDetail', id:ids, jawab:value}, function(data){
+                    $$('#listSupportDetail').append(data);
+                });   
+            }
         });
     });
 })
