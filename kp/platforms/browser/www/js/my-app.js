@@ -11,8 +11,8 @@ var myApp = new Framework7({
 
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7;
-//var directory= 'http://localhost/kp/server/projectkp.php';
-var directory='http://admingpb.000webhostapp.com/projectkp.php'; //tmpat php aplikasi
+var directory= 'http://localhost/kp/server/projectkp.php';
+//var directory='http://admingpb.000webhostapp.com/projectkp.php'; //tmpat php aplikasi
 
 // Add view
 var mainView = myApp.addView('.view-main', {
@@ -116,8 +116,8 @@ myApp.onPageInit('index', function (page) {
     $$('#logout').on('click',function(){
         myApp.confirm('Anda akan logout dari aplikasi', 'Apakah Anda Yakin?', function () {
             hapusLocalAll();
-            myApp.closePanel();
             mainView.router.back({url: 'index.html',force: true,ignoreCache: true});
+            myApp.closePanel();
         });
     });
 
@@ -232,56 +232,59 @@ myApp.onPageInit('pilihBigDream', function (page) {
         for(var i=0;i<result["big"].length;i++)
         {
             var imageName = result["big"][i]['judul_submodul'].toLowerCase().replace(' ', '');
-            $$('#BigDreamList').append('<div class="card demo-card-header-pic">'+
-                        '<div style="background-image:url(img/'+imageName+'.jpg); background-size:auto; background-repeat:no-repeat; width : 100%; height:180px;" class="card-header align-items-flex-end"></div>'+
-                        '<div class="card-content card-content-padding">'+
-                          '<p style="padding-left:10px;">'+result["big"][i]['soal']+'</p>'+
-                        '</div>');
+            var bigList="";
+            bigList+='<div class="card demo-card-header-pic">'+
+                                        '<div style="background-image:url(img/'+imageName+'.jpg)" class="card-header align-items-flex-end"></div>'+
+                                        '<div class="card-footer">';
             if(result["big"][i]['id_submodul']==1){
-                $$('#BigDreamList').append('<div class="card-footer"><a href="#" id="masukMyBigDream" class="link">Isi Big Dream</a></div>');
-                bigdream=true;
+                bigList+='<a href="#" id="masukMyBigDream" class="link">Isi Big Dream</a>';
+                if(result["big"][i]['status']==1){
+                    bigdream=true;   
+                }
             }
             else if(result["big"][i]['id_submodul']==2){
-                if(result["big"][i]['status']==0 && !$bigdream){
-                    $$('#BigDreamList').append('<div class="card-footer">Isi Big Dream terlebih dahulu!</div>');    
+                if(result["big"][i]['status']==0 && !bigdream){
+                    bigList+='<p>Isi Big Dream terlebih dahulu!</p>';
                 }   
                 else{
-                    $$('#BigDreamList').append('<div class="card-footer"><a href="#" id="masukMyLifelist" class="link">Isi Life List</a></div>');
+                    bigList+='<a href="#" id="masukMyLifelist" class="link">Isi Life List</a>';
                 }
                 if(result["big"][i]['status']==1){
                     lifelist=true;
                 }
             }
             else if(result["big"][i]['id_submodul']==3){
-                if(result["big"][i]['status']==0 && !$lifelist){
-                    $$('#BigDreamList').append('<div class="card-footer">Isi Life List terlebih dahulu</div>');
+                if(result["big"][i]['status']==0 && !lifelist){
+                    bigList+='<p>Isi Life List terlebih dahulu</p>';
                 }   
                 else{
-                    $$('#BigDreamList').append('<div class="card-footer"><a href="#" id="masukActionPlan" class="link">Isi Action Plan</a></div>');
+                    bigList+='<a href="#" id="masukActionPlan" class="link">Isi Action Plan</a>';
                 }
             }
             else{
                 if(!bigdream){
-                    $$('#BigDreamList').append('<div class="card-footer">Isi Big Dream terlebih dahulu!</div>');    
+                    bigList+='<p>Isi Big Dream terlebih dahulu!</p>';    
                 }
                 else{
-                    $$('#BigDreamList').append('<div class="card-footer"><a href="tujuanhidup.html" id="masukTujuanHidup" class="link">Isi Tujuan Hidup</a></div>');    
+                    bigList+='<a href="tujuanhidup.html" id="masukTujuanHidup" class="link">Isi Tujuan Hidup</a>';    
                 }
             }
-            $$('#BigDreamList').append("</div>");
+            bigList+='</div>'+
+                                    '</div>';
+            $$('#BigDreamList').append(bigList);
+            $$('#masukMyBigDream').on('click', function () {
+               mainView.router.loadPage("mybigdream.html");
+            });
+            $$('#masukTujuanHidup').on('click', function () {
+                mainView.router.loadPage("tujuanhidup.html");
+            });
+            $$('#masukMyLifelist').on('click', function () {
+                mainView.router.loadPage("mylifelist.html");
+            });
+            $$('#masukActionPlan').on('click', function () {
+                mainView.router.loadPage("formActionPlan.html");
+            });
         }
-        $$('#masukMyBigDream').on('click', function () {
-           mainView.router.loadPage("mybigdream.html");
-        });
-        $$('#masukTujuanHidup').on('click', function () {
-            mainView.router.loadPage("tujuanhidup.html");
-        });
-        $$('#masukMyLifelist').on('click', function () {
-            mainView.router.loadPage("mylifelist.html");
-        });
-        $$('#masukActionPlan').on('click', function () {
-            mainView.router.loadPage("formActionPlan.html");
-        });
     });
 })
 
@@ -290,7 +293,7 @@ myApp.onPageInit('mybigdream', function (page) {
     $$.post(directory,{opsi:'ambilBigDream', nrp:nrpMhs}, function(data){
         $$('#formBigDream').html(data);
         $$('#btnSubmitBigDream').on('click', function () {
-            var jawabanean= document.getElementById("jawabBigDream").value;
+            var jawaban= document.getElementById("jawabBigDream").value;
             if(jawaban==""){
                 myApp.alert('Tolong isi Big Dream');
             }
