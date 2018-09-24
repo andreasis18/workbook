@@ -39,14 +39,14 @@
               <div class="overlay-message">
                   <p>LOADING...</p>
               </div>
+                <a href="#" class="floating-button color-blue no-ripple addLife"><i class="icon icon-plus"></i></a> 
                 <div class="page-content">
                     <div class="content-block">
-                        <div class="block" style="width: 100%;">
-                            <div class="row">
-                                <textarea rows="2" id="jawabLifeList" style="width:80%; font-size:20px;"  placeholder="Life List"></textarea>   
-                                <button class="button" id="insertLifeList" style="margin-top: 7px;">Add</button> 
-                            </div>
-                                <span style="font-size: 12px;">Drag handler disebelah kanan untuk mengatur prioritas.</span><br/>
+                        <p class="row">
+                            <button class="col button button-fill addLife tempButton" style="width:100%;">Add Life List</button>
+                        </p>
+                        <div class="block instruction" style="width: 100%;">
+                                <span style="font-size: 13px;">Drag handler disebelah kanan untuk mengatur prioritas.</span><br/>
                                 <span style="color: red; font-size: 14px;">Prioritas diurutkan dari atas ke bawah.</span>
                         </div>
                         <div class="list-block sortable">
@@ -62,7 +62,7 @@
 </div>
 
 <script type="text/javascript" src="cordova.js"></script>
-<script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
+<script type="text/javascript" src="js/framework7.min.js"></script>
 <script type="text/javascript" src="js/my-app.js"></script>
 </body>
 

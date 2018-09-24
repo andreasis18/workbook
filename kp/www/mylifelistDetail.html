@@ -31,27 +31,45 @@
             <div class="navbar">
                 <div class="navbar-inner">
                     <div class="left"><a href="#" class="link icon-only open-panel no-ripple"><i class="icon icon-bars"></i></a></div>
-                    <div id="judulActionPlanForm" class="center sliding">Form</div>
+                    <div id="judulLifeListForm" class="center sliding">Form</div>
                       <div class="right">
                     <a href="#" class="button back">Back</a>
                   </div>
                 </div>
             </div>
             <div class="pages navbar-through toolbar-through">
-                <div data-page="formActionPlanDetail" class="page">
+                <div data-page="mylifelistDetail" class="page">
                     <div class="overlay"></div>
                     <div class="overlay-message">
                         <p>LOADING...</p>
                     </div>
-                    <a href="#" class="floating-button color-blue no-ripple addPlan"><i class="icon icon-plus"></i></a> 
                     <!-- Scrollable page content -->
                     <div class="page-content">
                         <div class="content-block">
-                          <p class="row">
-                              <button class="col button button-fill addPlan tempButton" style="width:100%;">Add Action Plan</button>
-                          </p>
-                          <div class="list-block">
-                              <ul id="listTabelFormActionPlan">
+                          <div class="list-block cards-list">
+                              <ul>
+                                <div class="card">
+                                  <div class="card-header" >
+                                    <input type="text" id="calendar-events-tercapai" placeholder="Target waktu tercapai" style="text-align:center;">
+                                  </div>
+                                  <div class="card-content" >
+                                    <div class="card-content-inner">
+                                      <input type="text" id="lifelist" placeholder="Life List" style="text-align:center;">
+                                    </div>
+                                  </div>
+                                  <div class="card-footer" >
+                                    <input type="text" id="obstacle" placeholder="Obstacle and Challenge" style="text-align:center;">
+                                  </div>
+                                  <div class="card-footer" >
+                                    <input type="text" id="evidence" placeholder="Evidence of Success" style="text-align:center;">
+                                  </div>
+                                  <div class="card-footer" >
+                                    <input type="text" id="evaluation" placeholder="Evaluation Process" style="text-align:center;">
+                                  </div>
+                                </div>
+                                <li>
+                                  <a href="#" class="item-link button button-fill" id="btnSubmit">Submit</a>
+                                </li>
                               </ul>
                           </div>
                         </div>

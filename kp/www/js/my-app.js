@@ -11,8 +11,8 @@ var myApp = new Framework7({
 
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7;
-//var directory= 'http://localhost/kp/server/projectkp.php';
-var directory='http://admingpb.000webhostapp.com/projectkp.php'; //tmpat php aplikasi
+var directory= 'http://localhost/kp/server/projectkp.php';
+//var directory='http://admingpb.000webhostapp.com/projectkp.php'; //tmpat php aplikasi
 
 // Add view
 var mainView = myApp.addView('.view-main', {
@@ -186,76 +186,26 @@ $$(document).on('deviceready', function() {
 });
 
 myApp.onPageInit('pilihBigDream', function (page) {
-    $$.post(directory,{opsi:'ambilStatusBigDream', nrp:localStorage.getItem('nrp_mhs')}, function(data){
-        console.log(data);
-        var result = JSON.parse(data);
-        var bigdream=false;
-        var lifelist=false;
-        console.log(result["big"]);
-        for(var i=0;i<result["big"].length;i++)
-        {
-            var imageName = result["big"][i]['judul_submodul'].toLowerCase().replace(' ', '');
-            var bigList="";
-            bigList+='<div class="card demo-card-header-pic">'+
-                                        '<div style="background-image:url(img/'+imageName+'.jpg)" class="card-header align-items-flex-end"></div>'+
-                                        '<div class="card-footer">';
-            if(result["big"][i]['id_submodul']==1){
-                bigList+='<a href="#" id="masukMyBigDream" class="link">Isi Big Dream</a>';
-                if(result["big"][i]['status']==1){
-                    bigdream=true;   
-                }
-            }
-            else if(result["big"][i]['id_submodul']==2){
-                if(result["big"][i]['status']==0 && !bigdream){
-                    bigList+='<p>Isi Big Dream terlebih dahulu!</p>';
-                }   
-                else{
-                    bigList+='<a href="#" id="masukMyLifelist" class="link">Isi Life List</a>';
-                }
-                if(result["big"][i]['status']==1){
-                    lifelist=true;
-                }
-            }
-            else if(result["big"][i]['id_submodul']==3){
-                if(result["big"][i]['status']==0 && !lifelist){
-                    bigList+='<p>Isi Life List terlebih dahulu</p>';
-                }   
-                else{
-                    bigList+='<a href="#" id="masukActionPlan" class="link">Isi Action Plan</a>';
-                }
-            }
-            else{
-                if(!bigdream){
-                    bigList+='<p>Isi Big Dream terlebih dahulu!</p>';    
-                }
-                else{
-                    bigList+='<a href="tujuanhidup.html" id="masukTujuanHidup" class="link">Isi Tujuan Hidup</a>';    
-                }
-            }
-            bigList+='</div>'+
-                    '</div>';
-            $$('#BigDreamList').append(bigList);
-            $$('.overlay, .overlay-message').hide();
-            $$('#masukMyBigDream').on('click', function () {
-               mainView.router.loadPage("mybigdream.html");
-            });
-            $$('#masukTujuanHidup').on('click', function () {
-                mainView.router.loadPage("tujuanhidup.html");
-            });
-            $$('#masukMyLifelist').on('click', function () {
-                mainView.router.loadPage("mylifelist.html");
-            });
-            $$('#masukActionPlan').on('click', function () {
-                mainView.router.loadPage("formActionPlan.html");
-            });
-        }
+    $$('#masukMyBigDream').on('click', function () {
+       mainView.router.loadPage("mybigdream.html");
+    });
+    $$('#masukTujuanHidup').on('click', function () {
+        mainView.router.loadPage("tujuanhidup.html");
+    });
+    $$('#masukMyLifeList').on('click', function () {
+        mainView.router.loadPage("mylifelist.html");
+    });
+    $$('#masukMyActionPlan').on('click', function () {
+        mainView.router.loadPage("formActionPlan.html");
     });
 })
 
 myApp.onPageInit('mybigdream', function (page) {
     var nrpMhs=localStorage.getItem('nrp_mhs');
     $$.post(directory,{opsi:'ambilBigDream', nrp:nrpMhs}, function(data){
-        $$('#formBigDream').html(data);
+        if(data!=""){
+            $$('#formBigDream').html(data);   
+        }
         $$('.overlay, .overlay-message').hide();
         $$('#btnSubmitBigDream').on('click', function () {
             var jawaban= document.getElementById("jawabBigDream").value;
@@ -265,216 +215,14 @@ myApp.onPageInit('mybigdream', function (page) {
             else{
                 $$.post(directory,{opsi:'jawabBigDream',nrp:nrpMhs,jawab:jawaban}, function(data){
                     console.log(data);
+                    mainView.router.back({url: 'pilihBigDream.html',force: true,ignoreCache: true});
                 });   
             }
-            mainView.router.back({url: 'pilihBigDream.html',force: true,ignoreCache: true});
-        });
-        $$('#btnUploadBigDream').on('click', function () {
-            var jawaban= document.getElementById("jawabBigDream").value;
-            if(jawaban==""){
-                myApp.alert('Tolong isi Big Dream');
-            }
-            else{
-                $$.post(directory,{opsi:'updateBigDream',nrp:nrpMhs,jawab:jawaban}, function(data){
-                    console.log(data);
-                });
-            }
-            mainView.router.back({url: 'pilihBigDream.html',force: true,ignoreCache: true});
         });
     });  
-    
 })
 
-myApp.onPageInit('myLifeList', function (page) {
-    myApp.sortableOpen('.sortable');
-    $$('#saveList').hide();
-    $$('.sortable').on('sort', function (listEl, indexes) {
-        $$('#saveList').show();
-    });
-
-    var codes =1;
-    $$.post(directory,{opsi:'getLifeList', nrp:localStorage.getItem('nrp_mhs'), code:codes}, function(data){
-        $$('#sortableLifeList').html(data);
-        $$('.overlay, .overlay-message').hide();
-        $$('.deleteList').on('click', function(event){
-            var id = event.target.id.replace('s','');
-            myApp.confirm('Apakah anda yakin akan menghapus life list ini?', 'Apakah Anda Yakin?', function () {
-                var item = document.getElementById(id);
-                var list = document.getElementById('sortableLifeList');
-                list.removeChild(item);
-                $$('#saveList').show();
-            });
-        });
-    });
-    $$('#insertLifeList').on('click', function () {
-        var jawaban= document.getElementById("jawabLifeList").value;
-        var length= $$('#sortableLifeList li').length;
-        $$('#saveList').show();
-        console.log(length);
-        if(jawaban==""){
-            myApp.alert('Tolong isi Life List');
-        }
-        else{
-            if(length==''){
-                length==0;
-            }
-            length++;
-            $$('#sortableLifeList').append('<li id="'+length+'">'+
-                      '<div class="sortable-handler"></div>'+
-                      '<div class="item-content">'+
-                        '<div class="item-media"><i class="f7-icons deleteList" id="'+length+'s">close</i></div>'+
-                        '<div class="item-inner"> '+
-                          '<div class="item-title listContent">'+jawaban+'</div>'+
-                        '</div>'+
-                     '</div>'+
-                    '</li>');
-            $$('#jawabLifeList').html("");
-            $$('#jawabLifeList').focus();
-            $$('.deleteList').on('click', function(event){
-                 var id = event.target.id.replace('s','');
-                var item = document.getElementById(id);
-                var list = document.getElementById('sortableLifeList');
-                list.removeChild(item);
-            });   
-        }
-    });
-    $$('#saveList').on('click', function(){
-        var jawaban = [];
-        $$('.listContent').each(function(){
-          jawaban.push($$(this).text());
-        })
-
-        $$.post(directory,{opsi:'jawabLifeList', nrp:localStorage.getItem('nrp_mhs'), jawab:jawaban}, function(data){
-            console.log(data);
-            mainView.router.back({url: 'pilihBigDream.html',force: true,ignoreCache: true});
-        });   
-    });
-})
-
-myApp.onPageInit('formActionPlan', function (page) {
-    var codes =2;
-    $$.post(directory,{opsi:'getLifeList', nrp:localStorage.getItem('nrp_mhs'), code:codes}, function(data){
-        console.log(data);
-        $$('#listMyLifeList').html(data);
-        $$('.overlay, .overlay-message').hide();
-    });
-})
-
-myApp.onPageInit('formActionPlanDetail', function (page) {
-    var timeline2 = myApp.calendar({
-        input: '#calendar-events-tercapai',
-        dateFormat: 'yyyy-mm-dd',
-        monthPicker:true,
-        yearPicker:true,
-        closeOnSelect:true
-    });
-
-    var obstacle=document.getElementById("obstacle");
-    var evidence=document.getElementById("evidence");
-    var evaluation=document.getElementById("evaluation");
-    var target=document.getElementById("calendar-events-tercapai");
-    var idLife=page.query.idLifeList;
-
-    $$.post(directory,{opsi:'getActionPlan', nrp:localStorage.getItem('nrp_mhs'), ids:idLife}, function(data){
-        console.log(data);
-        var result = JSON.parse(data);
-        $$('#judulActionPlanForm').html(result["detail"]["list"]);
-        obstacle.value=result["detail"]["obstacle"];
-        evidence.value=result["detail"]["evidence"];
-        evaluation.value=result["detail"]["evaluation"];
-        if(result["detail"]["target"]!="0000-00-00")
-            target.value=result["detail"]["target"];
-        if(result["action"] !=undefined){
-            for(var i=0;i<result["action"].length;i++)
-            {   
-               $$('#listTabelFormActionPlan').append('<a href="formActionPlanForm.html?idLifeList='+idLife+'&idTabel='+result["action"][i]["id"]+'">'+
-                    '<div class="card-header" style="text-align:center;" >'+(i+1)+'</div>'+
-                    '<div class="card-content">'+
-                    '<div class="card-content-inner">'+
-                    '<div>Task/Action : '+result["action"][i]["task"]+'</div>'+ 
-                    '<div>Resources : '+result["action"][i]["resource"]+'</div>'+ 
-                    '<div>Timeline : '+result["action"][i]["timeline"]+'</div>'+ 
-                    '<div>Evidence of Success : '+result["action"][i]["evidence"]+'</div>'+
-                    '<div>Evaluation Process : '+result["action"][i]["evaluation"]+'</div>'+
-                    '</div>'+
-                    '</div></a>');
-            }
-        }
-        $$('.overlay, .overlay-message').hide();
-    });  
-
-    $$('#btnSubmit').on('click', function () {
-        console.log(idLife);
-        $$.post(directory,{opsi:'jawabDetailLifeList',  ids:idLife, targets:target.value, obstacles:obstacle.value, evidences:evidence.value, evaluations:evaluation.value}, function(data){
-            myApp.alert("Detail Life List Berhasil disimpan.");
-        });   
-    });
-
-    $$('.floating-button').on('click', function () {
-       mainView.router.loadPage("formActionPlanForm.html?idLifeList="+idLife+"&idLife="+idLife);
-    });
-})
-
-myApp.onPageInit('formActionPlanForm', function (page) {
-    var task=document.getElementById("task");
-    var resource=document.getElementById("resource");
-    var evidenceTabel=document.getElementById("evidenceTabel");
-    var evaluationTabel=document.getElementById("evaluationTabel");
-    
-    var timeline1 = myApp.calendar({
-        input: '#calendar-events',
-        dateFormat: 'yyyy-mm-dd',
-        monthPicker:true,
-        yearPicker:true,
-        closeOnSelect:true
-    });
-    var timeline=document.getElementById("calendar-events");
-    
-    var idLife=page.query.idLifeList;
-    var idTabel="";
-    if(page.query.idTabel) // misal ada idtabel brarti buat edit, tampilno smua value lama
-    {
-        idTabel=page.query.idTabel;
-        $$.post(directory,{opsi:'getDetailActionPlan', ids:idTabel}, function(data){
-            console.log(data);
-            var result = JSON.parse(data);
-            task.value=result["task"];
-            resource.value=result["resource"];
-            timeline.value=result["timeline"];
-            evidenceTabel.value=result["evidence"];
-            evaluationTabel.value=result["evaluation"];
-            $$('.overlay, .overlay-message').hide();
-        });  
-        document.getElementById("btnDeleteActionPlanTabel").style.visibility = "visible";
-
-        $$('#btnSubmitTabel').on('click', function () {
-            $$.post(directory,{opsi:'updateActionPlan',  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
-                console.log(data);
-                mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife,force: true,ignoreCache: true});
-            });  
-        });
-    }
-    else{
-        idTabel=page.query.idLife;
-        $$('#btnSubmitTabel').on('click', function () {
-            $$.post(directory,{opsi:'jawabActionPlan', nrp:localStorage.getItem('nrp_mhs'),  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
-                console.log(data);
-                console.log("submit");
-                mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife,force: true,ignoreCache: true});
-            });  
-        });
-    }
-
-    $$('#btnDeleteActionPlanTabel').on('click', function () {
-        $$.post(directory,{opsi:'deleteActionPlan',  ids:idTabel}, function(data){
-            console.log(data);
-        });  
-        mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
-    });
-    
-})
 myApp.onPageInit('tujuanHidup', function (page) {
-
     $$.post(directory,{opsi:'getTujuanHidup', nrp:localStorage.getItem('nrp_mhs')}, function(data){
         $$('#listTujuan').html(data);
         $$('.overlay, .overlay-message').hide();
@@ -518,6 +266,251 @@ myApp.onPageInit('tujuanHidup', function (page) {
         }
     });
 })
+
+myApp.onPageInit('myLifeList', function (page) {
+    myApp.sortableOpen('.sortable');
+    $$('#saveList').hide();
+    $$('.sortable').on('sort', function (listEl, indexes) {
+        $$('#saveList').show();
+    });
+    $$('.addLife').on('click', function(){
+        var length= $$('#sortableLifeList li').length;
+        mainView.router.loadPage('mylifelistDetail.html?length='+length);
+    });
+    $$.post(directory,{opsi:'getLifeList', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+        console.log(data);
+        var result = JSON.parse(data);
+        if(result!=""){
+            $$('.tempButton').hide();
+            for(var i=0;i<result.length;i++)
+            {
+                $$('#sortableLifeList').append('<li class="listContent" id="'+result[i]["id_lifelist"]+'">'+
+                                                  '<div class="sortable-handler"></div>'+
+                                                  '<div class="item-content">'+
+                                                    '<div class="item-media"><i class="f7-icons deleteList" id="'+result[i]["id_lifelist"]+'s">close</i></div>'+
+                                                    '<div class="item-inner">'+
+                                                      '<a href="mylifelistDetail.html?idList='+result[i]["id_lifelist"]+'&length='+result.length+'"><div class="item-title ">'+result[i]["list"]+'</div></a>'+
+                                                    '</div>'+
+                                                  '</div>'+
+                                                '</li>');
+            }
+        }
+        else{
+            $$('.floating-button').hide();
+            $$('.instruction').hide();
+        }
+
+        $$('.overlay, .overlay-message').hide();
+        $$('.deleteList').on('click', function(event){
+            var ids = event.target.id.replace('s','');
+            console.log(ids);
+            myApp.confirm('Apakah anda yakin akan menghapus life list ini?', 'Apakah Anda Yakin?', function () {
+                var item = document.getElementById(ids);
+                var list = document.getElementById('sortableLifeList');
+                list.removeChild(item);
+                $$.post(directory,{opsi:'deleteLifeList', nrp:localStorage.getItem('nrp_mhs'), id:ids}, function(data){
+                    console.log(data);
+                });
+            });
+        });
+    });
+    $$('#saveList').on('click', function(){
+        var jawaban = [];
+
+        $$('.listContent').each(function(){
+          jawaban.push($$(this).attr('id'));
+        })
+
+        $$.post(directory,{opsi:'updatePrioritas', nrp:localStorage.getItem('nrp_mhs'), jawab:jawaban}, function(data){
+            myApp.alert("Prioritas baru tersimpan");
+            console.log(jawaban);
+            $$('#saveList').hide();
+        });   
+    });
+})
+
+myApp.onPageInit('mylifelistDetail', function (page) {
+    var timeline2 = myApp.calendar({
+        input: '#calendar-events-tercapai',
+        dateFormat: 'yyyy-mm-dd',
+        monthPicker:true,
+        yearPicker:true,
+        closeOnSelect:true
+    });
+
+    var obstacle=document.getElementById("obstacle");
+    var list=document.getElementById("lifelist");
+    var evidence=document.getElementById("evidence");
+    var evaluation=document.getElementById("evaluation");
+    var target=document.getElementById("calendar-events-tercapai");
+    var idList="";
+    if(page.query.idList)
+    {
+        idList = page.query.idList;
+        $$.post(directory,{opsi:'getLifeListDetail', id:page.query.idList}, function(data){
+            console.log(data);
+            var result = JSON.parse(data);
+            list.value = result["list"];
+            obstacle.value = result["obstacle"];
+            evidence.value = result["evidence"];
+            evaluation.value = result["evaluation"];
+            target.value = result["target"];
+            $$('.overlay, .overlay-message').hide();
+        });   
+    }
+    else
+    {
+        $$('.overlay, .overlay-message').hide();
+    }
+
+    $$('#btnSubmit').on('click', function(){
+        if(list.value !=''&&target.value!=""&&obstacle.value!=""&&evidence.value!=""&&evaluation.value!="")
+        {
+
+            $$.post(directory,{opsi:'jawabLifeList', length:page.query.length, id:idList, nrp:localStorage.getItem('nrp_mhs'), lists:list.value, targets:target.value, obstacles:obstacle.value, evidences:evidence.value, evaluations:evaluation.value}, function(data){
+                console.log(data);
+                if(data==1)
+                {
+                    mainView.router.back({url: 'mylifelist.html',force: true,ignoreCache: true});
+                }
+            });    
+        }  
+        else{
+            myApp.alert("Tolong isi Detail Life List");
+        }
+    });
+})
+
+myApp.onPageInit('formActionPlan', function (page) {
+    $$.post(directory,{opsi:'getLifeList', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+        console.log(data);
+        var result = JSON.parse(data);
+        if(result!="")
+        {
+            for(var i=0;i<result.length;i++){
+                $$('#listMyLifeList').append('<li id="'+result[i]["id_lifelist"]+'">'+
+                                              '<a  href="formActionPlanDetail.html?idLifeList='+result[i]["id_lifelist"]+'&LifeList='+result[i]["list"]+'">'+
+                                                '<div class="item-content">'+
+                                                    '<div class="item-inner">'+
+                                                      '<div class="item-title">'+result[i]["list"]+'</div>'+
+                                                    '</div>'+
+                                                    '<i class="f7-icons">eye</i>'+
+                                                  '</div>'+
+                                                '</a>'+
+                                            '</li>');
+            }
+        }
+        else
+        {
+            $$('#listMyLifeList').append('<li>'+
+                                            '<div class="item-content">'+
+                                                '<div class="item-inner">'+
+                                                  '<div class="item-title" style="text-align:center;">Isi Life List terlebih dahulu untuk mengisi Action Plan</div>'+
+                                                '</div>'+
+                                            '</div>'+
+                                        '</li>');
+        }
+        $$('.overlay, .overlay-message').hide();
+    });
+})
+
+myApp.onPageInit('formActionPlanDetail', function (page) {
+    var idLife=page.query.idLifeList;
+    $$('#judulActionPlanForm').html(page.query.LifeList);
+    $$.post(directory,{opsi:'getActionPlan', nrp:localStorage.getItem('nrp_mhs'), ids:idLife}, function(data){
+        console.log(data);
+        var result = JSON.parse(data);
+        if(result!="")
+        {
+            if(result["action"] !=undefined){
+                for(var i=0;i<result["action"].length;i++)
+                {   
+                   $$('#listTabelFormActionPlan').append('<div class="card">'+
+                        '<a href="formActionPlanForm.html?idLifeList='+idLife+'&idTabel='+result["action"][i]["id"]+'&LifeList="'+page.query.LifeList+'>'+
+                        '<div class="card-header" style="text-align:center;" >'+(i+1)+'</div>'+
+                        '<div class="card-content">'+
+                            '<div class="card-content-inner">'+
+                                '<div>Task/Action : '+result["action"][i]["task"]+'</div>'+ 
+                                '<div>Resources : '+result["action"][i]["resource"]+'</div>'+ 
+                                '<div>Timeline : '+result["action"][i]["timeline"]+'</div>'+ 
+                                '<div>Evidence of Success : '+result["action"][i]["evidence"]+'</div>'+
+                                '<div>Evaluation Process : '+result["action"][i]["evaluation"]+'</div>'+
+                            '</div>'+
+                        '</div></a></div>');
+                }
+            }
+            $$('.overlay, .overlay-message, .tempButton').hide();
+        }
+        else
+        { 
+            $$('.overlay, .overlay-message, .floating-button').hide();
+        }
+        
+    });  
+
+    $$('.addPlan').on('click', function () {
+       mainView.router.loadPage("formActionPlanForm.html?idLifeList="+idLife+"&idLife="+idLife+"&LifeList="+page.query.LifeList);
+    });
+})
+
+myApp.onPageInit('formActionPlanForm', function (page) {
+    var task=document.getElementById("task");
+    var resource=document.getElementById("resource");
+    var evidenceTabel=document.getElementById("evidenceTabel");
+    var evaluationTabel=document.getElementById("evaluationTabel");
+    
+    var timeline1 = myApp.calendar({
+        input: '#calendar-events',
+        dateFormat: 'yyyy-mm-dd',
+        monthPicker:true,
+        yearPicker:true,
+        closeOnSelect:true
+    });
+    var timeline=document.getElementById("calendar-events");
+    
+    var idLife=page.query.idLifeList;
+    var idTabel="";
+    if(page.query.idTabel) // misal ada idtabel brarti buat edit, tampilno smua value lama
+    {
+        idTabel=page.query.idTabel;
+        $$.post(directory,{opsi:'getDetailActionPlan', ids:idTabel}, function(data){
+            console.log(data);
+            var result = JSON.parse(data);
+            task.value=result["task"];
+            resource.value=result["resource"];
+            timeline.value=result["timeline"];
+            evidenceTabel.value=result["evidence"];
+            evaluationTabel.value=result["evaluation"];
+            $$('.overlay, .overlay-message').hide();
+        });  
+        document.getElementById("btnDeleteActionPlanTabel").style.visibility = "visible";
+
+        $$('#btnSubmitTabel').on('click', function () {
+            $$.post(directory,{opsi:'updateActionPlan',  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
+                console.log(data);
+                mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife+'&LifeList='+page.query.LifeList,force: true,ignoreCache: true});
+            });  
+        });
+    }
+    else{
+        idTabel=page.query.idLife;
+        $$('#btnSubmitTabel').on('click', function () {
+            $$.post(directory,{opsi:'jawabActionPlan', nrp:localStorage.getItem('nrp_mhs'),  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
+                console.log(data);
+                mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife+'&LifeList='+page.query.LifeList,force: true,ignoreCache: true});
+            });  
+        });
+        $$('.overlay, .overlay-message').hide();
+    }
+
+    $$('#btnDeleteActionPlanTabel').on('click', function () {
+        $$.post(directory,{opsi:'deleteActionPlan',  ids:idTabel}, function(data){
+            console.log(data);
+        });  
+        mainView.router.back({url:`formActionPlanDetail.html?idLifeList='+idLife+'&LifeList='+page.query.LifeList`,force: true,ignoreCache: true});
+    });
+})
+
 
 myApp.onPageInit('kisahEntong', function (page) {
     $$.post(directory,{opsi:'getKisahEntong', nrp:localStorage.getItem('nrp_mhs')}, function(data){
