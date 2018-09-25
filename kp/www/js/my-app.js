@@ -224,7 +224,18 @@ myApp.onPageInit('mybigdream', function (page) {
 
 myApp.onPageInit('tujuanHidup', function (page) {
     $$.post(directory,{opsi:'getTujuanHidup', nrp:localStorage.getItem('nrp_mhs')}, function(data){
-        $$('#listTujuan').html(data);
+        var result = JSON.parse(data);
+        for (var i = 0; i <result.length; i++) 
+        {
+            $$('#listTujuan').append('<li id="'+result[i]["id_tujuan"]+'">'+
+                                      '<div class="item-content">'+
+                                        '<div class="item-media"><i class="f7-icons deleteTujuan" id="'+result[i]["id_tujuan"]+'s">close</i></div>'+
+                                        '<div class="item-inner">'+
+                                          '<div class="item-title listContent">'+result[i]["tujuan"]+'</div>'+
+                                        '</div>'+
+                                      '</div>'+
+                                    '</li>');   
+        }
         $$('.overlay, .overlay-message').hide();
         $$('.deleteTujuan').on('click', function(event){
             var ids = event.target.id.replace('s','');
@@ -504,10 +515,12 @@ myApp.onPageInit('formActionPlanForm', function (page) {
     }
 
     $$('#btnDeleteActionPlanTabel').on('click', function () {
-        $$.post(directory,{opsi:'deleteActionPlan',  ids:idTabel}, function(data){
-            console.log(data);
-        });  
-        mainView.router.back({url:`formActionPlanDetail.html?idLifeList='+idLife+'&LifeList='+page.query.LifeList`,force: true,ignoreCache: true});
+        myApp.confirm('Apakah anda yakin akan menghapus Action Plan ini?', 'Apakah Anda Yakin?', function () {
+            $$.post(directory,{opsi:'deleteActionPlan',  ids:idTabel}, function(data){
+                console.log(data);
+            });  
+            mainView.router.back({url:`formActionPlanDetail.html?idLifeList='+idLife+'&LifeList='+page.query.LifeList`,force: true,ignoreCache: true});
+        });
     });
 })
 
@@ -584,39 +597,42 @@ myApp.onPageInit('lessonLearned', function (page) {
 })
 
 myApp.onPageInit('pilihManajemenEmosi', function (page) {
-    $$('#studikasus').on('click', function () {
-       mainView.router.loadPage("studiKasus.html");
-    });
-    $$('#masukManajemenEmosi2').on('click', function () {
-       mainView.router.loadPage("manajemenEmosi2.html");
-    });
+    //belum diisi
 })
 
 myApp.onPageInit('studiKasus', function (page) {
-    $$('#formInput').on('click', function () {
+    $$('.addStudi').on('click', function () {
         mainView.router.loadPage("studiKasusForm.html");
     });
 
     $$.post(directory,{opsi:'getStudiKasus', nrp:localStorage.getItem('nrp_mhs')}, function(data){
         console.log(data);
         var result = JSON.parse(data);
-        if(result["kasus"] != undefined){
-            for(var i=0;i<result["kasus"].length;i++)
-            {
-                $$('#listKasus').append('<a href="studiKasusForm.html?idKasus='+result["kasus"][i]["id"]+'" >'+
-                    '<div class="card">'+
-                    '<div class="card-header" style="text-align:center;" >'+(i+1)+'</div>'+
-                    '<div class="card-content">'+
-                    '<div class="card-content-inner">'+
-                    '<div>Situasi : '+result["kasus"][i]["situasi"]+'</div>'+ 
-                    '<div>Pemikiran : '+result["kasus"][i]["pemikiran"]+'</div>'+ 
-                    '<div>Emosi : '+result["kasus"][i]["emosi"]+'</div>'+ 
-                    '<div>Perilaku : '+result["kasus"][i]["perilaku"]+'</div>'+ 
-                    '</div>'+
-                    '</div></a>');
+        if(result!="")
+        {
+            if(result["kasus"] != undefined){
+                for(var i=0;i<result["kasus"].length;i++)
+                {
+                    $$('#listKasus').append('<a href="studiKasusForm.html?idKasus='+result["kasus"][i]["id"]+'" >'+
+                        '<div class="card">'+
+                        '<div class="card-header" style="text-align:center;" >'+(i+1)+'</div>'+
+                        '<div class="card-content">'+
+                        '<div class="card-content-inner">'+
+                        '<div>Situasi : '+result["kasus"][i]["situasi"]+'</div>'+ 
+                        '<div>Pemikiran : '+result["kasus"][i]["pemikiran"]+'</div>'+ 
+                        '<div>Emosi : '+result["kasus"][i]["emosi"]+'</div>'+ 
+                        '<div>Perilaku : '+result["kasus"][i]["perilaku"]+'</div>'+ 
+                        '</div>'+
+                        '</div></a>');
+                }
             }
+            $$('.overlay, .overlay-message, .tempButton').hide();    
         }
-        $$('.overlay, .overlay-message').hide();
+        else
+        {
+            $$('.overlay, .overlay-message, .floating-button').hide();    
+        }
+        
     }); 
 })
 
@@ -642,56 +658,66 @@ myApp.onPageInit('studiKasusForm', function (page) {
         }); 
         
         $$('#btnDeleteStudiKasus').on('click', function () {
-             $$.post(directory,{opsi:'deleteStudiKasus',  id:idStudiKasus}, function(data){
-                console.log(data);
-            });  
-            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
+            myApp.confirm('Apakah anda yakin akan menghapus Studi Kasus ini?', 'Apakah Anda Yakin?', function () {
+                 $$.post(directory,{opsi:'deleteStudiKasus',  id:idStudiKasus}, function(data){
+                    console.log(data);
+                });  
+                mainView.router.back({url: "studiKasus.html",force: true,ignoreCache: true});
+            });
         });
 
         $$('#btnSubmitStudiKasus').on('click', function () {
              $$.post(directory,{opsi:'updateStudiKasus',  id:idStudiKasus, situasis: situasi.value, pemikirans: pemikiran.value, emosis:emosi.value, perilakus:perilaku.value}, function(data){
                 console.log(data);
             });  
-            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
+            mainView.router.back({url:"studiKasus.html",force: true,ignoreCache: true});
         });
     }
     else
     {
+        $$('.overlay, .overlay-message').hide();
         $$('#btnSubmitStudiKasus').on('click', function () {
             $$.post(directory,{opsi:'jawabStudiKasus', nrp:localStorage.getItem('nrp_mhs'), situasis: situasi.value, pemikirans: pemikiran.value, emosis:emosi.value, perilakus:perilaku.value}, function(data){
                 console.log(data);
             }); 
-            mainView.router.back({url: page.view.history[page.view.history.length - 2],force: true,ignoreCache: true});
+            mainView.router.back({url: "studiKasus.html",force: true,ignoreCache: true});
         });
     }
 
 })
 
 myApp.onPageInit('pengalamanPribadi', function (page) {
-    $$('#formInput2').on('click', function () {
+    $$('.addPengalaman').on('click', function () {
         mainView.router.loadPage("pengalamanPribadiForm.html");
     });
 
     $$.post(directory,{opsi:'getPengalaman', nrp:localStorage.getItem('nrp_mhs')}, function(data){
         console.log(data);
         var result = JSON.parse(data);
-        if(result["pengalaman"] != undefined){
-            for(var i=0;i<result["pengalaman"].length;i++)
-            {
-                $$('#listPengalaman').append('<a href="pengalamanPribadiForm.html?idPengalaman='+result["pengalaman"][i]["id"]+'" >'+
-                    '<div class="card">'+
-                    '<div class="card-header" style="text-align:center;" >'+(i+1)+'</div>'+
-                    '<div class="card-content">'+
-                    '<div class="card-content-inner">'+
-                    '<div>Emosi : '+result["pengalaman"][i]["emosi"]+'</div>'+ 
-                    '<div>Situasi : '+result["pengalaman"][i]["situasi"]+'</div>'+ 
-                    '<div>Strategi : '+result["pengalaman"][i]["strategi"]+'</div>'+ 
-                    '</div>'+
-                    '</div></a>');
+        if(result!="")
+        {
+            if(result["pengalaman"] != undefined){
+                for(var i=0;i<result["pengalaman"].length;i++)
+                {
+                    $$('#listPengalaman').append('<a href="pengalamanPribadiForm.html?idPengalaman='+result["pengalaman"][i]["id"]+'" >'+
+                        '<div class="card">'+
+                        '<div class="card-header" style="text-align:center;" >'+(i+1)+'</div>'+
+                        '<div class="card-content">'+
+                        '<div class="card-content-inner">'+
+                        '<div>Emosi : '+result["pengalaman"][i]["emosi"]+'</div>'+ 
+                        '<div>Situasi : '+result["pengalaman"][i]["situasi"]+'</div>'+ 
+                        '<div>Strategi : '+result["pengalaman"][i]["strategi"]+'</div>'+ 
+                        '</div>'+
+                        '</div></a>');
+                }
             }
+            $$('.overlay, .overlay-message, .tempButton').hide();
         }
-
-        $$('.overlay, .overlay-message').hide();
+        else
+        {
+            $$('.overlay, .overlay-message, .floating-button').hide();   
+        }
+        
     }); 
 })
 
@@ -715,10 +741,13 @@ myApp.onPageInit('pengalamanPribadiForm', function (page) {
         }); 
         
         $$('#btnDeletePengalamanPribadi').on('click', function () {
-             $$.post(directory,{opsi:'deletePengalaman',  id:idPengalaman}, function(data){
-                console.log(data);
-            });  
-            mainView.router.back({url: "pengalamanPribadi.html",force: true,ignoreCache: true});
+            myApp.confirm('Apakah anda yakin akan menghapus Pengalaman Pribadi ini?', 'Apakah Anda Yakin?', function () {
+                $$.post(directory,{opsi:'deletePengalaman',  id:idPengalaman}, function(data){
+                    console.log(data);
+                });  
+                mainView.router.back({url: "pengalamanPribadi.html",force: true,ignoreCache: true});
+            });
+             
         });
 
         $$('#btnSubmitPengalamanPribadi').on('click', function () {
@@ -730,6 +759,7 @@ myApp.onPageInit('pengalamanPribadiForm', function (page) {
     }
     else
     {
+        $$('.overlay, .overlay-message').hide();
         $$('#btnSubmitPengalamanPribadi').on('click', function () {
             $$.post(directory,{opsi:'jawabPengalaman', nrp:localStorage.getItem('nrp_mhs'), situasis: situasi.value, strategis: strategi.value, emosis:emosi.value}, function(data){
                 console.log(data);
@@ -778,15 +808,87 @@ myApp.onPageInit('refleksiMini', function (page) {
 
 myApp.onPageInit('fishbone', function (page) {
     $$.post(directory,{opsi:'getFishbone', nrp:localStorage.getItem('nrp_mhs')}, function(data){
-        $$('#listKepala').html(data);
-        $$('.overlay, .overlay-message').hide();
+        console.log(data);
+        var result = JSON.parse(data);
+        if(result!="")
+        {   
+            var temp="";
+            for(var i=0; i<result.length;i++)
+            {
+                temp+='<div class="card">'+
+                          '<div class="card-header">'+
+                            '<i id="'+result[i]["id_kepala"]+'s" class="f7-icons deleteKepala">close</i>'+
+                            '<p id="'+result[i]["id_kepala"]+'" class="editKepala">'+result[i]["nama_kepala"]+'</p>'+
+                            '<a href="fishboneSupport.html?idKepala='+result[i]["id_kepala"]+'&namaKepala='+result[i]["nama_kepala"]+'"><i class="f7-icons">chevron_right</i></a>'+
+                            '</div>'+
+                        '<div class="card-content">'+
+                        '<ul>';
+                if(result[i]["support"]!=undefined)
+                {
+                    for(var j=0;j<result[i]["support"][i].length;j++)
+                    {
+                        temp+='<li class="item-content">'+
+                                '<div class="item-inner">'+
+                                  result[i]["support"][i][j]["nama_support"]+
+                                '</div>'+
+                                '<ul>';
+                        if(result[i]["support_detail"]!=undefined&&result[i]["support_detail"][j]!=undefined)
+                        {
+                            for(var k=0;k<result[i]["support_detail"][j].length;k++)
+                            {
+                                temp+='<li class="item-content">'+
+                                        '<div>'+
+                                          result[i]["support_detail"][j][k]["nama_detail_support"]+
+                                        '</div>'+
+                                    '</li>';
+                            }
+                        }
+                        temp+='</ul></li>';
+                    }
+                }
+                temp+='</ul></div></div>';
+            }
+            $$('#listKepala').append(temp);
+            $$('.overlay, .overlay-message, .tempButton').hide();
+
+            $$('.deleteKepala').on('click', function(event) {
+                var ids = event.target.id.replace('s','');
+                myApp.confirm('Apakah anda yakin akan menghapus Kepala Fishbone beserta isinya?', 'Apakah Anda Yakin?', function () {
+                    $$.post(directory,{opsi:'deleteFishbone', id:ids}, function(data){
+                        console.log(data);
+                        mainView.router.refreshPage();
+                    });   
+                });
+            });    
+
+            $$('.editKepala').on('click', function (event) {
+                var ids=$$(this).attr("id");
+                myApp.prompt('', 'Edit', function (value) {
+                    if(value!='')
+                    {
+                        $$.post(directory,{opsi:'editFishboneKepala', id:ids, jawab:value}, function(data){
+                            console.log(data);
+                            mainView.router.refreshPage();
+                        });   
+                    }
+                });
+            });  
+        }
+        else
+        {
+            $$('.overlay, .overlay-message, .floating-button').hide();
+        }
+
     });
-    $$('#addKepala').on('click', function () {
+
+
+    $$('.addKepala').on('click', function () {
         myApp.prompt('', 'Fishbone Kepala', function (value) {
             if(value!='')
             {
                 $$.post(directory,{opsi:'jawabFishbone', nrp:localStorage.getItem('nrp_mhs'), jawab:value}, function(data){
-                    $$('#listKepala').append(data);
+                    console.log(data);
+                    mainView.router.refreshPage();
                 });   
             }
         });
@@ -795,17 +897,74 @@ myApp.onPageInit('fishbone', function (page) {
 
 myApp.onPageInit('fishboneSupport', function (page) {
     var ids = page.query.idKepala;
+    var nama = page.query.namaKepala;
+    $$("#judulFishboneKepala").html(nama);
     $$.post(directory,{opsi:'getFishboneSupport', id:ids}, function(data){
-        $$('#listSupport').html(data);
-        $$('.overlay, .overlay-message').hide();
+        var result = JSON.parse(data);
+        if(result!="")
+        {   
+            var temp="";
+            for(var i=0; i<result.length;i++)
+            {
+                temp+='<div class="card">'+
+                          '<div class="card-header">'+
+                            '<i id="'+result[i]["id_support"]+'s" class="f7-icons deleteSupport">close</i>'+
+                            '<p id="'+result[i]["id_support"]+'" class="editSupport">'+result[i]["nama_support"]+'</p>'+
+                            '<a href="fishboneSupportDetail.html?idSupport='+result[i]["id_support"]+'&namaSupport='+result[i]["nama_support"]+'"><i class="f7-icons">chevron_right</i></a>'+
+                            '</div>'+
+                        '<div class="card-content">'+
+                        '<ul>';
+                if(result[i]["support_detail"]!=undefined&&result[i]["support_detail"][i]!=undefined)
+                {
+                    for(var j=0;j<result[i]["support_detail"][i].length;j++)
+                    {
+                        temp+='<li class="item-content">'+
+                                '<div class="item-inner">'+
+                                  result[i]["support_detail"][i][j]["nama_detail_support"]+
+                                '</div>'+
+                                '</li>';
+                    }
+                }
+                temp+='</ul></div></div>';
+            }
+            $$('#listSupport').append(temp);
+            $$('.overlay, .overlay-message, .tempButton').hide();
+
+            $$('.deleteSupport').on('click', function(event) {
+                var ids = event.target.id.replace('s','');
+                myApp.confirm('Apakah anda yakin akan menghapus Support Fishbone beserta isinya?', 'Apakah Anda Yakin?', function () {
+                    $$.post(directory,{opsi:'deleteFishboneSupport', id:ids}, function(data){
+                        console.log(data);
+                        mainView.router.refreshPage();
+                    });   
+                });
+            });    
+
+            $$('.editSupport').on('click', function (event) {
+                var ids=$$(this).attr("id");
+                myApp.prompt('', 'Edit', function (value) {
+                    if(value!='')
+                    {
+                        $$.post(directory,{opsi:'editFishboneSupport', id:ids, jawab:value}, function(data){
+                            console.log(data);
+                            mainView.router.refreshPage();
+                        });   
+                    }
+                });
+            });  
+        }
+        else
+        {
+            $$('.overlay, .overlay-message, .floating-button').hide();
+        }
     });
 
-    $$('#addSupport').on('click', function () {
+    $$('.addSupport').on('click', function () {
         myApp.prompt('', 'Fishbone Support', function (value) {
             if(value!='')
             {
                 $$.post(directory,{opsi:'jawabFishboneSupport', id:ids, jawab:value}, function(data){
-                    $$('#listSupport').append(data);
+                    mainView.router.refreshPage();
                 });
             }
         });
@@ -814,16 +973,60 @@ myApp.onPageInit('fishboneSupport', function (page) {
 
 myApp.onPageInit('fishboneSupportDetail', function (page) {
     var ids = page.query.idSupport;
+    var nama = page.query.namaSupport;
+    $$("#judulFishboneSupport").html(nama);
     $$.post(directory,{opsi:'getFishboneSupportDetail', id:ids}, function(data){
-        $$('#listSupportDetail').html(data);
-        $$('.overlay, .overlay-message').hide();
+        var result = JSON.parse(data);
+        if(result!="")
+        {   
+            var temp="";
+            for(var i=0; i<result.length;i++)
+            {
+                temp+='<div class="card">'+
+                          '<div class="card-header">'+
+                            '<i id="'+result[i]["id_detail_support"]+'s" class="f7-icons deleteSupportDetail">close</i>'+
+                            '<p id="'+result[i]["id_detail_support"]+'" class="editSupportDetail">'+result[i]["nama_detail_support"]+'</p>'+
+                            '<p></p>'+
+                            '</div>'+
+                        '</div>';
+            }
+            $$('#listSupportDetail').append(temp);
+            $$('.overlay, .overlay-message, .tempButton').hide();
+
+            $$('.deleteSupportDetail').on('click', function(event) {
+                var ids = event.target.id.replace('s','');
+                myApp.confirm('Apakah anda yakin akan menghapus Detail Support Fishbone?', 'Apakah Anda Yakin?', function () {
+                    $$.post(directory,{opsi:'deleteFishboneSupportDetail', id:ids}, function(data){
+                        console.log(data);
+                        mainView.router.refreshPage();
+                    });   
+                });
+            });    
+
+            $$('.editSupportDetail').on('click', function (event) {
+                var ids=$$(this).attr("id");
+                myApp.prompt('', 'Edit', function (value) {
+                    if(value!='')
+                    {
+                        $$.post(directory,{opsi:'editFishboneSupportDetail', id:ids, jawab:value}, function(data){
+                            console.log(data);
+                            mainView.router.refreshPage();
+                        });   
+                    }
+                });
+            });  
+        }
+        else
+        {
+            $$('.overlay, .overlay-message, .floating-button').hide();
+        }
     });
-    $$('#addSupportDetail').on('click', function () {
+    $$('.addSupportDetail').on('click', function () {
         myApp.prompt('', 'Fishbone Support Detail', function (value) {
             if(value!='')
             {
                 $$.post(directory,{opsi:'jawabFishboneSupportDetail', id:ids, jawab:value}, function(data){
-                    $$('#listSupportDetail').append(data);
+                    mainView.router.refreshPage();
                 });   
             }
         });
