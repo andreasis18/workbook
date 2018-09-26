@@ -34,8 +34,9 @@ var tenda=0;
 var bus=0;
 var nama_kelompok="";
 var nama_mhs="";
-var nrp_mhs="";
 
+var nrpMhs="";
+var password="";
 
 
 var judulModul=[["MY BIG DREAM"],
@@ -50,11 +51,26 @@ var judulModul=[["MY BIG DREAM"],
 ["REFLEKSI MINI PROJECT"]
 ];
 
-var nrp="";
-var password="";
 
+
+$$(document).on('deviceready', function() {
+    console.log("Device is ready!");
+
+    myApp.onPageBack('menu',function(asd){
+        if(JSON.parse(localStorage.getItem("username"))&&JSON.parse(localStorage.getItem("jabatan"))){
+            console.log("heahahwe");
+            navigator.app.exitApp();   
+        }
+    });
+
+});
 
 myApp.onPageInit('index', function (page) {
+    $$('#profile').on('click',function(){
+        mainView.router.loadPage("profile.html");
+        myApp.closePanel();
+    });
+
     $$('#menuAwal').on('click',function(){
         mainView.router.loadPage("menu.html");
         myApp.closePanel();
@@ -102,11 +118,9 @@ myApp.onPageInit('index', function (page) {
     });
 
     $$('#btnMasuk').on('click',function(){
-        console.log("asfdsa");
     	password = document.getElementById("password").value;
     	var username = document.getElementById("username");
     	
-
         $$.post(directory,{opsi:"loginMhs", nrp:username.value,password:password},function(data){
             if(data=="berhasil") //cek ada atau tdk id server
             {
@@ -117,9 +131,8 @@ myApp.onPageInit('index', function (page) {
                     localStorage.setItem("bus",JSON.stringify(tendaBisTemp['bus']));
                     localStorage.setItem("nama_kelompok",JSON.stringify(tendaBisTemp['nama_kelompok']));
                     localStorage.setItem("nama_mhs",JSON.stringify(tendaBisTemp['nama']));
-                    localStorage.setItem("nrp_mhs",JSON.stringify(tendaBisTemp['id_nrp']));
                     localStorage.setItem("username",JSON.stringify(username.value));
-                });
+                });         
                 mainView.router.loadPage("menu.html");
             }
             else
@@ -132,18 +145,7 @@ myApp.onPageInit('index', function (page) {
 }).trigger();
 
 myApp.onPageInit('menu', function (page) {
-        
-    if(JSON.parse(localStorage.getItem("username")))
-    {
-    	nrp=JSON.parse(localStorage.getItem("username"));
-    }
-    if(JSON.parse(localStorage.getItem("tenda")))
-    {
-        tenda=JSON.parse(localStorage.getItem("tenda"));
-        bus=JSON.parse(localStorage.getItem("bus"));
-        nama_kelompok=JSON.parse(localStorage.getItem("nama_kelompok"));
-        nama_mhs=JSON.parse(localStorage.getItem("nama_mhs"));
-    }
+    setGlobal();
 
     $$('#myBigDreamPilih').on('click',function(){
         mainView.router.loadPage("pilihBigDream.html");
@@ -168,22 +170,87 @@ myApp.onPageInit('menu', function (page) {
     $$('#outdoor').on('click',function(){
         mainView.router.loadPage("outdoor.html");
     });
-
-    $$('#namaMahasiswa').html(nama_mhs);
-    $$('#fotoMahasiswa').html('<img src="https://my.ubaya.ac.id/img/mhs/160415093_m.jpg" width="60" height="80">');
-    $$('#tempatTendaBis').html("Tenda: "+tenda+"<br/>Bus: "+bus+"<br/>Kelompok: "+nama_kelompok);
     $$('.overlay, .overlay-message').hide();
 })
 
-$$(document).on('deviceready', function() {
-    console.log("Device is ready!");
-    myApp.onPageBack('menu',function(asd){
-        if(JSON.parse(localStorage.getItem("username"))&&JSON.parse(localStorage.getItem("jabatan"))){
-            console.log("heahahwe");
-            navigator.app.exitApp();   
-        }
-    });
-});
+myApp.onPageInit('profile', function (page) {
+    setGlobal();
+     $$.post(directory,{opsi:"getBisTenda", nrp:nrpMhs},function(data){
+        console.log(data);
+        var result=JSON.parse(data);
+
+        $$('#namaMahasiswa').html(nama_mhs+' - '+nrpMhs);
+        $$('#fotoMahasiswa').html('<img src="https://my.ubaya.ac.id/img/mhs/160415093_m.jpg" width="20%" height="10%"></img>');
+        $$('#namaGelombang').html('Gelombang - '+result['nama_gelombang']);
+        $$('#namaKelompok').html('Kelompok - '+result['nama_kelompok']);
+        $$('#namaBus').html('Bus - '+result['bus']);
+        $$('#namaTenda').html('Tenda - '+result['tenda']);
+    });        
+
+    $$('.overlay, .overlay-message').hide();
+})
+
+myApp.onPageInit('profileDetail', function (page) {
+    setGlobal();
+    var detail = page.query.detail;
+    var result="";
+    if(detail=="Gelombang")
+    {
+        $$.post(directory,{opsi:"getTemanGelombang", nrp:nrpMhs},function(data){
+            console.log("data");
+            result=JSON.parse(data);
+            getTabel(result);
+            $$("#blockTitle").html("Gelombang")
+        });           
+    }
+    else if(detail=="Kelompok")
+    {
+        $$.post(directory,{opsi:"getTemanKelompok", nrp:nrpMhs},function(data){
+            console.log(data);
+            result=JSON.parse(data);
+            getTabel(result);
+            $$("#blockTitle").html("Kelompok")
+        }); 
+    }
+    else if(detail=="Bus")
+    {
+        $$.post(directory,{opsi:"getTemanBus", nrp:nrpMhs},function(data){
+            console.log(data);
+            result=JSON.parse(data);
+            getTabel(result);
+            $$("#blockTitle").html("Bus")
+        }); 
+    }
+    else if(detail=="Tenda")
+    {
+        $$.post(directory,{opsi:"getTemanTenda", nrp:nrpMhs},function(data){
+            console.log(data);
+            result=JSON.parse(data);
+            getTabel(result);
+            $$("#blockTitle").html("Tenda")
+        }); 
+    }
+
+    $$('.overlay, .overlay-message').hide();
+})
+
+function getTabel(result){
+    if(result!="")
+    {
+        var temp="";
+        for(var i =0;i<result.length;i++)
+        {
+            temp+="<tr>"+
+                    "<td class='numeric-cell'>"+result[i]["nrp"]+
+                    "</td>"+
+                    "<td class='label-cell'>"+result[i]["nama"]+
+                    "</td>"+
+                "</tr>";
+        }   
+        console.log(temp);
+        $$("#tabelTeman").html(temp);
+    }    
+}
 
 myApp.onPageInit('pilihBigDream', function (page) {
     $$('#masukMyBigDream').on('click', function () {
@@ -201,7 +268,7 @@ myApp.onPageInit('pilihBigDream', function (page) {
 })
 
 myApp.onPageInit('mybigdream', function (page) {
-    var nrpMhs=localStorage.getItem('nrp_mhs');
+    setGlobal();
     $$.post(directory,{opsi:'ambilBigDream', nrp:nrpMhs}, function(data){
         if(data!=""){
             $$('#formBigDream').html(data);   
@@ -223,7 +290,8 @@ myApp.onPageInit('mybigdream', function (page) {
 })
 
 myApp.onPageInit('tujuanHidup', function (page) {
-    $$.post(directory,{opsi:'getTujuanHidup', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+    setGlobal();
+    $$.post(directory,{opsi:'getTujuanHidup', nrp:nrpMhs}, function(data){
         var result = JSON.parse(data);
         for (var i = 0; i <result.length; i++) 
         {
@@ -257,7 +325,7 @@ myApp.onPageInit('tujuanHidup', function (page) {
             myApp.alert('Tolong isi Tujuan Hidup');
         }
         else{
-            $$.post(directory,{opsi:'addTujuan', nrp:localStorage.getItem('nrp_mhs'), jawab:jawaban}, function(data){
+            $$.post(directory,{opsi:'addTujuan', nrp:nrpMhs, jawab:jawaban}, function(data){
                 $$('#listTujuan').append(data);
                 $$('#jawabTujuan').html("");
                 $$('#jawabTujuan').focus();
@@ -279,6 +347,7 @@ myApp.onPageInit('tujuanHidup', function (page) {
 })
 
 myApp.onPageInit('myLifeList', function (page) {
+    setGlobal();
     myApp.sortableOpen('.sortable');
     $$('#saveList').hide();
     $$('.sortable').on('sort', function (listEl, indexes) {
@@ -288,7 +357,7 @@ myApp.onPageInit('myLifeList', function (page) {
         var length= $$('#sortableLifeList li').length;
         mainView.router.loadPage('mylifelistDetail.html?length='+length);
     });
-    $$.post(directory,{opsi:'getLifeList', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+    $$.post(directory,{opsi:'getLifeList', nrp:nrpMhs}, function(data){
         console.log(data);
         var result = JSON.parse(data);
         if(result!=""){
@@ -319,7 +388,7 @@ myApp.onPageInit('myLifeList', function (page) {
                 var item = document.getElementById(ids);
                 var list = document.getElementById('sortableLifeList');
                 list.removeChild(item);
-                $$.post(directory,{opsi:'deleteLifeList', nrp:localStorage.getItem('nrp_mhs'), id:ids}, function(data){
+                $$.post(directory,{opsi:'deleteLifeList', nrp:nrpMhs, id:ids}, function(data){
                     console.log(data);
                 });
             });
@@ -332,7 +401,7 @@ myApp.onPageInit('myLifeList', function (page) {
           jawaban.push($$(this).attr('id'));
         })
 
-        $$.post(directory,{opsi:'updatePrioritas', nrp:localStorage.getItem('nrp_mhs'), jawab:jawaban}, function(data){
+        $$.post(directory,{opsi:'updatePrioritas', nrp:nrpMhs, jawab:jawaban}, function(data){
             myApp.alert("Prioritas baru tersimpan");
             console.log(jawaban);
             $$('#saveList').hide();
@@ -341,6 +410,7 @@ myApp.onPageInit('myLifeList', function (page) {
 })
 
 myApp.onPageInit('mylifelistDetail', function (page) {
+    setGlobal();
     var timeline2 = myApp.calendar({
         input: '#calendar-events-tercapai',
         dateFormat: 'yyyy-mm-dd',
@@ -378,7 +448,7 @@ myApp.onPageInit('mylifelistDetail', function (page) {
         if(list.value !=''&&target.value!=""&&obstacle.value!=""&&evidence.value!=""&&evaluation.value!="")
         {
 
-            $$.post(directory,{opsi:'jawabLifeList', length:page.query.length, id:idList, nrp:localStorage.getItem('nrp_mhs'), lists:list.value, targets:target.value, obstacles:obstacle.value, evidences:evidence.value, evaluations:evaluation.value}, function(data){
+            $$.post(directory,{opsi:'jawabLifeList', length:page.query.length, id:idList, nrp:nrpMhs, lists:list.value, targets:target.value, obstacles:obstacle.value, evidences:evidence.value, evaluations:evaluation.value}, function(data){
                 console.log(data);
                 if(data==1)
                 {
@@ -393,7 +463,8 @@ myApp.onPageInit('mylifelistDetail', function (page) {
 })
 
 myApp.onPageInit('formActionPlan', function (page) {
-    $$.post(directory,{opsi:'getLifeList', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+    setGlobal();
+    $$.post(directory,{opsi:'getLifeList', nrp:nrpMhs}, function(data){
         console.log(data);
         var result = JSON.parse(data);
         if(result!="")
@@ -426,9 +497,10 @@ myApp.onPageInit('formActionPlan', function (page) {
 })
 
 myApp.onPageInit('formActionPlanDetail', function (page) {
+    setGlobal();
     var idLife=page.query.idLifeList;
     $$('#judulActionPlanForm').html(page.query.LifeList);
-    $$.post(directory,{opsi:'getActionPlan', nrp:localStorage.getItem('nrp_mhs'), ids:idLife}, function(data){
+    $$.post(directory,{opsi:'getActionPlan', nrp:nrpMhs, ids:idLife}, function(data){
         console.log(data);
         var result = JSON.parse(data);
         if(result!="")
@@ -465,6 +537,7 @@ myApp.onPageInit('formActionPlanDetail', function (page) {
 })
 
 myApp.onPageInit('formActionPlanForm', function (page) {
+    setGlobal();
     var task=document.getElementById("task");
     var resource=document.getElementById("resource");
     var evidenceTabel=document.getElementById("evidenceTabel");
@@ -506,7 +579,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
     else{
         idTabel=page.query.idLife;
         $$('#btnSubmitTabel').on('click', function () {
-            $$.post(directory,{opsi:'jawabActionPlan', nrp:localStorage.getItem('nrp_mhs'),  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
+            $$.post(directory,{opsi:'jawabActionPlan', nrp:nrpMhs,  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
                 console.log(data);
                 mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife+'&LifeList='+page.query.LifeList,force: true,ignoreCache: true});
             });  
@@ -526,7 +599,8 @@ myApp.onPageInit('formActionPlanForm', function (page) {
 
 
 myApp.onPageInit('kisahEntong', function (page) {
-    $$.post(directory,{opsi:'getKisahEntong', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+    setGlobal();
+    $$.post(directory,{opsi:'getKisahEntong', nrp:nrpMhs}, function(data){
         console.log(data);
         $$('#formKisahEntong').html(data);
         $$('.overlay, .overlay-message').hide();
@@ -542,7 +616,7 @@ myApp.onPageInit('kisahEntong', function (page) {
         })
         console.dir(jawabanEntong);
 
-        $$.post(directory,{opsi:'jawabKisahEntong', nrp:localStorage.getItem('nrp_mhs'), jawab: jawabanEntong, id: idsoal}, function(data){
+        $$.post(directory,{opsi:'jawabKisahEntong', nrp:nrpMhs, jawab: jawabanEntong, id: idsoal}, function(data){
             console.log(data);
             mainView.router.back();
         });
@@ -550,9 +624,10 @@ myApp.onPageInit('kisahEntong', function (page) {
 })
 
 myApp.onPageInit('lessonLearned', function (page) {
+    setGlobal();
     $$('#saveLesson').hide();
 
-    $$.post(directory,{opsi:'getLessonLearned', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+    $$.post(directory,{opsi:'getLessonLearned', nrp:nrpMhs}, function(data){
         $$('#listJawabanLessonLearned').html(data);
         $$('.overlay, .overlay-message').hide();
         $$('.deleteLesson').on('click', function(event){
@@ -575,7 +650,7 @@ myApp.onPageInit('lessonLearned', function (page) {
             myApp.alert('Tolong isi Lesson Learned');
         }
         else{
-            $$.post(directory,{opsi:'addLessonLearned', nrp:localStorage.getItem('nrp_mhs'), jawab:jawaban}, function(data){
+            $$.post(directory,{opsi:'addLessonLearned', nrp:nrpMhs, jawab:jawaban}, function(data){
                 $$('#listJawabanLessonLearned').append(data);
                 $$('#jawabLesson').html("");
                 $$('#jawabLesson').focus();
@@ -586,7 +661,7 @@ myApp.onPageInit('lessonLearned', function (page) {
                     myApp.confirm('Apakah anda yakin akan menghapus Lesson Learned ini?', 'Apakah Anda Yakin?', function () {
                         list.removeChild(item);
 
-                        $$.post(directory,{opsi:'deleteLessonLearned', nrp:localStorage.getItem('nrp_mhs'), id:ids}, function(data){
+                        $$.post(directory,{opsi:'deleteLessonLearned', nrp:nrpMhs, id:ids}, function(data){
                             console.log(data);
                         });   
                     });
@@ -601,11 +676,12 @@ myApp.onPageInit('pilihManajemenEmosi', function (page) {
 })
 
 myApp.onPageInit('studiKasus', function (page) {
+    setGlobal();
     $$('.addStudi').on('click', function () {
         mainView.router.loadPage("studiKasusForm.html");
     });
 
-    $$.post(directory,{opsi:'getStudiKasus', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+    $$.post(directory,{opsi:'getStudiKasus', nrp:nrpMhs}, function(data){
         console.log(data);
         var result = JSON.parse(data);
         if(result!="")
@@ -637,6 +713,7 @@ myApp.onPageInit('studiKasus', function (page) {
 })
 
 myApp.onPageInit('studiKasusForm', function (page) {
+    setGlobal();
     var situasi=document.getElementById("situasi");
     var pemikiran=document.getElementById("pemikiran");
     var emosi=document.getElementById("emosi");
@@ -646,7 +723,7 @@ myApp.onPageInit('studiKasusForm', function (page) {
     {
         var idStudiKasus=page.query.idKasus;
 
-        $$.post(directory,{opsi:'getDetailStudiKasus', nrp:localStorage.getItem('nrp_mhs'), id:idStudiKasus}, function(data){
+        $$.post(directory,{opsi:'getDetailStudiKasus', nrp:nrpMhs, id:idStudiKasus}, function(data){
             console.log(data);
             var result = JSON.parse(data);
             situasi.value= result["kasus"]["situasi"];
@@ -677,7 +754,7 @@ myApp.onPageInit('studiKasusForm', function (page) {
     {
         $$('.overlay, .overlay-message').hide();
         $$('#btnSubmitStudiKasus').on('click', function () {
-            $$.post(directory,{opsi:'jawabStudiKasus', nrp:localStorage.getItem('nrp_mhs'), situasis: situasi.value, pemikirans: pemikiran.value, emosis:emosi.value, perilakus:perilaku.value}, function(data){
+            $$.post(directory,{opsi:'jawabStudiKasus', nrp:nrpMhs, situasis: situasi.value, pemikirans: pemikiran.value, emosis:emosi.value, perilakus:perilaku.value}, function(data){
                 console.log(data);
             }); 
             mainView.router.back({url: "studiKasus.html",force: true,ignoreCache: true});
@@ -687,11 +764,12 @@ myApp.onPageInit('studiKasusForm', function (page) {
 })
 
 myApp.onPageInit('pengalamanPribadi', function (page) {
+    setGlobal();
     $$('.addPengalaman').on('click', function () {
         mainView.router.loadPage("pengalamanPribadiForm.html");
     });
 
-    $$.post(directory,{opsi:'getPengalaman', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+    $$.post(directory,{opsi:'getPengalaman', nrp:nrpMhs}, function(data){
         console.log(data);
         var result = JSON.parse(data);
         if(result!="")
@@ -722,6 +800,7 @@ myApp.onPageInit('pengalamanPribadi', function (page) {
 })
 
 myApp.onPageInit('pengalamanPribadiForm', function (page) {
+    setGlobal();
     var emosi=document.getElementById("emosi2");
     var situasi=document.getElementById("situasi2");
     var strategi=document.getElementById("strategi");
@@ -730,7 +809,7 @@ myApp.onPageInit('pengalamanPribadiForm', function (page) {
     {
         var idPengalaman=page.query.idPengalaman;
 
-        $$.post(directory,{opsi:'getDetailPengalaman', nrp:localStorage.getItem('nrp_mhs'), id:idPengalaman}, function(data){
+        $$.post(directory,{opsi:'getDetailPengalaman', nrp:nrpMhs, id:idPengalaman}, function(data){
             console.log(data);
             var result = JSON.parse(data);
             emosi.value=result["pengalaman"]["emosi"];
@@ -761,7 +840,7 @@ myApp.onPageInit('pengalamanPribadiForm', function (page) {
     {
         $$('.overlay, .overlay-message').hide();
         $$('#btnSubmitPengalamanPribadi').on('click', function () {
-            $$.post(directory,{opsi:'jawabPengalaman', nrp:localStorage.getItem('nrp_mhs'), situasis: situasi.value, strategis: strategi.value, emosis:emosi.value}, function(data){
+            $$.post(directory,{opsi:'jawabPengalaman', nrp:nrpMhs, situasis: situasi.value, strategis: strategi.value, emosis:emosi.value}, function(data){
                 console.log(data);
             }); 
             mainView.router.back({url: "pengalamanPribadi.html",force: true,ignoreCache: true});
@@ -770,7 +849,8 @@ myApp.onPageInit('pengalamanPribadiForm', function (page) {
 })
 
 myApp.onPageInit('refleksiMini', function (page) {
-    $$.post(directory,{opsi:'getRefleksi', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+    setGlobal();
+    $$.post(directory,{opsi:'getRefleksi', nrp:nrpMhs}, function(data){
         console.log(data);
         $$('#formRefleksiMini').html(data);
         $$('.overlay, .overlay-message').hide();
@@ -785,7 +865,7 @@ myApp.onPageInit('refleksiMini', function (page) {
           idsoal.push($$(this).attr('id'));
         })
 
-        $$.post(directory,{opsi:'jawabRefleksi', nrp:localStorage.getItem('nrp_mhs'), jawab: jawabanEntong, id: idsoal}, function(data){
+        $$.post(directory,{opsi:'jawabRefleksi', nrp:nrpMhs, jawab: jawabanEntong, id: idsoal}, function(data){
             console.log(data);
             mainView.router.back();
         });
@@ -807,7 +887,8 @@ myApp.onPageInit('refleksiMini', function (page) {
 })
 
 myApp.onPageInit('fishbone', function (page) {
-    $$.post(directory,{opsi:'getFishbone', nrp:localStorage.getItem('nrp_mhs')}, function(data){
+    setGlobal();
+    $$.post(directory,{opsi:'getFishbone', nrp:nrpMhs}, function(data){
         console.log(data);
         var result = JSON.parse(data);
         if(result!="")
@@ -886,7 +967,7 @@ myApp.onPageInit('fishbone', function (page) {
         myApp.prompt('', 'Fishbone Kepala', function (value) {
             if(value!='')
             {
-                $$.post(directory,{opsi:'jawabFishbone', nrp:localStorage.getItem('nrp_mhs'), jawab:value}, function(data){
+                $$.post(directory,{opsi:'jawabFishbone', nrp:nrpMhs, jawab:value}, function(data){
                     console.log(data);
                     mainView.router.refreshPage();
                 });   
@@ -896,6 +977,7 @@ myApp.onPageInit('fishbone', function (page) {
 })
 
 myApp.onPageInit('fishboneSupport', function (page) {
+    setGlobal();
     var ids = page.query.idKepala;
     var nama = page.query.namaKepala;
     $$("#judulFishboneKepala").html(nama);
@@ -972,6 +1054,7 @@ myApp.onPageInit('fishboneSupport', function (page) {
 })
 
 myApp.onPageInit('fishboneSupportDetail', function (page) {
+    setGlobal();
     var ids = page.query.idSupport;
     var nama = page.query.namaSupport;
     $$("#judulFishboneSupport").html(nama);
@@ -1032,3 +1115,13 @@ myApp.onPageInit('fishboneSupportDetail', function (page) {
         });
     });
 })
+
+
+function setGlobal()
+{
+    if(JSON.parse(localStorage.getItem("username")))
+    {
+        nrpMhs=JSON.parse(localStorage.getItem("username"));
+        nama_mhs=JSON.parse(localStorage.getItem("nama_mhs"));
+    }
+}
