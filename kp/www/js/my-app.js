@@ -66,13 +66,18 @@ $$(document).on('deviceready', function() {
 });
 
 myApp.onPageInit('index', function (page) {
+    $$('#menuAwal').on('click',function(){
+        mainView.router.loadPage("menu.html");
+        myApp.closePanel();
+    });
+
     $$('#profile').on('click',function(){
         mainView.router.loadPage("profile.html");
         myApp.closePanel();
     });
 
-    $$('#menuAwal').on('click',function(){
-        mainView.router.loadPage("menu.html");
+    $$('#pengumuman').on('click',function(){
+        mainView.router.loadPage("pengumuman.html");
         myApp.closePanel();
     });
 
@@ -170,7 +175,74 @@ myApp.onPageInit('menu', function (page) {
     $$('#outdoor').on('click',function(){
         mainView.router.loadPage("outdoor.html");
     });
-    $$('.overlay, .overlay-message').hide();
+
+    $$.post(directory,{opsi:"getPengumuman"},function(data){
+        console.log(data);
+        var result=JSON.parse(data);
+        if(result!="")
+        {
+            $$(".judul").html(result["judul"]);
+            $$(".contentPengumuman").html(result["content"]);
+            $$(".contentPengumuman").on("click", function(){
+                mainView.router.loadPage("pengumumanDetail.html?idPengumuman="+result["id_pengumuman"]);
+            });
+
+        }
+        else
+        {
+            $$('.blockPengumuman').html("<p id='noticePengumuman'>Tidak ada Pengumuman</p>");
+        }
+        $$('.overlay, .overlay-message').hide();
+    });        
+})
+
+myApp.onPageInit('pengumuman', function (page) {
+    setGlobal();
+     $$.post(directory,{opsi:"getAllPengumuman"},function(data){
+        console.log(data);
+        var result=JSON.parse(data);
+        if(result!="")
+        {
+            var temp="";
+            for(var i=0;i<result.length;i++)
+            {
+                temp+='<div class="card card-outline">'+
+                          '<div class="card-header judul">'+result[i]["judul"]+'</div>'+
+                          '<div class="card-content contentPengumuman">'+result[i]["content"]+'</div>'+
+                          '<div class="card-footer"><div></div><a href="pengumumanDetail.html?idPengumuman='+result[i]["id_pengumuman"]+'"><p>Read More</p></a></div>'+
+                        '</div>';
+            }
+            $$('#listPengumuman').html(temp);
+
+            $$('.overlay, .overlay-message').hide();
+        }
+        else
+        {
+            $$('.overlay-message').html("Tidak ada Pengumuman");
+        }
+    }); 
+})
+
+myApp.onPageInit('pengumumanDetail', function (page) {
+    setGlobal();
+     $$.post(directory,{opsi:"getDetailPengumuman", id:page.query.idPengumuman},function(data){
+        console.log(data);
+        var result=JSON.parse(data);
+        if(result!="")
+        {
+            $$('#listPengumuman').html('<div class="card card-outline">'+
+                                          '<div class="card-header judul">'+result["judul"]+'</div>'+
+                                          '<div class="card-content">'+result["content"]+'</div>'+
+                                          //'<div class="card-footer"></div>'+
+                                        '</div>');
+
+            $$('.overlay, .overlay-message').hide();
+        }
+        else
+        {
+            $$('.overlay-message').html("Tidak ada Pengumuman");
+        }
+    }); 
 })
 
 myApp.onPageInit('profile', function (page) {

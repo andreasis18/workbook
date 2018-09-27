@@ -759,9 +759,9 @@ div[class*="col"] img{
 }
 .overlay-message{
     position: fixed;
-    top:50%;
-    left:30%;
-    width:40%;
+    top:45%;
+    left:25%;
+    width:50%;
     height:auto;
     background-color:#99ccff;
     opacity:1;
@@ -770,6 +770,8 @@ div[class*="col"] img{
     font-size: 24px;
 }
 .card-content {
+  padding-left: 10px;
+  padding-top: 5px;
   padding-bottom: 5px;
 }
 
@@ -783,4 +785,32 @@ div[class*="col"] img{
 
 .md .data-table .sortable-cell .ripple-wave {
   z-index: 0;
+}
+
+#BigDreamList, #listPengumuman
+{
+  margin-top:20px;
+}
+
+#jawabBigDream{
+  width:100%; 
+  height:30vw; 
+  font-size:20px;
+}
+
+.judul{
+  background-color:#a3d8f5 ;
+  font-color:black;
+  font-size: 18px;
+}
+
+.contentPengumuman {
+  overflow: hidden;
+  height: 15vw;
+}
+
+#noticePengumuman{
+  text-align: center;
+  font-size: 20px;
+  margin: 10px;
 }
