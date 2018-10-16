@@ -11,8 +11,8 @@ var myApp = new Framework7({
 
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7;
-var directory= 'http://localhost/kp/server/projectkp.php';
-//var directory='http://admingpb.000webhostapp.com/projectkp.php'; //tmpat php aplikasi
+//var directory= 'http://localhost/kp/server/projectkp.php';
+var directory='http://admingpb.000webhostapp.com/projectkp.php'; //tmpat php aplikasi
 
 // Add view
 var mainView = myApp.addView('.view-main', {
@@ -52,10 +52,9 @@ var judulModul=[["MY BIG DREAM"],
 ];
 
 
-
 $$(document).on('deviceready', function() {
     console.log("Device is ready!");
-
+    alert("arewaer");
     myApp.onPageBack('menu',function(asd){
         if(JSON.parse(localStorage.getItem("username"))&&JSON.parse(localStorage.getItem("jabatan"))){
             console.log("heahahwe");
@@ -151,7 +150,6 @@ myApp.onPageInit('index', function (page) {
 
 myApp.onPageInit('menu', function (page) {
     setGlobal();
-
     $$('#myBigDreamPilih').on('click',function(){
         mainView.router.loadPage("pilihBigDream.html");
     });
@@ -176,26 +174,35 @@ myApp.onPageInit('menu', function (page) {
         mainView.router.loadPage("outdoor.html");
     });
 
-    $$.post(directory,{opsi:"getPengumuman"},function(data){
-        console.log(data);
-        var result=JSON.parse(data);
-        if(result!="")
+    document.addEventListener("deviceready", function(){
+        console.log("READYYYY");
+        if(checkConnection())
         {
-            $$(".judul").html(result["judul"]);
-            $$(".contentPengumuman").html(result["content"]);
-            $$(".contentPengumuman").on("click", function(){
-                mainView.router.loadPage("pengumumanDetail.html?idPengumuman="+result["id_pengumuman"]);
+            $$.post(directory,{opsi:"getPengumuman"}, function(data){
+                console.log(data);
+                var result=JSON.parse(data);
+                if(result!="")
+                {
+                    $$(".judul").html(result["judul"]);
+                    $$(".contentPengumuman").html(result["content"]);
+                    $$(".contentPengumuman").on("click", function(){
+                        mainView.router.loadPage("pengumumanDetail.html?idPengumuman="+result["id_pengumuman"]);
+                    });
+                }
+                else
+                {
+                    $$('.blockPengumuman').html("<p id='noticePengumuman'>Tidak ada Pengumuman</p>");
+                }
+                $$('.overlay, .overlay-message').hide();
             });
-
         }
         else
         {
-            $$('.blockPengumuman').html("<p id='noticePengumuman'>Tidak ada Pengumuman</p>");
+            $$('.blockPengumuman').html("<p id='noticePengumuman'>Tidak Terhubung ke Internet, Tidak Bisa Mengambil Pengumuman</p>");
+            $$('.overlay, .overlay-message').hide();
         }
-        $$('.overlay, .overlay-message').hide();
-    });        
+    }, false);      
 })
-
 myApp.onPageInit('pengumuman', function (page) {
     setGlobal();
      $$.post(directory,{opsi:"getAllPengumuman"},function(data){
@@ -1195,5 +1202,29 @@ function setGlobal()
     {
         nrpMhs=JSON.parse(localStorage.getItem("username"));
         nama_mhs=JSON.parse(localStorage.getItem("nama_mhs"));
+    }
+}
+
+function checkConnection()
+{
+    var networkState = navigator.connection.type;
+    alert(networkState);  
+    var states = {};
+    states[Connection.UNKNOWN]  = 'Unknown connection';
+    states[Connection.ETHERNET] = 'Ethernet connection';
+    states[Connection.WIFI]     = 'WiFi connection';
+    states[Connection.CELL_2G]  = 'Cell 2G connection';
+    states[Connection.CELL_3G]  = 'Cell 3G connection';
+    states[Connection.CELL_4G]  = 'Cell 4G connection';
+    states[Connection.CELL]     = 'Cell generic connection';
+    states[Connection.NONE]     = 'None';
+
+    if(states[networkState] == "None")
+    {
+        return false;
+    }
+    else
+    {
+        return true;
     }
 }

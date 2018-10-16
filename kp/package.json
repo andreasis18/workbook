@@ -7,15 +7,17 @@
       "browser"
     ],
     "plugins": {
-      "cordova-plugin-console": {},
       "cordova-plugin-whitelist": {},
-      "cordova-plugin-statusbar": {}
+      "cordova-plugin-statusbar": {},
+      "cordova-plugin-network-information": {},
+      "cordova-plugin-console": {}
     }
   },
   "dependencies": {
-    "cordova-browser": "~5.0.3",
-    "cordova-plugin-console": "1.0.7",
-    "cordova-plugin-whitelist": "1.2.2",
-    "cordova-plugin-statusbar": "~2.4.2"
+    "cordova-browser": "^5.0.4",
+    "cordova-plugin-console": "^1.1.0",
+    "cordova-plugin-network-information": "^2.0.1",
+    "cordova-plugin-statusbar": "~2.4.2",
+    "cordova-plugin-whitelist": "1.2.2"
   }
 }
