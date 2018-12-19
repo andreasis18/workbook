@@ -814,3 +814,15 @@ div[class*="col"] img{
   font-size: 20px;
   margin: 10px;
 }
+
+.caption{
+  font-size: 12px;
+}
+
+.statusText{
+  margin-left: 10px;
+}
+
+.floating-button{
+  position: fixed;
+}
