@@ -1,4 +1,4 @@
-    // Initialize app
+        // Initialize app
 var myApp = new Framework7({
     pushState: true,
     swipeBackPage: false,
@@ -88,6 +88,11 @@ myApp.onPageInit('index', function (page) {
         myApp.closePanel();
     });
 
+    $$('#driverPassengerSide').on('click',function(){
+        mainView.router.loadPage("driverPassenger.html");
+        myApp.closePanel();
+    });
+
     $$('#manajemenEmosiSide').on('click',function(){
         mainView.router.loadPage("pilihManajemenEmosi.html");
         myApp.closePanel();
@@ -102,7 +107,6 @@ myApp.onPageInit('index', function (page) {
         mainView.router.loadPage("fishbone.html");
         myApp.closePanel();
     });
-
     if(JSON.parse(localStorage.getItem("username")))
     {
         mainView.router.loadPage('menu.html'); 
@@ -110,6 +114,11 @@ myApp.onPageInit('index', function (page) {
     else{
         myApp.hideNavbar($$('.navbar'));
     }
+
+    $$('#changePassword').on('click', function(){
+        mainView.router.loadPage("changePassword.html");
+        myApp.closePanel();
+    });
 
     $$('#logout').on('click',function(){
         myApp.confirm('Anda akan logout dari aplikasi', 'Apakah Anda Yakin?', function () {
@@ -155,8 +164,59 @@ myApp.onPageInit('index', function (page) {
     });
 }).trigger();
 
+myApp.onPageInit('changePassword', function(page){
+    setGlobal();
+    document.addEventListener("deviceready", function(){
+        console.log("READYYYY");
+        if(checkConnection())
+        {
+            
+            $$('#btnChange').on('click',function(){
+                var old = document.getElementById('old').value;
+                var newp = document.getElementById('new').value;
+                var confirm = document.getElementById('confirm').value;
+                if(old != "" && newp !="" && confirm != "")
+                {
+                    if(newp == confirm)
+                    {
+                        $$.post(directory,{opsi:"changePassword", id:nrpMhs, old:old, new:newp},function(data){
+                           if(data=="gagal")
+                            {
+                                myApp.alert("password salah");
+                            }
+                            else
+                            {
+                                myApp.alert("password berhasil diganti");
+                                old.value="";
+                                newp.value="";
+                                confirm.value="";
+                            }
+                        });     
+                    }
+                    else
+                    {
+                        myApp.alert("Konfirmasi password berbeda dengan password baru");
+                    }
+                }
+                else
+                {
+                    myApp.alert("Tolong isi data dengan lengkap");
+                }
+            });
+
+            $$('.overlay, .overlay-message').hide();
+        }
+        else
+        {
+            $$('.overlay-message').html("Tidak ada koneksi Internet");   
+        }
+    }, false); 
+})
+
 myApp.onPageInit('menu', function (page) {
     setGlobal();
+
+    //router.clearPreviousHistory();
     //localStorage.removeItem(nrpMhs+"LifeList");
     $$('#myBigDreamPilih').on('click',function(){
         mainView.router.loadPage("pilihBigDream.html");
@@ -216,12 +276,11 @@ myApp.onPageInit('menu', function (page) {
 })
 
 myApp.onPageBack('menu',function(asd){
-    navigator.app.exitApp();
+    //navigator.app.exitApp();
 })
 
 myApp.onPageInit('pengumuman', function (page) {
     setGlobal();
-
     document.addEventListener("deviceready", function(){
         console.log("READYYYY");
         if(checkConnection())
@@ -301,7 +360,15 @@ myApp.onPageInit('profile', function (page) {
                 var result=JSON.parse(data);
 
                 $$('#namaMahasiswa').html(nama_mhs+' - '+nrpMhs);
-                $$('#fotoMahasiswa').html('<img src="https://my.ubaya.ac.id/img/mhs/160415093_m.jpg" width="20%" height="10%"></img>');
+
+                if(nrpMhs!="1234" && nrpMhs!="4321")
+                {
+                    $$('#fotoMahasiswa').html('<img src="https://my.ubaya.ac.id/img/mhs/'+nrpMhs+'_m.jpg" width="20%" height="10%"></img>');   
+                }
+                else
+                {
+                    $$('#fotoMahasiswa').html('<img src="https://my.ubaya.ac.id/img/mhs/160415093_m.jpg" width="20%" height="10%"></img>');
+                }
                 $$('#namaGelombang').html('Gelombang - '+result['nama_gelombang']);
                 $$('#namaKelompok').html('Kelompok - '+result['nama_kelompok']);
                 $$('#namaBus').html('Bus - '+result['bus']);
@@ -416,6 +483,106 @@ function checkLocal(modul)
         return false;
     }
 }
+
+myApp.onPageInit('driverPassenger', function (page) {
+    setGlobal();
+    local= checkLocal("driverPassenger");
+
+    if(checkConnection())
+    {
+        if(local!=false)
+        {
+            myApp.confirm('Ada data lokal yang tersimpan, upload jawaban ke server?', 'Sinkron data?', function () {
+                $$.post(directory,{opsi:'jawabDriverPassenger', nrp:nrpMhs, jawab: local["jawaban"], id: local["idSoal"]}, function(data){
+                    console.log(data);
+                });   
+                localStorage.removeItem(nrpMhs+"driverPassenger");
+                mainView.router.refreshPage();
+            }, function () {
+                localStorage.removeItem(nrpMhs+"driverPassenger");
+                mainView.router.refreshPage();
+            });
+        }
+        else
+        {
+            $$.post(directory,{opsi:'getDriverPassenger', nrp:nrpMhs}, function(data){
+                console.log(data);
+                $$('#formDriverPassenger').html(data);
+                $$('.overlay, .overlay-message').hide();
+            });   
+        }
+    }
+    else
+    {
+        var soalDriverPassenger=[{id_soal:38,soal:"Anto terpaksa mengikuti GPB karena diwajibkan. Ia hanya mengenal sedikit sekali peserta GPB. Ia merasa jengkel karena Ubaya mengharuskan ia untuk ikut GPB. Di sesi awal ia sudah mulai merasa malas untuk terlibat."},
+            {id_soal:42,soal:"soalkosong"},
+            {id_soal:39,soal:"Bella memasuki fakultas X di Ubaya akan tetapi sebetulnya ia tidak tahu dia akan menjadi apa di masa depan. Ia merasa ketakutan mendengar banyaknya mata kuliah yang harus ia ambil dan banyaknya tugas yang harus dikerjakan. Sebagai akibatnya ia mulai lebih banyak keluar untuk jalanjalan ke mal-mal, cangkruk dengan teman-temannya."},
+            {id_soal:43,soal:"soalkosong"},
+            {id_soal:40,soal:"Chika adalah mahasiswa baru Ubaya yang berasal dari kota Palu, Sulawesi. Di SMAnya di kota Palu ia adalah siswa populer dan berprestasi. Akan tetapi di Ubaya dan di kota Surabaya ia betul-betul merasa asing dan tidak ada teman. Ia merasa bahwa logat bicaranya beda sendiri dari temanteman fakultas dan kos-kosannya. Ia bahkan curiga bahwa teman-teman fakultasnya membicarakan tentang dia dengan menggunakan bahasa Jawa, yang tidak ia pahami"},
+            {id_soal:44,soal:"soalkosong"},
+            {id_soal:41,soal:"Dudung adalah mahasiswa Ubaya yang sangat doyan bermain video game. Begitu doyannya Dudung dengan video game sampai ia menghabiskan waktu berjam-jam setiap hari bermain game. Akibatnya studi Dudung di Ubaya terganggu. Nilai-nilainya anjlok karena ia tak pernah belajar akibat waktunya dihabiskan bermain video game. Ia sadar bahwa ia bermasalah, tapi ia merasa tak bisa melepaskan diri dari kebiasaannya tersebut."},
+            {id_soal:45,soal:"soalkosong."}
+        ];
+        var temp ="";
+        //localStorage.removeItem(nrpMhs+"kisahEntong");
+
+        for (var i = 0; i <soalDriverPassenger.length; i+=2) {
+            temp+='<div class="card">'+
+                            '<div class="card-header" >'+soalDriverPassenger[i]["soal"]+'</div>'+
+                            '<div class="card-content">'+
+                                '<div class="card-content-inner">'+
+                                    '<p>Driver :</p>'+
+                                    '<textarea class="areajawab" rows="3" style="height:auto; width:100%" id='+soalDriverPassenger[i]["id_soal"]+'>';
+                if(local!=false){
+                    temp += local["jawaban"][i];
+                }
+
+                temp+=             '</textarea>'+
+                                    '<p>Passenger :</p>'+
+                                    '<textarea class="areajawab" rows="3" style="height:auto; width:100%" id='+soalDriverPassenger[i+1]["id_soal"]+'>';
+                if(local!=false){
+                    temp += local["jawaban"][i+1];
+                }
+
+                temp+=             '</textarea>'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>';
+
+    alert(i);
+        }
+
+    alert("aaa");
+        $$('#formDriverPassenger').html(temp);
+
+    alert("bbb");
+        $$('.overlay, .overlay-message').hide();
+    }
+
+    $$('#btnSubmitDriverPassenger').on('click', function () {
+        var jawabanAwal=[];
+        var idsoal=[];
+
+        $$('.areajawab').each(function(){
+          jawabanAwal.push($$(this).val());
+          idsoal.push($$(this).attr('id'));
+        })
+        if(checkConnection())
+        {
+            $$.post(directory,{opsi:'jawabDriverPassenger', nrp:nrpMhs, jawab: jawabanAwal, id: idsoal}, function(data){
+                console.log(data);
+                mainView.router.back();
+            });   
+        }
+        else
+        {
+            myApp.alert("Tidak ada internet, data disimpan secara lokal");   
+            var tempArr={jawaban:jawabanAwal, idSoal:idsoal};
+            localStorage.setItem(nrpMhs+"driverPassenger",JSON.stringify(tempArr));
+            mainView.router.back();
+        }
+    });    
+})
 
 myApp.onPageInit('mybigdream', function (page) {
     setGlobal();
@@ -1877,7 +2044,6 @@ function sinkronFishbone()
                 {
                     support= local[i]["support"];
                 } 
-                alert(local.length);
                 $$.post(directory,{opsi:'jawabFishbone', nrp:nrpMhs, jawab:local[i]["kepala"]}, function(data){
                     console.log(data);   
                     var idk=data;
