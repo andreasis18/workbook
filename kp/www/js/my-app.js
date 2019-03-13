@@ -548,14 +548,10 @@ myApp.onPageInit('driverPassenger', function (page) {
                                 '</div>'+
                             '</div>'+
                         '</div>';
-
-    alert(i);
         }
 
-    alert("aaa");
         $$('#formDriverPassenger').html(temp);
 
-    alert("bbb");
         $$('.overlay, .overlay-message').hide();
     }
 
