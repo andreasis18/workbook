@@ -281,11 +281,9 @@ myApp.onPageBack('menu',function(asd){
 myApp.onPageInit('pengumuman', function (page) {
     setGlobal();
     document.addEventListener("deviceready", function(){
-        console.log("READYYYY");
         if(checkConnection())
         {
             $$.post(directory,{opsi:"getAllPengumuman"},function(data){
-                console.log(data);
                 var result=JSON.parse(data);
                 if(result!="")
                 {
@@ -318,11 +316,9 @@ myApp.onPageInit('pengumuman', function (page) {
 myApp.onPageInit('pengumumanDetail', function (page) {
     setGlobal();
     document.addEventListener("deviceready", function(){
-        console.log("READYYYY");
         if(checkConnection())
         {
             $$.post(directory,{opsi:"getDetailPengumuman", id:page.query.idPengumuman},function(data){
-                console.log(data);
                 var result=JSON.parse(data);
                 if(result!="")
                 {
@@ -355,7 +351,6 @@ myApp.onPageInit('profile', function (page) {
         if(checkConnection())
         {
             $$.post(directory,{opsi:"getBisTenda", nrp:nrpMhs},function(data){
-                console.log(data);
                 var result=JSON.parse(data);
 
                 $$('#namaMahasiswa').html(nama_mhs+' - '+nrpMhs);
@@ -395,7 +390,6 @@ myApp.onPageInit('profileDetail', function (page) {
             if(detail=="Gelombang")
             {
                 $$.post(directory,{opsi:"getTemanGelombang", nrp:nrpMhs},function(data){
-                    console.log("data");
                     result=JSON.parse(data);
                     getTabel(result);
                     $$("#blockTitle").html("Gelombang")
@@ -404,7 +398,6 @@ myApp.onPageInit('profileDetail', function (page) {
             else if(detail=="Kelompok")
             {
                 $$.post(directory,{opsi:"getTemanKelompok", nrp:nrpMhs},function(data){
-                    console.log(data);
                     result=JSON.parse(data);
                     getTabel(result);
                     $$("#blockTitle").html("Kelompok")
@@ -413,7 +406,6 @@ myApp.onPageInit('profileDetail', function (page) {
             else if(detail=="Bus")
             {
                 $$.post(directory,{opsi:"getTemanBus", nrp:nrpMhs},function(data){
-                    console.log(data);
                     result=JSON.parse(data);
                     getTabel(result);
                     $$("#blockTitle").html("Bus")
@@ -422,7 +414,6 @@ myApp.onPageInit('profileDetail', function (page) {
             else if(detail=="Tenda")
             {
                 $$.post(directory,{opsi:"getTemanTenda", nrp:nrpMhs},function(data){
-                    console.log(data);
                     result=JSON.parse(data);
                     getTabel(result);
                     $$("#blockTitle").html("Tenda")
@@ -451,7 +442,6 @@ function getTabel(result){
                     "</td>"+
                 "</tr>";
         }   
-        console.log(temp);
         $$("#tabelTeman").html(temp);
     }    
 }

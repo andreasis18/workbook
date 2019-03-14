@@ -826,3 +826,7 @@ div[class*="col"] img{
 .floating-button{
   position: fixed;
 }
+
+.comment {
+  color: #ff1a1a;
+}
