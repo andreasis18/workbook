@@ -243,7 +243,6 @@ myApp.onPageInit('menu', function (page) {
     });
 
     document.addEventListener("deviceready", function(){
-        console.log("READYYYY");
         if(checkConnection())
         {
             $$.post(directory,{opsi:"getPengumuman"}, function(data){
@@ -484,6 +483,15 @@ function checkLocal(modul)
     }
 }
 
+function getComment($submodul){
+    $$.post(directory,{opsi:'getComment', id:nrpMhs, modul: $submodul}, function(data){
+        if(data!='')
+        {
+            var comment= "Catatan : "+data;
+            $$('.comment').html(comment);   
+        }
+    });   
+}
 myApp.onPageInit('driverPassenger', function (page) {
     setGlobal();
     local= checkLocal("driverPassenger");
@@ -510,6 +518,7 @@ myApp.onPageInit('driverPassenger', function (page) {
                 $$('#formDriverPassenger').html(data);
                 $$('.overlay, .overlay-message').hide();
             });   
+            getComment(11);
         }
     }
     else
@@ -622,6 +631,7 @@ myApp.onPageInit('mybigdream', function (page) {
                 }
                 $$('.overlay, .overlay-message').hide();
             });  
+            getComment(1);
         }
         else
         {
@@ -667,6 +677,7 @@ myApp.onPageInit('tujuanHidup', function (page) {
         var local = checkLocal("TujuanHidup");
         if(checkConnection())
         {
+            getComment(10);
             if(local!=false)
             {
                 myApp.confirm('Ada data lokal yang tersimpan, upload jawaban ke server?', 'Sinkron data?', function () {
@@ -862,6 +873,7 @@ myApp.onPageInit('myLifeList', function (page) {
                 sinkronLifeListActionPlan();
                 mainView.router.refreshPage();  
             }
+            getComment(2);
             $$.post(directory,{opsi:'getLifeList', nrp:nrpMhs}, function(data){
                 console.log(data);
                 var result = JSON.parse(data);
@@ -1074,6 +1086,7 @@ myApp.onPageInit('formActionPlan', function (page) {
             sinkronLifeListActionPlan();   
             mainView.router.refreshPage();           
         }
+        getComment(3);
         $$.post(directory,{opsi:'getLifeList', nrp:nrpMhs}, function(data){
             console.log(data);
             var result = JSON.parse(data);
@@ -1400,6 +1413,7 @@ myApp.onPageInit('kisahEntong', function (page) {
                 $$('#formKisahEntong').html(data);
                 $$('.overlay, .overlay-message').hide();
             });   
+            getComment(4);
         }
     }
     else
@@ -1478,6 +1492,7 @@ myApp.onPageInit('lessonLearned', function (page) {
                 localStorage.removeItem(nrpMhs+"lessonLearned");
             });
         }
+        getComment(5);
         $$.post(directory,{opsi:'getLessonLearned', nrp:nrpMhs}, function(data){
             $$('#listJawabanLessonLearned').html(data);
             $$('.overlay, .overlay-message').hide();
@@ -1597,6 +1612,7 @@ myApp.onPageInit('studiKasus', function (page) {
                 localStorage.removeItem(nrpMhs+"studiKasus");
             });
         }
+        getComment(6);
         $$.post(directory,{opsi:'getStudiKasus', nrp:nrpMhs}, function(data){
             console.log(data);
             var result = JSON.parse(data);
@@ -1786,6 +1802,7 @@ myApp.onPageInit('pengalamanPribadi', function (page) {
                 localStorage.removeItem(nrpMhs+"pengalamanPribadi");
             });
         }
+        getComment(7);
         $$.post(directory,{opsi:'getPengalaman', nrp:nrpMhs}, function(data){
             console.log(data);
             var result = JSON.parse(data);
@@ -1853,6 +1870,7 @@ myApp.onPageInit('pengalamanPribadiForm', function (page) {
         var idPengalaman=page.query.idPengalaman;
         if(checkConnection())
         {
+
             $$.post(directory,{opsi:'getDetailPengalaman', nrp:nrpMhs, id:idPengalaman}, function(data){
                 console.log(data);
                 var result = JSON.parse(data);
@@ -1952,6 +1970,7 @@ myApp.onPageInit('refleksiMini', function (page) {
     local= checkLocal("refleksiMini");
     if(checkConnection())
     {
+
         if(local!=false)
         {
             alert(JSON.stringify(local));
@@ -1966,6 +1985,7 @@ myApp.onPageInit('refleksiMini', function (page) {
                 localStorage.removeItem(nrpMhs+"refleksiMini");
             });
         }
+        getComment(8);
         $$.post(directory,{opsi:'getRefleksi', nrp:nrpMhs}, function(data){
             console.log(data);
             $$('#formRefleksiMini').html(data);
@@ -2079,6 +2099,7 @@ myApp.onPageInit('fishbone', function (page) {
             sinkronFishbone();
             mainView.router.refreshPage();      
         }
+        getComment(9);
         $$.post(directory,{opsi:'getFishbone', nrp:nrpMhs}, function(data){
             console.log(data);
             var result = JSON.parse(data);
