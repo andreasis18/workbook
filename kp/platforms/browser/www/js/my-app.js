@@ -12,7 +12,7 @@ var myApp = new Framework7({
 // If we need to use custom DOM library, let's save it to $$ variable:
 var $$ = Dom7;
 //var directory= 'http://localhost/kp/server/projectkp.php';
-var directory='http://admingpb.000webhostapp.com/projectkp.php'; //tmpat php aplikasi
+var directory='http://administratorgpb.000webhostapp.com/projectkp.php'; //tmpat php aplikasi
 
 // Add view
 var mainView = myApp.addView('.view-main', {
@@ -215,7 +215,6 @@ myApp.onPageInit('changePassword', function(page){
 
 myApp.onPageInit('menu', function (page) {
     setGlobal();
-
     //router.clearPreviousHistory();
     //localStorage.removeItem(nrpMhs+"LifeList");
     $$('#myBigDreamPilih').on('click',function(){
@@ -603,7 +602,9 @@ myApp.onPageInit('mybigdream', function (page) {
                                     $$('#jawabBigDream').html(local);          
                                 });   
                             }, function () {
-                                $$('#jawabBigDream').html(data);          
+                                $$('#jawabBigDream').html(data);  
+                                localStorage.removeItem(nrpMhs+"BigDream");
+
                             });
                         }   
                     }
@@ -616,7 +617,7 @@ myApp.onPageInit('mybigdream', function (page) {
                 {
                     if(local!=false)
                     {
-                        $$('#jawabBigDream').html(local);   
+                        $$('#jawabBigDream').html("haha");   
                     }
                 }
                 $$('.overlay, .overlay-message').hide();
@@ -644,7 +645,7 @@ myApp.onPageInit('mybigdream', function (page) {
                 {
                     $$.post(directory,{opsi:'jawabBigDream',nrp:nrpMhs,jawab:jawaban}, function(data){
                         console.log(data);
-                        localStorage.setItem(nrpMhs+"BigDream", JSON.stringify(jawaban));
+                        alert(data);
                         mainView.router.back({url: 'pilihBigDream.html',force: true,ignoreCache: true});
                     });   
                 }
