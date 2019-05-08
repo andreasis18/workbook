@@ -22,12 +22,12 @@ var mainView = myApp.addView('.view-main', {
 
 
 function hapusLocalAll(){
-    localStorage.removeItem('username');
-    localStorage.removeItem('tenda');
-    localStorage.removeItem('bus');
-    localStorage.removeItem('nama_kelompok');
-    localStorage.removeItem('nama_mhs');
-	localStorage.removeItem('nrp_mhs');
+    localStorage.removeItem('GPBusername');
+    localStorage.removeItem('GPBtenda');
+    localStorage.removeItem('GPBbus');
+    localStorage.removeItem('GPBnama_kelompok');
+    localStorage.removeItem('GPBnama_mhs');
+	localStorage.removeItem('GPBnrp_mhs');
 } //buat hapus smua local storage
 
 var tenda=0;
@@ -55,7 +55,7 @@ var judulModul=[["MY BIG DREAM"],
 $$(document).on('deviceready', function() {
     console.log("Device is ready!");
     myApp.onPageBack('menu',function(asd){
-        if(JSON.parse(localStorage.getItem("username"))&&JSON.parse(localStorage.getItem("jabatan"))){
+        if(JSON.parse(localStorage.getItem("GPBusername"))&&JSON.parse(localStorage.getItem("jabatan"))){
             console.log("heahahwe");
             navigator.app.exitApp();   
         }
@@ -107,7 +107,7 @@ myApp.onPageInit('index', function (page) {
         mainView.router.loadPage("fishbone.html");
         myApp.closePanel();
     });
-    if(JSON.parse(localStorage.getItem("username")))
+    if(JSON.parse(localStorage.getItem("GPBusername")))
     {
         mainView.router.loadPage('menu.html'); 
     }
@@ -124,7 +124,8 @@ myApp.onPageInit('index', function (page) {
         myApp.confirm('Anda akan logout dari aplikasi', 'Apakah Anda Yakin?', function () {
             hapusLocalAll();
             myApp.closePanel();
-            mainView.router.back({url: 'index.html',force: true,ignoreCache: true});
+            navigator.app.exitApp();
+            //mainView.router.back({url: 'index.html',force: true,ignoreCache: true});
         });
     });
 
@@ -140,11 +141,11 @@ myApp.onPageInit('index', function (page) {
                         $$.post(directory,{opsi:"getBisTenda", nrp:username.value},function(data){
                             var tendaBisTemp=JSON.parse(data);
                             mainView.router.loadPage('menu.html');
-                            localStorage.setItem("tenda",JSON.stringify(tendaBisTemp['tenda']));
-                            localStorage.setItem("bus",JSON.stringify(tendaBisTemp['bus']));
-                            localStorage.setItem("nama_kelompok",JSON.stringify(tendaBisTemp['nama_kelompok']));
-                            localStorage.setItem("nama_mhs",JSON.stringify(tendaBisTemp['nama']));
-                            localStorage.setItem("username",JSON.stringify(username.value));
+                            localStorage.setItem("GPBtenda",JSON.stringify(tendaBisTemp['tenda']));
+                            localStorage.setItem("GPBbus",JSON.stringify(tendaBisTemp['bus']));
+                            localStorage.setItem("GPBnama_kelompok",JSON.stringify(tendaBisTemp['nama_kelompok']));
+                            localStorage.setItem("GPBnama_mhs",JSON.stringify(tendaBisTemp['nama']));
+                            localStorage.setItem("GPBusername",JSON.stringify(username.value));
                         });         
                         mainView.router.loadPage("menu.html");
                     }
@@ -645,7 +646,6 @@ myApp.onPageInit('mybigdream', function (page) {
                 {
                     $$.post(directory,{opsi:'jawabBigDream',nrp:nrpMhs,jawab:jawaban}, function(data){
                         console.log(data);
-                        alert(data);
                         mainView.router.back({url: 'pilihBigDream.html',force: true,ignoreCache: true});
                     });   
                 }
@@ -2427,6 +2427,7 @@ myApp.onPageInit('fishboneSupport', function (page) {
                 if(checkConnection())
                 {
                     $$.post(directory,{opsi:'jawabFishboneSupport', id:ids, jawab:value}, function(data){
+                        alert(data);
                         mainView.router.refreshPage();
                     });   
                 }
@@ -2591,6 +2592,7 @@ myApp.onPageInit('fishboneSupportDetail', function (page) {
                 if(checkConnection())
                 {
                     $$.post(directory,{opsi:'jawabFishboneSupportDetail', id:ids, jawab:value}, function(data){
+                    alert("haha");
                         mainView.router.refreshPage();
                     }); 
                 }
@@ -2615,10 +2617,10 @@ myApp.onPageInit('fishboneSupportDetail', function (page) {
 
 function setGlobal()
 {
-    if(JSON.parse(localStorage.getItem("username")))
+    if(JSON.parse(localStorage.getItem("GPBusername")))
     {
-        nrpMhs=JSON.parse(localStorage.getItem("username"));
-        nama_mhs=JSON.parse(localStorage.getItem("nama_mhs"));
+        nrpMhs=JSON.parse(localStorage.getItem("GPBusername"));
+        nama_mhs=JSON.parse(localStorage.getItem("GPBnama_mhs"));
     }
 }
 
