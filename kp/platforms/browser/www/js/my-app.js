@@ -243,6 +243,7 @@ myApp.onPageInit('menu', function (page) {
     });
 
     document.addEventListener("deviceready", function(){
+        setGlobal();
         if(checkConnection())
         {
             $$.post(directory,{opsi:"getPengumuman"}, function(data){
@@ -829,7 +830,6 @@ function sinkronLifeListActionPlan()
                     for (var j = 0; j <action.length; j++) {
                         $$.post(directory,{opsi:'jawabActionPlan', nrp:nrpMhs,  ids:data, tasks:action[j]["task"], resources:action[j]["resource"], timelines:action[j]["timeline"], evidences:action[j]["evidence"], evaluations:action[j]["evaluation"]}, function(data){
                             console.log(data);
-                            alert(data);
                         }); 
                     }   
                 });  
@@ -1290,7 +1290,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
         $$('#btnSubmitTabel').on('click', function () {
             if(checkConnection())
             {
-                $$.post(directory,{opsi:'updateActionPlan',  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
+                $$.post(directory,{opsi:'updateActionPlan',nrp:nrpMhs, ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
                     console.log(data);
                     mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife+'&LifeList='+page.query.LifeList,force: true,ignoreCache: true});
                 });    
@@ -1910,7 +1910,7 @@ myApp.onPageInit('pengalamanPribadiForm', function (page) {
         $$('#btnSubmitPengalamanPribadi').on('click', function () {
             if(checkConnection())
             {
-                $$.post(directory,{opsi:'updatePengalaman',  id:idPengalaman, situasis: situasi.value, strategis: strategi.value, emosis:emosi.value}, function(data){
+                $$.post(directory,{opsi:'updatePengalaman',nrp:nrpMhs,  id:idPengalaman, situasis: situasi.value, strategis: strategi.value, emosis:emosi.value}, function(data){
                     console.log(data);
                 });   
             }
@@ -1968,7 +1968,6 @@ myApp.onPageInit('refleksiMini', function (page) {
             myApp.confirm('Ada data lokal yang tersimpan, upload jawaban ke server?', 'Sinkron data?', function () {
                 $$.post(directory,{opsi:'jawabRefleksi', nrp:nrpMhs, jawab: local["jawaban"], id: local["idSoal"]}, function(data){
                     console.log(data);
-                    alert(data);
                 });   
                 localStorage.removeItem(nrpMhs+"refleksiMini");
                 mainView.router.refreshPage();
@@ -2324,7 +2323,7 @@ myApp.onPageInit('fishboneSupport', function (page) {
                     myApp.prompt('', 'Edit', function (value) {
                         if(value!='')
                         {
-                            $$.post(directory,{opsi:'editFishboneSupport', id:ids, jawab:value}, function(data){
+                            $$.post(directory,{opsi:'editFishboneSupport',nrp:nrpMhs, id:ids, jawab:value}, function(data){
                                 console.log(data);
                                 mainView.router.refreshPage();
                             });   
@@ -2426,8 +2425,7 @@ myApp.onPageInit('fishboneSupport', function (page) {
             {
                 if(checkConnection())
                 {
-                    $$.post(directory,{opsi:'jawabFishboneSupport', id:ids, jawab:value}, function(data){
-                        alert(data);
+                    $$.post(directory,{opsi:'jawabFishboneSupport', nrp:nrpMhs,id:ids, jawab:value}, function(data){
                         mainView.router.refreshPage();
                     });   
                 }
@@ -2504,7 +2502,7 @@ myApp.onPageInit('fishboneSupportDetail', function (page) {
                     myApp.prompt('', 'Edit', function (value) {
                         if(value!='')
                         {
-                            $$.post(directory,{opsi:'editFishboneSupportDetail', id:ids, jawab:value}, function(data){
+                            $$.post(directory,{opsi:'editFishboneSupportDetail',nrp:nrpMhs, id:ids, jawab:value}, function(data){
                                 console.log(data);
                                 mainView.router.refreshPage();
                             });   
@@ -2591,7 +2589,7 @@ myApp.onPageInit('fishboneSupportDetail', function (page) {
             {
                 if(checkConnection())
                 {
-                    $$.post(directory,{opsi:'jawabFishboneSupportDetail', id:ids, jawab:value}, function(data){
+                    $$.post(directory,{opsi:'jawabFishboneSupportDetail',nrp:nrpMhs, id:ids, jawab:value}, function(data){
                     alert("haha");
                         mainView.router.refreshPage();
                     }); 
