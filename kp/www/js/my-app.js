@@ -323,11 +323,19 @@ myApp.onPageInit('pengumumanDetail', function (page) {
                 var result=JSON.parse(data);
                 if(result!="")
                 {
-                    $$('#listPengumuman').html('<div class="card card-outline">'+
+                    if(result["attachment"]!=""){
+                        $$('#listPengumuman').html('<div class="card card-outline">'+
                                                   '<div class="card-header judul">'+result["judul"]+'</div>'+
                                                   '<div class="card-content">'+result["content"]+'</div>'+
-                                                  //'<div class="card-footer"></div>'+
-                                                '</div>');
+                                                  '<div class="card-footer">Download Attachment <a href="https://administratorgpb.000webhostapp.com/upload/'+result["attachment"]+'" download>di sini </a></div>'+
+                                                '</div>');   
+                    }
+                    else{
+                         $$('#listPengumuman').html('<div class="card card-outline">'+
+                                                  '<div class="card-header judul">'+result["judul"]+'</div>'+
+                                                  '<div class="card-content">'+result["content"]+'</div>'+
+                                                '</div>');      
+                    }
 
                     $$('.overlay, .overlay-message').hide();
                 }
