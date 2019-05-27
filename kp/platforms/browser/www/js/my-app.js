@@ -21,6 +21,15 @@ var mainView = myApp.addView('.view-main', {
 });
 
 
+ 
+function DownloaderError(err) {
+    console.log("download error: " + err);
+    alert("download error: " + err);
+}
+ 
+function DownloaderSuccess() {
+    console.log("yay!");
+}
 function hapusLocalAll(){
     localStorage.removeItem('GPBusername');
     localStorage.removeItem('GPBtenda');
@@ -247,7 +256,6 @@ myApp.onPageInit('menu', function (page) {
         if(checkConnection())
         {
             $$.post(directory,{opsi:"getPengumuman"}, function(data){
-                console.log(data);
                 var result=JSON.parse(data);
                 if(result!="")
                 {
@@ -319,15 +327,73 @@ myApp.onPageInit('pengumumanDetail', function (page) {
     document.addEventListener("deviceready", function(){
         if(checkConnection())
         {
+            function success(entry) {
+                alert("New Path: " + entry.fullPath);
+            }
+
+            function fail(error) {
+                alert(error.code);
+            }
+            var fileTransfer = new FileTransfer();
+            var uri = "";
             $$.post(directory,{opsi:"getDetailPengumuman", id:page.query.idPengumuman},function(data){
                 var result=JSON.parse(data);
                 if(result!="")
                 {
-                    $$('#listPengumuman').html('<div class="card card-outline">'+
+                    if(result["attachment"]!=""){
+                        $$('#listPengumuman').html('<div class="card card-outline">'+
                                                   '<div class="card-header judul">'+result["judul"]+'</div>'+
                                                   '<div class="card-content">'+result["content"]+'</div>'+
-                                                  //'<div class="card-footer"></div>'+
-                                                '</div>');
+                                                  '<div class="card-footer"><a id="test" href="">Download Attachment di sini </a></div>'+
+                                                '</div>');   
+                        $$('#test').click(function(){
+                            uri = encodeURI("https://administratorgpb.000webhostapp.com/downloadPengumuman/"+result["attachment"]);
+                            
+                            fileTransfer.download(
+                                uri,
+                                cordova.file.externalDataDirectory+result["attachment"],
+                                function(entry) {
+                                    window.resolveLocalFileSystemURL(
+                                      entry.toURL(),
+                                      function(fileEntry){
+                                            var parentEntry = "file:///storage/emulated/0/Download";
+                                            // move the file to a new directory and rename it
+                                           fileEntry.moveTo(parentEntry, result["attachment"], success,fail);
+                                            alert("Download berhasil, file disimpan di folder "+parentEntry);
+                                      },
+                                      errorCallback);
+                                    var errorCallback = function(e) {
+    
+                                        alert("Error: " + e)
+                                        
+                                    }
+                                },
+                                function(error) {
+                                    alert(uri+" "+error.code);
+                                    console.log("download error source " + error.source);
+                                    console.log("download error target " + error.target);
+                                    console.log("download error code" + error.code);
+                                },
+                                false,
+                                {
+                                    headers: {
+                                        "Authorization": "Basic dGVzdHVzZXJuYW1lOnRlc3RwYXNzd29yZA=="
+                                    }
+                                }
+                            );
+                             
+                            
+                            // $$.get("https://administratorgpb.000webhostapp.com/downloadPengumuman/05262019-121154khs_160415093.pdf",function(data){
+                            //     alert(data);
+                            // });      
+                        });
+                    }
+                    else{
+                         $$('#listPengumuman').html('<div class="card card-outline">'+
+                                                  '<div class="card-header judul">'+result["judul"]+'</div>'+
+                                                  '<div class="card-content">'+result["content"]+'</div>'+
+                                                '</div>');      
+                    }
 
                     $$('.overlay, .overlay-message').hide();
                 }

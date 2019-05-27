@@ -18,7 +18,26 @@
     },
     "cordova-plugin-console": {
       "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-downloader": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-file-transfer": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-fileopener": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
     }
   },
-  "dependent_plugins": {}
+  "dependent_plugins": {
+    "cordova-plugin-zip": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    }
+  }
 }
