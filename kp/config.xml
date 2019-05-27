@@ -38,6 +38,8 @@
     <preference name="permissions" value="true" />
     <preference name="phonegap-version" value="cli-8.0.0" />
     <feature name="http://api.phonegap.com/1.0/network" />
+    <engine name="browser" spec="^5.0.4" />
+    <engine name="android" spec="^7.0.0" />
     <plugin name="cordova-plugin-whitelist" spec="1.2.2" />
     <plugin name="cordova-plugin-statusbar" spec="~2.4.2" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
@@ -46,6 +48,4 @@
     <plugin name="cordova-plugin-device" spec="^2.0.2" />
     <plugin name="cordova-plugin-fileopener" spec="^1.0.5" />
     <plugin name="cordova-plugin-file-transfer" spec="^1.7.1" />
-    <engine name="browser" spec="^5.0.4" />
-    <engine name="android" spec="^7.0.0" />
 </widget>

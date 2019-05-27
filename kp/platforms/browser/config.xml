@@ -17,4 +17,5 @@
     <allow-intent href="geo:*" />
     <preference name="DisallowOverscroll" value="true" />
     <preference name="permissions" value="true" />
+    <preference name="phonegap-version" value="cli-8.0.0" />
 </widget>

@@ -348,7 +348,6 @@ myApp.onPageInit('pengumumanDetail', function (page) {
                                                 '</div>');   
                         $$('#test').click(function(){
                             uri = encodeURI("https://administratorgpb.000webhostapp.com/downloadPengumuman/"+result["attachment"]);
-                            
                             fileTransfer.download(
                                 uri,
                                 cordova.file.externalDataDirectory+result["attachment"],
@@ -358,8 +357,8 @@ myApp.onPageInit('pengumumanDetail', function (page) {
                                       function(fileEntry){
                                             var parentEntry = "file:///storage/emulated/0/Download";
                                             // move the file to a new directory and rename it
-                                           fileEntry.moveTo(parentEntry, result["attachment"], success,fail);
                                             alert("Download berhasil, file disimpan di folder "+parentEntry);
+                                           fileEntry.moveTo(parentEntry, result["attachment"], success,fail);
                                       },
                                       errorCallback);
                                     var errorCallback = function(e) {
