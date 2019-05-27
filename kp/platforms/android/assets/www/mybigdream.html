@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <!-- Your app title -->
+    <title>My App</title>
+
+    <link rel="stylesheet" href="css/framework7.ios.min.css">
+    <link rel="stylesheet" href="css/framework7.ios.colors.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="statusbar-overlay"></div>
+    <div class="panel-overlay"></div>
+    <div class="panel panel-left panel-reveal">
+        <div class="content-block">
+            <p>Left panel content goes here</p>
+        </div>
+    </div>
+
+    <!-- Views -->
+    <div class="views">
+        <div class="view view-main">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left"><a href="#" class="link icon-only open-panel no-ripple"><i class="icon icon-bars"></i></a></div>
+                    <div class="center sliding">My Big Dream</div>
+                    <div class="right">
+                        <a href="#" class="button back">Back</a>
+                    </div>
+              </div>
+            </div>
+            <div class="pages navbar-through toolbar-through">
+                <div data-page="mybigdream" class="page">
+                      <div class="overlay"></div>
+                      <div class="overlay-message">
+                          <p>LOADING...</p>
+                      </div>
+                    <div class="page-content">
+                        <div class="content-block">
+                            <div class="comment" style="text-align: center; background-color: #99ccff; font-size: 16px;"></div>
+                            <div id="formBigDream">
+                                <textarea class="resizable" rows="7" id="jawabBigDream"  placeholder="My Big Dream..">
+                                    
+                                </textarea>
+                                <div class="list-block">
+                                    <a href="#" class="item-link list-button" id="btnSubmitBigDream">Submit</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/framework7.min.js"></script>
+<script type="text/javascript" src="js/my-app.js"></script>
+</body>
+</html>

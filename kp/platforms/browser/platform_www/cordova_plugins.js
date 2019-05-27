@@ -217,19 +217,25 @@ module.exports = [
         ]
     },
     {
-        "file": "plugins/cordova-plugin-zip/zip.js",
-        "id": "cordova-plugin-zip.Zip",
-        "pluginId": "cordova-plugin-zip",
+        "file": "plugins/cordova-plugin-device/www/device.js",
+        "id": "cordova-plugin-device.device",
+        "pluginId": "cordova-plugin-device",
         "clobbers": [
-            "zip"
+            "device"
         ]
     },
     {
-        "file": "plugins/cordova-plugin-downloader/www/download.js",
-        "id": "cordova-plugin-downloader.download",
-        "pluginId": "cordova-plugin-downloader",
+        "file": "plugins/cordova-plugin-device/src/browser/DeviceProxy.js",
+        "id": "cordova-plugin-device.DeviceProxy",
+        "pluginId": "cordova-plugin-device",
+        "runs": true
+    },
+    {
+        "file": "plugins/cordova-plugin-fileopener/www/FileOpener.js",
+        "id": "cordova-plugin-fileopener.FileOpener",
+        "pluginId": "cordova-plugin-fileopener",
         "clobbers": [
-            "download"
+            "cordova.plugins.FileOpener"
         ]
     },
     {
@@ -255,28 +261,6 @@ module.exports = [
         "clobbers": [
             "window.FileTransfer"
         ]
-    },
-    {
-        "file": "plugins/cordova-plugin-device/www/device.js",
-        "id": "cordova-plugin-device.device",
-        "pluginId": "cordova-plugin-device",
-        "clobbers": [
-            "device"
-        ]
-    },
-    {
-        "file": "plugins/cordova-plugin-device/src/browser/DeviceProxy.js",
-        "id": "cordova-plugin-device.DeviceProxy",
-        "pluginId": "cordova-plugin-device",
-        "runs": true
-    },
-    {
-        "file": "plugins/cordova-plugin-fileopener/www/FileOpener.js",
-        "id": "cordova-plugin-fileopener.FileOpener",
-        "pluginId": "cordova-plugin-fileopener",
-        "clobbers": [
-            "cordova.plugins.FileOpener"
-        ]
     }
 ];
 module.exports.metadata = 
@@ -287,11 +271,9 @@ module.exports.metadata =
     "cordova-plugin-network-information": "2.0.1",
     "cordova-plugin-console": "1.1.0",
     "cordova-plugin-file": "6.0.1",
-    "cordova-plugin-zip": "3.1.0",
-    "cordova-plugin-downloader": "0.0.4",
-    "cordova-plugin-file-transfer": "1.7.1",
     "cordova-plugin-device": "2.0.2",
-    "cordova-plugin-fileopener": "1.0.5"
+    "cordova-plugin-fileopener": "1.0.5",
+    "cordova-plugin-file-transfer": "1.7.1"
 }
 // BOTTOM OF METADATA
 });

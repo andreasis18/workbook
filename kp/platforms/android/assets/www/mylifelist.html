@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <!-- Your app title -->
+    <title>My App</title>
+
+    <link rel="stylesheet" href="css/framework7.ios.min.css">
+    <link rel="stylesheet" href="css/framework7.ios.colors.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <div class="statusbar-overlay"></div>
+    <div class="panel-overlay"></div>
+    <!-- Views -->
+    <div class="views">
+        <div class="view view-main">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="left"><a href="#" class="link icon-only open-panel no-ripple"><i class="icon icon-bars"></i></a></div>
+                    <div id="judulMyLifeList" class="center sliding">My Life List</div>
+                    <div class="right">
+                        <a href="#" class="button back">Back</a>
+                    </div>
+              </div>
+          </div>
+          
+          <div class="pages navbar-through toolbar-through">
+            <div data-page="myLifeList" class="page">
+              <div class="overlay"></div>
+              <div class="overlay-message">
+                  <p>LOADING...</p>
+              </div>
+                <a href="#" class="floating-button color-blue no-ripple addLife"><i class="icon icon-plus"></i></a> 
+                <div class="page-content">
+                    <div class="content-block">
+                        <div class="comment" style="text-align: center; background-color: #99ccff; font-size: 16px;"></div>
+                        <p class="row">
+                            <button class="col button button-fill addLife tempButton" style="width:100%;">Add Life List</button>
+                        </p>
+                        <div class="block instruction" style="width: 100%;">
+                                <span style="font-size: 13px;">Drag handler disebelah kanan untuk mengatur prioritas.</span><br/>
+                                <span style="color: red; font-size: 14px;">Prioritas diurutkan dari atas ke bawah.</span>
+                        </div>
+                        <div class="list-block sortable">
+                          <ul id="sortableLifeList">
+                          </ul>
+                        </div>
+                        <a href="#" class="col button button-fill" id="saveList">Save</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/framework7.min.js"></script>
+<script type="text/javascript" src="js/my-app.js"></script>
+</body>
+
+</html>

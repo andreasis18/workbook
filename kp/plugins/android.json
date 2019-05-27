@@ -1,0 +1,36 @@
+{
+  "prepare_queue": {
+    "installed": [],
+    "uninstalled": []
+  },
+  "config_munge": {
+    "files": {}
+  },
+  "installed_plugins": {
+    "cordova-plugin-console": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-device": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-file": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-file-transfer": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-fileopener": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-network-information": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-statusbar": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    },
+    "cordova-plugin-whitelist": {
+      "PACKAGE_NAME": "id.ac.ubaya.gpb"
+    }
+  },
+  "dependent_plugins": {}
+}

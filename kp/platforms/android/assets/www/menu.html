@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+
+      <!-- Required meta tags-->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+      <meta name="apple-mobile-web-app-capable" content="yes">
+      <meta name="apple-mobile-web-app-status-bar-style" content="black">
+      <meta name="format-detection" content="telephone=no">
+      <meta name="msapplication-tap-highlight" content="no">
+      <!-- Your app title -->
+      <title>My App</title>
+
+    <!-- This template defaults to the iOS CSS theme. To support both iOS and material design themes, see the Framework7 Tutorial at the link below:
+        http://www.idangero.us/framework7/tutorials/maintain-both-ios-and-material-themes-in-single-app.html
+      -->
+      <link rel="stylesheet" href="lib/framework7/css/framework7.ios.min.css">
+      <link rel="stylesheet" href="lib/framework7/css/framework7.ios.colors.min.css">
+      <link rel="stylesheet" href="css/styles.css">
+    </head>
+
+    <body>
+      <!-- Status bar overlay for full screen mode (PhoneGap) -->
+      <div class="statusbar-overlay"></div>
+
+      <!-- Views -->
+      <div class="views">
+        <!-- Your main view, should have "view-main" class -->
+        <div class="view view-main">
+          <!-- Pages container, because we use fixed-through navbar and toolbar, it has additional appropriate classes-->
+          <div class="navbar">
+            <div class="navbar-inner">
+              <div class="left"><a href="#" class="link icon-only open-panel no-ripple"><i class="icon icon-bars"></i></a></div>
+                <div class="center sliding">Pilih Modul</div>
+                <div class="right"></div>
+            </div>
+          </div>
+          <div class="pages navbar-through toolbar-through">
+            <!-- Page, "data-page" contains page name -->
+            <div data-page="menu" class="page no-swipeback">
+              <div class="overlay"></div>
+              <div class="overlay-message">
+                  <p>LOADING...</p>
+              </div>
+              <div class="page-content">  
+                  <div class="content-block blockPengumuman" style="margin-bottom: 10px;">
+                    <div class="card card-outline">
+                      <div class="card-header judul">Pengumuman Terbaru</div>
+                      <div class="card-content contentPengumuman">Card with header and footer. Card headers are used to display card titles and footers for additional information or just for custom actions.</div>
+                      <div class="card-footer"><div></div><a href="pengumuman.html"><p>Read More</p></a></div>
+                    </div>
+                  </div>
+                  <div class="block iconpage">
+                    <div class="row no-gap row-icon"> 
+                      <div class="col-33">
+                        <a href="driverPassenger.html">
+                          <img src="img/driver.png">
+                          <div class="caption">Awal Menjadi Pribadi Terbaik</div>
+                        </a>
+                      </div>
+                      <div class="col-33">
+                        <a href="pilihBigDream.html">
+                          <img src="img/big_thumb.png">
+                          <div class="caption">Big Dream</div>
+                        </a>
+                      </div>
+                      <div class="col-33">
+                        <a href="pilihEntong.html">
+                          <img src="img/entong_thumb.png">
+                          <div class="caption">Si Entong</div>
+                        </a>
+                      </div>
+                      <div class="col-33">
+                        <a href="pilihManajemenEmosi.html">
+                          <img src="img/emosi_thumb.png">
+                          <div class="caption">Manajemen Emosi</div>
+                        </a>
+                      </div>
+                      <div class="col-33">
+                        <a href="refleksiMini.html">
+                          <img src="img/refleksi_thumb.png">
+                          <div class="caption">Refleksi Mini Project</div>
+                        </a>
+                      </div>
+                      <div class="col-33">
+                        <a href="fishbone.html">
+                          <img src="img/fishbone_thumb.png">
+                          <div class="caption">Fishbone</div>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="list-block" style="margin-top: 10px;">
+                    <p class="statusText" style="font-size: 20px;">Status Pengumpulan</p>
+                    <ul id="statusPengumpulan">
+                        
+                    </ul>
+                  </div>
+                </div> 
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+  <script type="text/javascript" src="cordova.js"></script>
+  <script type="text/javascript" src="js/framework7.min.js"></script>
+  <script type="text/javascript" src="js/my-app.js"></script>
+</body>
+
+</html>

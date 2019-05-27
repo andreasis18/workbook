@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *">
+
+    <!-- Required meta tags-->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="msapplication-tap-highlight" content="no">
+
+    <!-- Your app title -->
+    <title>My App</title>
+
+    <link rel="stylesheet" href="lib/framework7/css/framework7.ios.min.css">
+    <link rel="stylesheet" href="lib/framework7/css/framework7.ios.colors.min.css">
+
+    <link rel="stylesheet" href="lib/framework7/css/framework7.material.min.css">
+    <link rel="stylesheet" href="lib/framework7/css/framework7.material.colors.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- Status bar overlay for full screen mode (PhoneGap) -->
+    <div class="statusbar-overlay"></div>
+
+    <!-- Panels overlay-->
+    <div class="panel-overlay"></div>
+    <!-- Left panel with reveal effect-->
+    <div class="panel panel-left panel-reveal">
+        <div class="content-block">
+            <p>Left panel content goes here</p>
+        </div>
+    </div>
+
+    <div class="views">
+        <div class="view view-main">
+            <div class="navbar">
+                <div class="navbar-inner">
+                    <div class="center sliding">Manfaat dari kisah entong</div>
+                    <div class="right">
+                    <a href="#" class="button back">Back</a>
+                  </div>
+              </div>
+          </div>
+          
+        <div class="pages navbar-through toolbar-through">
+            <div data-page="lessonLearned" class="page">
+                  <div class="overlay"></div>
+                  <div class="overlay-message">
+                      <p>LOADING...</p>
+                  </div>
+                <div class="page-content">
+                    <div class="content-block">
+                        <div class="comment" style="text-align: center; background-color: #99ccff; font-size: 16px;"></div>
+                        <div class="block" style="width: 100%;">
+                            <div id="soalEntong"  style="margin-bottom:10px"> Dari Kisah si Entong dan proses diskusi yang telah dilakukan, pelajaran yang dapat saya ambil adalah: </div>
+                            <div class="row">
+                                <textarea rows="2" id="jawabLesson" style="width:80%; font-size:20px;"  placeholder="Lesson Learned"></textarea>   
+                                <button class="button" id="insertLesson" style="margin-top: 7px;">Add</button> 
+                            </div>
+                        </div>
+                        <div class="list-block sortable">
+                          <ul id="listJawabanLessonLearned">
+                          </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="lib/framework7/js/framework7.min.js"></script>
+<script type="text/javascript" src="js/my-app.js"></script>
+</body>
+
+</html>
