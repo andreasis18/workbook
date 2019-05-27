@@ -344,7 +344,7 @@ myApp.onPageInit('pengumumanDetail', function (page) {
                         $$('#listPengumuman').html('<div class="card card-outline">'+
                                                   '<div class="card-header judul">'+result["judul"]+'</div>'+
                                                   '<div class="card-content">'+result["content"]+'</div>'+
-                                                  '<div class="card-footer"><a id="test" href="">Download Attachment di sini </a></div>'+
+                                                  '<div class="card-footer"><a id="test" href="">Attachment : '+result["attachment"]+'</a></div>'+
                                                 '</div>');   
                         $$('#test').click(function(){
                             uri = encodeURI("https://administratorgpb.000webhostapp.com/downloadPengumuman/"+result["attachment"]);
@@ -357,7 +357,7 @@ myApp.onPageInit('pengumumanDetail', function (page) {
                                       function(fileEntry){
                                             var parentEntry = "file:///storage/emulated/0/Download";
                                             // move the file to a new directory and rename it
-                                            alert("Download berhasil, file disimpan di folder "+parentEntry);
+                                            alert("Download berhasil, file disimpan di folder "+parentEntry+"/"+result["attachment"]);
                                            fileEntry.moveTo(parentEntry, result["attachment"], success,fail);
                                       },
                                       errorCallback);
@@ -1234,8 +1234,6 @@ myApp.onPageInit('formActionPlanDetail', function (page) {
                                         '<div>Task/Action : '+result["action"][i]["task"]+'</div>'+ 
                                         '<div>Resources : '+result["action"][i]["resource"]+'</div>'+ 
                                         '<div>Timeline : '+result["action"][i]["timeline"]+'</div>'+ 
-                                        '<div>Evidence of Success : '+result["action"][i]["evidence"]+'</div>'+
-                                        '<div>Evaluation Process : '+result["action"][i]["evaluation"]+'</div>'+
                                     '</div>'+
                                 '</div></a></div>');
                         }
