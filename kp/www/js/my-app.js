@@ -357,7 +357,7 @@ myApp.onPageInit('pengumumanDetail', function (page) {
                                       function(fileEntry){
                                             var parentEntry = "file:///storage/emulated/0/Download";
                                             // move the file to a new directory and rename it
-                                            alert("Download berhasil, file disimpan di folder "+parentEntry+"/"+result["attachment"]);
+                                            alert("Download berhasil, file disimpan di folder "+entry.toURL()+"/"+result["attachment"]);
                                            fileEntry.moveTo(parentEntry, result["attachment"], success,fail);
                                       },
                                       errorCallback);
