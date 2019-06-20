@@ -344,7 +344,7 @@ myApp.onPageInit('pengumumanDetail', function (page) {
                         $$('#listPengumuman').html('<div class="card card-outline">'+
                                                   '<div class="card-header judul">'+result["judul"]+'</div>'+
                                                   '<div class="card-content">'+result["content"]+'</div>'+
-                                                  '<div class="card-footer"><a id="test" href="">Download Attachment di sini </a></div>'+
+                                                  '<div class="card-footer"><a id="test" href="">Attachment : '+result["attachment"]+'</a></div>'+
                                                 '</div>');   
                         $$('#test').click(function(){
                             uri = encodeURI("https://administratorgpb.000webhostapp.com/downloadPengumuman/"+result["attachment"]);
@@ -357,7 +357,7 @@ myApp.onPageInit('pengumumanDetail', function (page) {
                                       function(fileEntry){
                                             var parentEntry = "file:///storage/emulated/0/Download";
                                             // move the file to a new directory and rename it
-                                            alert("Download berhasil, file disimpan di folder "+parentEntry);
+                                            alert("Download berhasil, file disimpan di folder "+entry.toURL()+"/"+result["attachment"]);
                                            fileEntry.moveTo(parentEntry, result["attachment"], success,fail);
                                       },
                                       errorCallback);
@@ -887,19 +887,19 @@ function sinkronLifeListActionPlan()
                 var action = [];
                 if(local[i]["action_plan"]!=undefined)  
                 {
-                    alert("asdfas");
                     action= local[i]["action_plan"];
                 } 
                 $$.post(directory,{opsi:'jawabLifeList', length:900+i, id:"", nrp:nrpMhs, lists:local[i]["list"], targets:local[i]["target"], obstacles:local[i]["obstacle"], evidences:local[i]["evidence"], evaluations:local[i]["evaluation"]}, function(data){
 
                     for (var j = 0; j <action.length; j++) {
-                        $$.post(directory,{opsi:'jawabActionPlan', nrp:nrpMhs,  ids:data, tasks:action[j]["task"], resources:action[j]["resource"], timelines:action[j]["timeline"], evidences:action[j]["evidence"], evaluations:action[j]["evaluation"]}, function(data){
-                            console.log(data);
+                        $$.post(directory,{opsi:'jawabActionPlan', nrp:nrpMhs,  ids:data, tasks:action[j]["task"], resources:action[j]["resource"], timelines:action[j]["timeline"]}, function(data){
+                            
                         }); 
                     }   
                 });  
             }
             localStorage.removeItem(nrpMhs+"LifeList");
+            mainView.router.refreshPage();  
         }
     }, function () {
         localStorage.removeItem(nrpMhs+"LifeList");
@@ -1234,8 +1234,6 @@ myApp.onPageInit('formActionPlanDetail', function (page) {
                                         '<div>Task/Action : '+result["action"][i]["task"]+'</div>'+ 
                                         '<div>Resources : '+result["action"][i]["resource"]+'</div>'+ 
                                         '<div>Timeline : '+result["action"][i]["timeline"]+'</div>'+ 
-                                        '<div>Evidence of Success : '+result["action"][i]["evidence"]+'</div>'+
-                                        '<div>Evaluation Process : '+result["action"][i]["evaluation"]+'</div>'+
                                     '</div>'+
                                 '</div></a></div>');
                         }
@@ -1266,8 +1264,6 @@ myApp.onPageInit('formActionPlanDetail', function (page) {
                                 '<div>Task/Action : '+local[i]["task"]+'</div>'+ 
                                 '<div>Resources : '+local[i]["resource"]+'</div>'+ 
                                 '<div>Timeline : '+local[i]["timeline"]+'</div>'+ 
-                                '<div>Evidence of Success : '+local[i]["evidence"]+'</div>'+
-                                '<div>Evaluation Process : '+local[i]["evaluation"]+'</div>'+
                             '</div>'+
                         '</div></a></div>');
                 }
@@ -1293,8 +1289,6 @@ myApp.onPageInit('formActionPlanForm', function (page) {
     setGlobal();
     var task=document.getElementById("task");
     var resource=document.getElementById("resource");
-    var evidenceTabel=document.getElementById("evidenceTabel");
-    var evaluationTabel=document.getElementById("evaluationTabel");
     
     var timeline1 = myApp.calendar({
         input: '#calendar-events',
@@ -1325,8 +1319,6 @@ myApp.onPageInit('formActionPlanForm', function (page) {
                     task.value=result["task"];
                     resource.value=result["resource"];
                     timeline.value=result["timeline"];
-                    evidenceTabel.value=result["evidence"];
-                    evaluationTabel.value=result["evaluation"];
                     $$('.overlay, .overlay-message').hide();
                 });         
                 document.getElementById("btnDeleteActionPlanTabel").style.visibility = "visible";
@@ -1340,8 +1332,6 @@ myApp.onPageInit('formActionPlanForm', function (page) {
                 task.value=action["task"];
                 resource.value=action["resource"];
                 timeline.value=action["timeline"];
-                evidenceTabel.value=action["evidence"];
-                evaluationTabel.value=action["evaluation"];
                 $$('.overlay, .overlay-message').hide();
                 document.getElementById("btnDeleteActionPlanTabel").style.visibility = "visible";
             }
@@ -1355,7 +1345,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
         $$('#btnSubmitTabel').on('click', function () {
             if(checkConnection())
             {
-                $$.post(directory,{opsi:'updateActionPlan',nrp:nrpMhs, ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
+                $$.post(directory,{opsi:'updateActionPlan',nrp:nrpMhs, ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value}, function(data){
                     console.log(data);
                     mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife+'&LifeList='+page.query.LifeList,force: true,ignoreCache: true});
                 });    
@@ -1367,8 +1357,6 @@ myApp.onPageInit('formActionPlanForm', function (page) {
                     action["task"]=task.value;
                     action["resource"]=resource.value;
                     action["timeline"]=timeline.value;
-                    action["evidence"]=evidenceTabel.value;
-                    action["evaluation"]=evaluationTabel.value;
                     local[idLife]["action_plan"][idTabel] = action;
                     localStorage.setItem(nrpMhs+"LifeList", JSON.stringify(local));
                     myApp.alert("Perubahan berhasil disimpan");
@@ -1387,7 +1375,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
         $$('#btnSubmitTabel').on('click', function () {
             if(checkConnection())
             {
-                $$.post(directory,{opsi:'jawabActionPlan', nrp:nrpMhs,  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value, evidences:evidenceTabel.value, evaluations:evaluationTabel.value}, function(data){
+                $$.post(directory,{opsi:'jawabActionPlan', nrp:nrpMhs,  ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value}, function(data){
                     console.log(data);
                     mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife+'&LifeList='+page.query.LifeList,force: true,ignoreCache: true});
                 });  
@@ -1396,7 +1384,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
             {
                 if(local!=false)   
                 {
-                    var temp = {task: task.value, resource:resource.value, timeline:timeline.value, evidence: evidenceTabel.value,evaluation:evaluationTabel.value};
+                    var temp = {task: task.value, resource:resource.value, timeline:timeline.value};
                     if(local[idLife]["action_plan"]!=undefined)
                     {
                         temp["id"] = local[idLife]["action_plan"].length;
@@ -2029,7 +2017,6 @@ myApp.onPageInit('refleksiMini', function (page) {
 
         if(local!=false)
         {
-            alert(JSON.stringify(local));
             myApp.confirm('Ada data lokal yang tersimpan, upload jawaban ke server?', 'Sinkron data?', function () {
                 $$.post(directory,{opsi:'jawabRefleksi', nrp:nrpMhs, jawab: local["jawaban"], id: local["idSoal"]}, function(data){
                     console.log(data);
@@ -2116,7 +2103,7 @@ function sinkronFishbone()
                     support= local[i]["support"];
                 } 
                 $$.post(directory,{opsi:'jawabFishbone', nrp:nrpMhs, jawab:local[i]["kepala"]}, function(data){
-                    console.log(data);   
+                   
                     var idk=data;
                     for (var j = 0; j < support.length; j++) {
                         var detail=[];
@@ -2124,12 +2111,12 @@ function sinkronFishbone()
                         {
                             detail= support[j]["detail"];
                         }
-                        $$.post(directory,{opsi:'jawabFishboneSupport', id:idk, jawab:support[j]["jawab_support"]}, function(data){
-                            console.log(data);
+                        $$.post(directory,{opsi:'jawabFishboneSupport', nrp:nrpMhs, id:idk, jawab:support[j]["jawab_support"]}, function(data){
+                            
                             var ids=data;
                             for (var k = 0; k<detail.length; k++) {
-                                $$.post(directory,{opsi:'jawabFishboneSupportDetail', id:ids, jawab:detail[k]["jawab_detail"]}, function(data){
-                                    console.log(data);
+                                $$.post(directory,{opsi:'jawabFishboneSupportDetail', nrp:nrpMhs, id:ids, jawab:detail[k]["jawab_detail"]}, function(data){
+                                    
                                 }); 
                             }
                         }); 
@@ -2655,7 +2642,6 @@ myApp.onPageInit('fishboneSupportDetail', function (page) {
                 if(checkConnection())
                 {
                     $$.post(directory,{opsi:'jawabFishboneSupportDetail',nrp:nrpMhs, id:ids, jawab:value}, function(data){
-                    alert("haha");
                         mainView.router.refreshPage();
                     }); 
                 }
@@ -2691,16 +2677,8 @@ function checkConnection()
 {
     var networkState = navigator.connection.type;
     console.log(networkState);  
-    // var states = {};
-    // states[Connection.UNKNOWN]  = 'Unknown connection';
-    // states[Connection.ETHERNET] = 'Ethernet connection';
-    // states[Connection.WIFI]     = 'WiFi connection';
-    // states[Connection.CELL_2G]  = 'Cell 2G connection';
-    // states[Connection.CELL_3G]  = 'Cell 3G connection';
-    // states[Connection.CELL_4G]  = 'Cell 4G connection';
-    // states[Connection.CELL]     = 'Cell generic connection';
-    // states[Connection.NONE]     = 'None';
-    if(networkState == "none")
+    if(networkState == "none" )
+    // if(networkState == "none" || networkState =="unknown")
     {
         return false;
     }
