@@ -1038,19 +1038,72 @@ myApp.onPageInit('myLifeList', function (page) {
 
 myApp.onPageInit('mylifelistDetail', function (page) {
     setGlobal();
-    var timeline2 = myApp.calendar({
-        input: '#calendar-events-tercapai',
-        dateFormat: 'yyyy-mm-dd',
-        monthPicker:true,
-        yearPicker:true,
-        closeOnSelect:true
-    });
+    // document.addEventListener("deviceready", function(){
+
+    //     var timeline2 = myApp.calendar({
+    //         input: '#calendar-events-tercapai',
+    //         dateFormat: 'yyyy-mm-dd',
+    //         monthPicker: true,
+    //         yearPicker: true
+    //     });
+    //     var calendarDefault = myApp.calendar({
+    //         input: '#calendar-default',
+    //     }); 
+    // })
+
+    var today = new Date();
+   
+    var pickerInline = myApp.picker({
+        input: '#picker-date',
+        toolbar: false,
+        rotateEffect: true,
+     
+        value: [today.getFullYear(), today.getMonth(), today.getDate()],
+
+        onChange: function (picker, values, displayValues) {
+            console.log(picker.value[0]+"   "+picker.value[1]);
+            var daysInMonth = new Date(picker.value[0], picker.value[1]*1 + 1, 0).getDate();
+            if (values[2] > daysInMonth) {
+                picker.cols[2].setValue(daysInMonth);
+            }
+        },
+        formatValue: function (p, values, displayValues) {
+            var month = values[1];
+            month++;
+            if(month<10){
+                month = "0"+month;
+            }
+            return values[0] + '-' + month + '-' + values[2];
+        },
+        cols: [
+            // Years
+            {
+                values: (function () {
+                    var arr = [];
+                    for (var i = 1950; i <= 2030; i++) { arr.push(i); }
+                    return arr;
+                })(),
+            },
+            // Months
+            {
+                values: ('0 1 2 3 4 5 6 7 8 9 10 11').split(' '),
+                displayValues: ('01 02 03 04 05 06 07 08 09 10 11 12').split(' '),
+                textAlign: 'left'
+            },
+            // Days
+            {
+                values: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+            }
+        ]
+    });   
+
+    
 
     var obstacle=document.getElementById("obstacle");
     var list=document.getElementById("lifelist");
     var evidence=document.getElementById("evidence");
     var evaluation=document.getElementById("evaluation");
-    var target=document.getElementById("calendar-events-tercapai");
+    var target=document.getElementById("picker-date");
     var idList="";
     var local = checkLocal("LifeList");
     if(page.query.idList)
@@ -1290,14 +1343,56 @@ myApp.onPageInit('formActionPlanForm', function (page) {
     var task=document.getElementById("task");
     var resource=document.getElementById("resource");
     
-    var timeline1 = myApp.calendar({
-        input: '#calendar-events',
-        dateFormat: 'yyyy-mm-dd',
-        monthPicker:true,
-        yearPicker:true,
-        closeOnSelect:true
-    });
-    var timeline=document.getElementById("calendar-events");
+    // var timeline1 = myApp.calendar({
+    //     input: '#calendar-events',
+    //     dateFormat: 'yyyy-mm-dd',
+    //     monthPicker:true,
+    //     yearPicker:true,
+    //     closeOnSelect:true
+    // });
+    var today = new Date();
+    var pickerInline = myApp.picker({
+        input: '#picker-date',
+        toolbar: false,
+        rotateEffect: true,
+     
+        value: [today.getFullYear(), today.getMonth(), today.getDate()],
+
+        onChange: function (picker, values, displayValues) {
+            var daysInMonth = new Date(picker.value[0], picker.value[1]*1 + 1, 0).getDate();
+            if (values[2] > daysInMonth) {
+                picker.cols[2].setValue(daysInMonth);
+            }
+        },
+        formatValue: function (p, values, displayValues) {
+            var month = values[1];
+            if(month<10){
+                month = "0"+month;
+            }
+            return values[0] + '-' + month + '-' + values[2];
+        },
+        cols: [
+            // Years
+            {
+                values: (function () {
+                    var arr = [];
+                    for (var i = 1950; i <= 2030; i++) { arr.push(i); }
+                    return arr;
+                })(),
+            },
+            // Months
+            {
+                values: ('0 1 2 3 4 5 6 7 8 9 10 11').split(' '),
+                displayValues: ('01 02 03 04 05 06 07 08 09 10 11 12').split(' '),
+                textAlign: 'left'
+            },
+            // Days
+            {
+                values: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31],
+            }
+        ]
+    });   
+    var timeline=document.getElementById("picker-date");
     var local=checkLocal("LifeList");
     var action="";
     var idLife=page.query.idLifeList;
