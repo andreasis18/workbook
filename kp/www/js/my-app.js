@@ -284,7 +284,7 @@ myApp.onPageInit('menu', function (page) {
 })
 
 myApp.onPageBack('menu',function(asd){
-    //navigator.app.exitApp();
+    navigator.app.exitApp();
 })
 
 myApp.onPageInit('pengumuman', function (page) {
