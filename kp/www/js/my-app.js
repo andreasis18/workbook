@@ -149,12 +149,12 @@ myApp.onPageInit('index', function (page) {
                     {
                         $$.post(directory,{opsi:"getBisTenda", nrp:username.value},function(data){
                             var tendaBisTemp=JSON.parse(data);
-                            mainView.router.loadPage('menu.html');
                             localStorage.setItem("GPBtenda",JSON.stringify(tendaBisTemp['tenda']));
                             localStorage.setItem("GPBbus",JSON.stringify(tendaBisTemp['bus']));
                             localStorage.setItem("GPBnama_kelompok",JSON.stringify(tendaBisTemp['nama_kelompok']));
                             localStorage.setItem("GPBnama_mhs",JSON.stringify(tendaBisTemp['nama']));
                             localStorage.setItem("GPBusername",JSON.stringify(username.value));
+                            mainView.router.loadPage('menu.html?username='+username.value);
                         });         
                         mainView.router.loadPage("menu.html");
                     }
@@ -224,7 +224,6 @@ myApp.onPageInit('changePassword', function(page){
 })
 
 myApp.onPageInit('menu', function (page) {
-    setGlobal();
     //router.clearPreviousHistory();
     //localStorage.removeItem(nrpMhs+"LifeList");
     $$('#myBigDreamPilih').on('click',function(){
@@ -271,6 +270,9 @@ myApp.onPageInit('menu', function (page) {
                 }
                 $$('.overlay, .overlay-message').hide();
             });
+            if(page.query.username!=""){
+                nrpMhs = page.query.username;
+            }
             $$.post(directory,{opsi:"getStatusPengumpulan", id:nrpMhs},function(data){
                 $$('#statusPengumpulan').html(data);
             });
