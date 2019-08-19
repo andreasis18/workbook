@@ -87,13 +87,7 @@ myApp.onPageInit('index', function (page) {
         myApp.closePanel();
     });
 
-    $$('#myBigDreamSide').on('click',function(){
-        mainView.router.loadPage("pilihBigDream.html");
-        myApp.closePanel();
-    });
-
-    $$('#kisahEntongSide').on('click',function(){
-        mainView.router.loadPage("pilihEntong.html");
+    $$('.closePane').on('click',function(){
         myApp.closePanel();
     });
 
@@ -102,20 +96,11 @@ myApp.onPageInit('index', function (page) {
         myApp.closePanel();
     });
 
-    $$('#manajemenEmosiSide').on('click',function(){
-        mainView.router.loadPage("pilihManajemenEmosi.html");
-        myApp.closePanel();
-    });
-
     $$('#refleksiMiniSide').on('click',function(){
         mainView.router.loadPage("refleksiMini.html");
         myApp.closePanel();
     });
 
-    $$('#fishboneSide').on('click',function(){
-        mainView.router.loadPage("fishbone.html");
-        myApp.closePanel();
-    });
     if(JSON.parse(localStorage.getItem("GPBusername")))
     {
         mainView.router.loadPage('menu.html'); 
@@ -270,7 +255,7 @@ myApp.onPageInit('menu', function (page) {
                 }
                 $$('.overlay, .overlay-message').hide();
             });
-            if(page.query.username!=""){
+            if(page.query.username!=""&&page.query.username!=null){
                 nrpMhs = page.query.username;
             }
             $$.post(directory,{opsi:"getStatusPengumpulan", id:nrpMhs},function(data){
