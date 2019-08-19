@@ -49,7 +49,7 @@
     <preference name="DisallowOverscroll" value="true" />
     <preference name="permissions" value="true" />
     <preference name="phonegap-version" value="cli-8.0.0" />
-    <preference name="android-minSdkVersion" value="16" />
+    <preference name="android-minSdkVersion" value="22" />
     <preference name="AndroidPersistentFileLocation" value="Compatibility" />
     <preference name="AndroidExtraFilesystems" value="sdcard,cache" />
 </widget>
