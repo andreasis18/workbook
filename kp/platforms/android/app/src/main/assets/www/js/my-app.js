@@ -1048,7 +1048,6 @@ myApp.onPageInit('mylifelistDetail', function (page) {
         value: [today.getFullYear(), today.getMonth(), today.getDate()],
 
         onChange: function (picker, values, displayValues) {
-            console.log(picker.value[0]+"   "+picker.value[1]);
             var daysInMonth = new Date(picker.value[0], picker.value[1]*1 + 1, 0).getDate();
             if (values[2] > daysInMonth) {
                 picker.cols[2].setValue(daysInMonth);
@@ -1067,7 +1066,7 @@ myApp.onPageInit('mylifelistDetail', function (page) {
             {
                 values: (function () {
                     var arr = [];
-                    for (var i = 1950; i <= 2030; i++) { arr.push(i); }
+                    for (var i = today.getFullYear(); i <= 2070; i++) { arr.push(i); }
                     return arr;
                 })(),
             },
@@ -1363,7 +1362,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
             {
                 values: (function () {
                     var arr = [];
-                    for (var i = 1950; i <= 2030; i++) { arr.push(i); }
+                    for (var i = today.getFullYear(); i <= 2070; i++) { arr.push(i); }
                     return arr;
                 })(),
             },
