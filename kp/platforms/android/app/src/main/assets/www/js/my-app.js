@@ -47,6 +47,7 @@ function setGlobal()
         nrpMhs=JSON.parse(localStorage.getItem("GPBusername"));
         nama_mhs=JSON.parse(localStorage.getItem("GPBnama_mhs"));
         periode = JSON.parse(localStorage.getItem("GPBperiode"));
+        console.log("periode"+periode);
     }
 }
 
@@ -77,7 +78,7 @@ function checkConnection()
     var networkState = navigator.connection.type;
     console.log(networkState);  
     if(networkState == "none" )
-    // if(networkState == "none" || networkState =="unknown")
+    //if(networkState == "none" || networkState =="unknown")
     {
         return false;
     }
@@ -155,10 +156,11 @@ myApp.onPageInit('index', function (page) {
             if(checkConnection())
             {
                 $$.post(directory,{opsi:"loginMhs", nrp:username.value,password:password},function(data){
+                    console.log(data);
                     if(data!="gagal") 
                     {
                         localStorage.setItem("GPBperiode",JSON.stringify(data));
-                        $$.post(directory,{opsi:"getBisTenda", nrp:username.value},function(data){
+                        $$.post(directory,{opsi:"getBisTenda", nrp:username.value, period:data},function(data){
                             var tendaBisTemp=JSON.parse(data);
                             localStorage.setItem("GPBnama_mhs",JSON.stringify(tendaBisTemp['nama']));
                             localStorage.setItem("GPBusername",JSON.stringify(username.value));
@@ -231,7 +233,10 @@ myApp.onPageInit('menu', function (page) {
         if(checkConnection())
         {
             $$.post(directory,{opsi:"getPengumuman"}, function(data){
-                var result=JSON.parse(data);
+                var result="";
+                if(!data){
+                    var result=JSON.parse(data);   
+                }
                 if(result!="")
                 {
                     $$(".judul").html(result["judul"]);
@@ -602,7 +607,8 @@ myApp.onPageInit('mybigdream', function (page) {
                     {
                         if(local==data)
                         {
-                            $$('#jawabBigDream').html(data);   
+                            $$('#jawabBigDream').html(data); 
+                            localStorage.removeItem(nrpMhs+"BigDream");  
                         }
                         else
                         {
@@ -627,7 +633,17 @@ myApp.onPageInit('mybigdream', function (page) {
                 {
                     if(local!=false)
                     {
-                        $$('#jawabBigDream').html("haha");   
+                        myApp.confirm('Ada data lokal yang tersimpan, apakah anda ingin menggunakan data lokal?', 'Sinkron data?', function () {
+                            $$.post(directory,{opsi:'jawabBigDream',nrp:nrpMhs, period:periode,jawab:local}, function(data){
+                                console.log(data);
+                                $$('#jawabBigDream').html(local);
+                                localStorage.removeItem(nrpMhs+"BigDream");          
+                            });   
+                        }, function () {
+                            $$('#jawabBigDream').html(data);  
+                            localStorage.removeItem(nrpMhs+"BigDream");
+
+                        });
                     }
                 }
                 $$('.overlay, .overlay-message').hide();
@@ -662,6 +678,7 @@ myApp.onPageInit('mybigdream', function (page) {
                 {
                     myApp.alert("Tidak ada internet, data disimpan secara lokal");
                     localStorage.setItem(nrpMhs+"BigDream", JSON.stringify(jawaban));
+                    console.log(localStorage.getItem(nrpMhs+"BigDream"));
                     mainView.router.back({url: 'pilihBigDream.html',force: true,ignoreCache: true});
                 }
             }
@@ -874,7 +891,7 @@ myApp.onPageInit('myLifeList', function (page) {
             }
             getComment(4);
             $$.post(directory,{opsi:'getLifeList', nrp:nrpMhs, period:periode}, function(data){
-                console.log(data);
+
                 var result = JSON.parse(data);
                 if(result!=""){
                     $$('.tempButton').hide();
@@ -1080,12 +1097,12 @@ myApp.onPageInit('mylifelistDetail', function (page) {
     }
 
     $$('#btnSubmit').on('click', function(){
-        if(list.value !=''&&target.value!=""&&obstacle.value!=""&&evidence.value!=""&&evaluation.value!="")
+        if(list.value !=''&&target.value!=""&&obstacle.value!=""&&evidence.value!="")
         {
             if(checkConnection())
             {
                 $$.post(directory,{opsi:'jawabLifeList', length:page.query.length, id:idList, nrp:nrpMhs, period:periode, lists:list.value, targets:target.value, obstacles:obstacle.value, evidences:evidence.value, evaluations:evaluation.value}, function(data){
-                    console.log(data);
+                    console.log("datas"+data);
                     if(data!=0)
                     {
                         mainView.router.back({url: 'mylifelist.html',force: true,ignoreCache: true});
@@ -1384,7 +1401,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
             {
                 $$.post(directory,{opsi:'updateActionPlan',nrp:nrpMhs, period:periode, ids:idTabel, tasks:task.value, resources:resource.value, timelines:timeline.value}, function(data){
                     console.log(data);
-                    mainView.router.back({url: 'formActionPlanDetail.html?idLifeList='+idLife+'&LifeList='+page.query.LifeList,force: true,ignoreCache: true});
+                    mainView.router.back();
                 });    
             } 
             else
@@ -1401,7 +1418,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
                 }
                 else
                 {
-                    mainView.router.back({url: 'formActionPlan.html',force: true,ignoreCache: true});
+                    mainView.router.back();
                 }
             }
         });
@@ -1452,9 +1469,9 @@ myApp.onPageInit('formActionPlanForm', function (page) {
         {
             myApp.confirm('Apakah anda yakin akan menghapus Action Plan ini?', 'Apakah Anda Yakin?', function () {
                 $$.post(directory,{opsi:'deleteActionPlan',  ids:idTabel}, function(data){
-                    console.log(data);
+                    console.log("delete"+data);
+                    mainView.router.back();
                 });  
-                mainView.router.back({url:'formActionPlanDetail.html?idLifeList='+idLife+'&LifeList='+page.query.LifeList,force: true,ignoreCache: true});
             });   
         }
         else
@@ -1464,7 +1481,7 @@ myApp.onPageInit('formActionPlanForm', function (page) {
                 local[idLife]["action_plan"].splice(idTabel,1);
                 localStorage.setItem(nrpMhs+"LifeList", JSON.stringify(local));
             }
-            mainView.router.back({url:'formActionPlan.html'});
+            mainView.router.back();
         }
     });
 })
@@ -1479,9 +1496,9 @@ myApp.onPageInit('kisahEntong', function (page) {
             myApp.confirm('Ada data lokal yang tersimpan, upload jawaban ke server?', 'Sinkron data?', function () {
                 $$.post(directory,{opsi:'jawabKisahEntong', nrp:nrpMhs, period:periode, jawab: local["jawaban"], id: local["idSoal"]}, function(data){
                     console.log(data);
-                });   
                 localStorage.removeItem(nrpMhs+"kisahEntong");
                 mainView.router.refreshPage();
+                });   
             }, function () {
                 localStorage.removeItem(nrpMhs+"kisahEntong");
                 mainView.router.refreshPage();
@@ -1534,7 +1551,6 @@ myApp.onPageInit('kisahEntong', function (page) {
           jawabanEntong.push($$(this).val());
           idsoal.push($$(this).attr('id'));
         })
-        console.dir(jawabanEntong);
 
         if(checkConnection())
         {
@@ -1812,8 +1828,8 @@ myApp.onPageInit('studiKasusForm', function (page) {
 
         $$('#btnSubmitStudiKasus').on('click', function () {
             if(checkConnection())
-            {
-                $$.post(directory,{opsi:'updateStudiKasus',  id:idStudiKasus, situasis: situasi.value, pemikirans: pemikiran.value, emosis:emosi.value, perilakus:perilaku.value}, function(data){
+            {    
+                $$.post(directory,{opsi:'updateStudiKasus', nrp:nrpMhs, period:periode, id:idStudiKasus, situasis: situasi.value, pemikirans: pemikiran.value, emosis:emosi.value, perilakus:perilaku.value}, function(data){
                     console.log(data);
                 });    
             }
@@ -1828,7 +1844,7 @@ myApp.onPageInit('studiKasusForm', function (page) {
                     }
                 }   
             } 
-            mainView.router.back({url:"studiKasus.html",force: true,ignoreCache: true});
+            mainView.router.back();
         });
     }
     else
@@ -1855,7 +1871,7 @@ myApp.onPageInit('studiKasusForm', function (page) {
                 }
                 localStorage.setItem(nrpMhs+"studiKasus", JSON.stringify(local));
             }
-            mainView.router.back({url: "studiKasus.html",force: true,ignoreCache: true});
+            mainView.router.back();
         });
     }
 })
@@ -1974,7 +1990,7 @@ myApp.onPageInit('pengalamanPribadiForm', function (page) {
                     {
                         myApp.alert("Tidak ada koneksi Internet, coba lagi");
                     }
-                    mainView.router.back({url: "pengalamanPribadi.html",force: true,ignoreCache: true});
+                    mainView.router.back();
                 });
             });    
         }
@@ -2006,17 +2022,17 @@ myApp.onPageInit('pengalamanPribadiForm', function (page) {
             }
             else
             {
-                myApp.alert("Tidak ada internet, data disimpan secara lokal");  
+                myApp.alert("Tidak ada internet, data disimpan secara lokal"); 
                 if(local!=false)
                 {
                     if(local[idPengalaman]!=undefined)
                     {
                         local[idPengalaman] = {situasi:situasi.value, strategi:strategi.value, emosi:emosi.value};
-                        localStorage.setItem(nrpMhs+"studiKasus", JSON.stringify(local));
+                        localStorage.setItem(nrpMhs+"pengalamanPribadi", JSON.stringify(local));
                     }
                 }   
             } 
-            mainView.router.back({url: "pengalamanPribadi.html",force: true,ignoreCache: true});
+            mainView.router.back();
         });
     }
     else
@@ -2041,7 +2057,7 @@ myApp.onPageInit('pengalamanPribadiForm', function (page) {
                 }
                 localStorage.setItem(nrpMhs+"pengalamanPribadi", JSON.stringify(local));
             }
-            mainView.router.back({url: "pengalamanPribadi.html",force: true,ignoreCache: true});
+            mainView.router.back();
         });
     }
 })
@@ -2057,9 +2073,9 @@ myApp.onPageInit('refleksiMini', function (page) {
             myApp.confirm('Ada data lokal yang tersimpan, upload jawaban ke server?', 'Sinkron data?', function () {
                 $$.post(directory,{opsi:'jawabRefleksi', nrp:nrpMhs, period:periode, jawab: local["jawaban"], id: local["idSoal"]}, function(data){
                     console.log(data);
+                    localStorage.removeItem(nrpMhs+"refleksiMini");
+                    mainView.router.refreshPage();
                 });   
-                localStorage.removeItem(nrpMhs+"refleksiMini");
-                mainView.router.refreshPage();
             }, function () {
                 localStorage.removeItem(nrpMhs+"refleksiMini");
             });
@@ -2140,7 +2156,6 @@ function sinkronFishbone()
                     support= local[i]["support"];
                 } 
                 $$.post(directory,{opsi:'jawabFishbone', nrp:nrpMhs, period:periode, jawab:local[i]["kepala"]}, function(data){
-                   
                     var idk=data;
                     for (var j = 0; j < support.length; j++) {
                         var detail=[];
@@ -2149,7 +2164,6 @@ function sinkronFishbone()
                             detail= support[j]["detail"];
                         }
                         $$.post(directory,{opsi:'jawabFishboneSupport', nrp:nrpMhs, period:periode, id:idk, jawab:support[j]["jawab_support"]}, function(data){
-                            
                             var ids=data;
                             for (var k = 0; k<detail.length; k++) {
                                 $$.post(directory,{opsi:'jawabFishboneSupportDetail', nrp:nrpMhs, period:periode, id:ids, jawab:detail[k]["jawab_detail"]}, function(data){
@@ -2161,7 +2175,7 @@ function sinkronFishbone()
                 });  
             }
             localStorage.removeItem(nrpMhs+"fishbone");
-            mainView.router.refreshPage();
+            mainView.router.back();
         }
     }, function () {
         localStorage.removeItem(nrpMhs+"fishbone");
