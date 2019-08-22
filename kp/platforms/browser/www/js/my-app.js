@@ -233,14 +233,12 @@ myApp.onPageInit('menu', function (page) {
         if(checkConnection())
         {
             $$.post(directory,{opsi:"getPengumuman"}, function(data){
-                var result="";
-                if(!data){
-                    var result=JSON.parse(data);   
-                }
+                var result=JSON.parse(data);   
                 if(result!="")
                 {
                     $$(".judul").html(result["judul"]);
                     $$(".contentPengumuman").html(result["content"]);
+                    $$(".attach").html(result["attachment"]);
                     $$(".contentPengumuman").on("click", function(){
                         mainView.router.loadPage("pengumumanDetail.html?idPengumuman="+result["id_pengumuman"]);
                     });
@@ -282,10 +280,11 @@ myApp.onPageInit('pengumuman', function (page) {
                     var temp="";
                     for(var i=0;i<result.length;i++)
                     {
+                        console.log(result[i]);
                         temp+='<div class="card card-outline">'+
                                   '<div class="card-header judul">'+result[i]["judul"]+'</div>'+
                                   '<div class="card-content contentPengumuman">'+result[i]["content"]+'</div>'+
-                                  '<div class="card-footer"><div></div><a href="pengumumanDetail.html?idPengumuman='+result[i]["id_pengumuman"]+'"><p>Read More</p></a></div>'+
+                                  '<div class="card-footer"><div>'+result[i]["attachment"]+'</div><a href="pengumumanDetail.html?idPengumuman='+result[i]["id_pengumuman"]+'"><p>Read More</p></a></div>'+
                                 '</div>';
                     }
                     $$('#listPengumuman').html(temp);
