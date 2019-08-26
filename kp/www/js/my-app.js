@@ -329,6 +329,8 @@ myApp.onPageInit('pengumumanDetail', function (page) {
                                                   '<div class="card-footer"><a id="test" href="">Attachment : '+result["attachment"]+'</a></div>'+
                                                 '</div>');   
                         $$('#test').click(function(){
+
+                    $$('.overlay, .overlay-message').show();
                             uri = encodeURI("https://administratorgpb.000webhostapp.com/downloadPengumuman/"+result["attachment"]);
                             fileTransfer.download(
                                 uri,
@@ -338,6 +340,8 @@ myApp.onPageInit('pengumumanDetail', function (page) {
                                       entry.toURL(),
                                       function(fileEntry){
                                             var parentEntry = "file:///storage/emulated/0/Download";
+
+                                            $$('.overlay, .overlay-message').hide();
                                             // move the file to a new directory and rename it
                                             alert("Download berhasil, file disimpan di folder "+entry.toURL()+"/"+result["attachment"]);
                                            fileEntry.moveTo(parentEntry, result["attachment"], success,fail);
